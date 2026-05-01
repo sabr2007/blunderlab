@@ -149,3 +149,43 @@ $ vercel env add NEXT_PUBLIC_SUPABASE_URL preview --value "$VAL" --yes
 6. Сделай 4-й review подряд → должен показаться `Daily review limit reached` баннер
 
 Если что-то ломается — открой Vercel runtime logs (`vercel logs <deployment-url>`) или Supabase Dashboard → Logs → Postgres / API.
+
+---
+
+## 6. Phase 3 Service Layer Notes
+
+Код Phase 3 добавляет:
+
+- `/sign-in`, `/auth/callback`, `/onboarding`
+- `/dashboard`, `/daily-blunder`, `/leaderboard`, `/settings`
+- `/pro`
+- `/api/cron/leaderboard-snapshot`
+- Vercel Cron config: `vercel.json`
+- миграцию `supabase/migrations/20260501203000_phase3_service_layer.sql`
+
+Новые env vars:
+
+```bash
+SUPABASE_SERVICE_ROLE_KEY=
+CRON_SECRET=
+```
+
+Обязательные ручные шаги перед production-проверкой Phase 3:
+
+1. Применить миграцию `20260501203000_phase3_service_layer.sql` в Supabase.
+2. Добавить `SUPABASE_SERVICE_ROLE_KEY` и `CRON_SECRET` в Vercel Production env.
+3. Включить Google provider в Supabase Auth и добавить redirect URL `https://<domain>/auth/callback`.
+4. После деплоя вручную дернуть cron smoke:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" \
+  https://<domain>/api/cron/leaderboard-snapshot
+```
+
+Локально на текущей реализации прошли:
+
+- `pnpm typecheck`
+- `pnpm lint`
+- `pnpm test`
+- `pnpm build`
+- `pnpm test:e2e` (public surfaces + auth guard smoke)

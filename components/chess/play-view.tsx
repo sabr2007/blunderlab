@@ -556,7 +556,7 @@ function ReviewCta({ persistence }: { persistence: PersistenceState }) {
   if (persistence.kind === "saved" || persistence.kind === "ready") {
     return (
       <Button asChild type="button" className="w-full">
-        <Link href={`/review/${persistence.gameId}`}>
+        <Link href={`/review/${persistence.gameId}`} data-testid="review-cta">
           {persistence.kind === "saved"
             ? "Review my mistakes"
             : "Review my mistakes (saving…)"}

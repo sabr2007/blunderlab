@@ -32,7 +32,7 @@ export function CriticalMomentCard({
   const bestMoveSquares = parseUci(moment.bestMove);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden" data-testid="critical-moment-card">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">

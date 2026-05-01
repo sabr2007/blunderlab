@@ -42,10 +42,20 @@ pnpm dev                         # http://localhost:3000
 | `pnpm format` | Biome format write |
 | `pnpm test` | Vitest unit tests |
 | `pnpm test:e2e` | Playwright E2E tests |
+| `pnpm db:types` | Regenerate Supabase TypeScript types from the linked project |
 
 ## Roadmap
 
-Phases are in `docs/decisions.md` §10. Current phase: **Phase 1 — playable**.
+Phases are in `docs/decisions.md` §10. Current phase: **Phase 3 — service layer (initial pass)**.
+
+Implemented surfaces:
+
+- `/play` and `/review/[gameId]` — anonymous Play → Review loop from Phases 1–2.
+- `/sign-in` and `/auth/callback` — Google OAuth / email magic-link entry points.
+- `/onboarding` — skill level and city setup.
+- `/dashboard`, `/daily-blunder`, `/leaderboard`, `/settings` — authed retention loop.
+- `/pro` — pricing tiers and waitlist capture.
+- `/api/cron/leaderboard-snapshot` — Vercel Cron endpoint for city snapshots.
 
 ## Why this product
 

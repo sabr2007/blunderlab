@@ -38,9 +38,12 @@ Thumbs.db
 .coverage/
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
 
 # Misc
 .cache/
 tmp/
 temp/
 .vercel
+supabase/.temp/
