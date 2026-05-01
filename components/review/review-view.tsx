@@ -326,8 +326,11 @@ function RateLimitNotice({ resetAt }: { resetAt: string }) {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-fg-muted">
-              Pro membership (coming in Phase 3) will lift this cap.
+              Pro membership will lift this cap.
             </p>
+            <Button asChild variant="secondary" className="mt-4 w-full">
+              <Link href="/pro">View Pro options</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
