@@ -34,16 +34,24 @@ export default function LandingPage() {
           <Link href="#patterns" className="hover:text-fg">
             Patterns
           </Link>
-          <Link href="#pricing" className="hover:text-fg">
+          <Link href="/pro" className="hover:text-fg">
             Pricing
           </Link>
         </nav>
-        <Link
-          href="/play"
-          className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-2 text-sm font-medium text-bg transition hover:opacity-90"
-        >
-          Start training <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/sign-in"
+            className="hidden text-sm text-fg-muted hover:text-fg sm:inline"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/play"
+            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-2 text-sm font-medium text-bg transition hover:opacity-90"
+          >
+            Start training <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </header>
 
       <section className="container relative pb-24 pt-12 md:pt-20">
@@ -69,10 +77,10 @@ export default function LandingPage() {
               Start training <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="#demo"
+              href="/sign-in"
               className="inline-flex items-center gap-2 rounded-md border border-border bg-surface/40 px-5 py-2.5 text-sm font-medium text-fg transition hover:bg-surface"
             >
-              <PlayCircle className="h-4 w-4" /> Watch demo
+              <PlayCircle className="h-4 w-4" /> Sign in for dashboard
             </Link>
           </div>
         </div>

@@ -1,0 +1,57 @@
+"use server";
+
+import {
+  getDisplayName,
+  getSafeNextPath,
+  isRealUser,
+} from "@/lib/auth/session";
+import type { AiDifficulty, City } from "@/lib/supabase/database.types";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+
+const onboardingSchema = z.object({
+  displayName: z.string().trim().min(2).max(40),
+  skill: z.enum(["beginner", "intermediate", "advanced"]),
+  city: z.enum(["Almaty", "Astana", "Shymkent", "Other"]),
+  next: z.string().optional(),
+});
+
+export async function completeOnboardingAction(formData: FormData) {
+  const parsed = onboardingSchema.safeParse({
+    displayName: formData.get("displayName"),
+    skill: formData.get("skill"),
+    city: formData.get("city"),
+    next: formData.get("next") ?? undefined,
+  });
+  const nextPath = getSafeNextPath(String(formData.get("next") ?? ""));
+
+  if (!parsed.success) {
+    redirect(`/onboarding?error=invalid&next=${encodeURIComponent(nextPath)}`);
+  }
+
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!isRealUser(user)) {
+    redirect(`/sign-in?next=${encodeURIComponent("/onboarding")}`);
+  }
+
+  const displayName =
+    parsed.data.displayName.trim() || getDisplayName(user).slice(0, 40);
+
+  await supabase.from("profiles").upsert(
+    {
+      id: user.id,
+      display_name: displayName,
+      city: parsed.data.city as City,
+      default_difficulty: parsed.data.skill as AiDifficulty,
+      deleted_at: null,
+    },
+    { onConflict: "id" },
+  );
+
+  redirect(nextPath);
+}
