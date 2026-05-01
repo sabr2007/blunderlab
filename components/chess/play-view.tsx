@@ -1,5 +1,6 @@
 "use client";
 
+import { finalizeGameAction, startGameAction } from "@/app/play/actions";
 import { ChessBoardWrapper } from "@/components/chess/chess-board-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
 import { ENGINE_PRESETS, StockfishEngine } from "@/lib/chess/engine";
 import {
   STARTING_FEN,
+  buildPgn,
   createGame,
   getLegalTargetSquares,
   getSnapshotFromFen,
@@ -21,11 +23,29 @@ import {
   tryUciMove,
 } from "@/lib/chess/rules";
 import type { AiDifficulty, GameStatus, MoveRecord } from "@/lib/chess/types";
+import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
+import { getSupabasePublicConfig } from "@/lib/supabase/env";
 import type { Square } from "chess.js";
-import { Activity, Brain, CheckCircle2, RotateCcw, Swords } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Activity,
+  Brain,
+  CheckCircle2,
+  Loader2,
+  RotateCcw,
+  Swords,
+} from "lucide-react";
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DIFFICULTIES: AiDifficulty[] = ["beginner", "intermediate", "advanced"];
+
+type PersistenceState =
+  | { kind: "idle" }
+  | { kind: "starting" }
+  | { kind: "ready"; gameId: string }
+  | { kind: "saving"; gameId: string }
+  | { kind: "saved"; gameId: string }
+  | { kind: "disabled"; reason: string };
 
 export function PlayView() {
   const [fen, setFen] = useState(STARTING_FEN);
@@ -37,8 +57,25 @@ export function PlayView() {
     "idle" | "thinking" | "fallback"
   >("idle");
   const [forcedStatus, setForcedStatus] = useState<GameStatus | null>(null);
+  const [persistence, setPersistence] = useState<PersistenceState>(() =>
+    getSupabasePublicConfig().isConfigured
+      ? { kind: "idle" }
+      : {
+          kind: "disabled",
+          reason: "Supabase env not set — review storage is disabled.",
+        },
+  );
+
   const engineRef = useRef<StockfishEngine | null>(null);
   const requestIdRef = useRef(0);
+  const movesRef = useRef<MoveRecord[]>([]);
+  const persistenceRef = useRef<PersistenceState>({ kind: "idle" });
+  const finalizedRef = useRef(false);
+  const sessionReadyRef = useRef<Promise<void> | null>(null);
+  const startGamePromiseRef = useRef<Promise<string | null> | null>(null);
+
+  movesRef.current = moves;
+  persistenceRef.current = persistence;
 
   const snapshot = useMemo(() => getSnapshotFromFen(fen), [fen]);
   const gameStatus = forcedStatus ?? snapshot.status;
@@ -58,14 +95,89 @@ export function PlayView() {
     };
   }, []);
 
+  useEffect(() => {
+    if (persistence.kind !== "idle") {
+      return;
+    }
+
+    if (sessionReadyRef.current) {
+      return;
+    }
+
+    sessionReadyRef.current = ensureAnonymousUser()
+      .then(() => undefined)
+      .catch((error: unknown) => {
+        const message =
+          error instanceof Error ? error.message : "anonymous sign-in failed";
+        setPersistence({ kind: "disabled", reason: message });
+      });
+  }, [persistence.kind]);
+
+  const ensureGameStarted = useCallback(async (): Promise<string | null> => {
+    const current = persistenceRef.current;
+
+    if (
+      current.kind === "ready" ||
+      current.kind === "saving" ||
+      current.kind === "saved"
+    ) {
+      return current.gameId;
+    }
+
+    if (current.kind === "disabled") {
+      return null;
+    }
+
+    if (startGamePromiseRef.current) {
+      return startGamePromiseRef.current;
+    }
+
+    setPersistence({ kind: "starting" });
+
+    const promise = (async () => {
+      try {
+        await sessionReadyRef.current;
+
+        const result = await startGameAction({
+          difficulty,
+          playerColor: "white",
+          initialFen: STARTING_FEN,
+        });
+
+        if (!result.ok) {
+          setPersistence({ kind: "disabled", reason: result.error });
+          return null;
+        }
+
+        setPersistence({ kind: "ready", gameId: result.data.gameId });
+        return result.data.gameId;
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "failed to start game";
+        setPersistence({ kind: "disabled", reason: message });
+        return null;
+      } finally {
+        startGamePromiseRef.current = null;
+      }
+    })();
+
+    startGamePromiseRef.current = promise;
+    return promise;
+  }, [difficulty]);
+
   function restart() {
     requestIdRef.current += 1;
+    finalizedRef.current = false;
     setFen(STARTING_FEN);
     setMoves([]);
     setSelectedSquare(null);
     setLegalTargets([]);
     setForcedStatus(null);
     setEngineState("idle");
+
+    if (persistenceRef.current.kind !== "disabled") {
+      setPersistence({ kind: "idle" });
+    }
   }
 
   function resign() {
@@ -105,6 +217,10 @@ export function PlayView() {
     setMoves((current) => [...current, result.record]);
     setSelectedSquare(null);
     setLegalTargets([]);
+
+    if (movesRef.current.length === 0) {
+      void ensureGameStarted();
+    }
 
     if (result.snapshot.status === "active") {
       void makeEngineMove(result.snapshot.fen);
@@ -171,6 +287,81 @@ export function PlayView() {
     window.setTimeout(() => setEngineState("idle"), 1200);
   }
 
+  // Finalize game (server-side persistence) when the game ends.
+  useEffect(() => {
+    if (gameStatus === "active") {
+      return;
+    }
+
+    if (finalizedRef.current) {
+      return;
+    }
+
+    const persistenceNow = persistenceRef.current;
+
+    if (persistenceNow.kind !== "ready" && persistenceNow.kind !== "starting") {
+      return;
+    }
+
+    finalizedRef.current = true;
+
+    void (async () => {
+      const gameId = await ensureGameStarted();
+
+      if (!gameId) {
+        return;
+      }
+
+      setPersistence({ kind: "saving", gameId });
+
+      const replay = movesRef.current.map((move) => ({
+        from: move.from,
+        to: move.to,
+        promotion: move.promotion ?? null,
+      }));
+
+      const built =
+        replay.length > 0 ? buildPgn(replay) : { pgn: "", finalFen: fen };
+
+      const winner =
+        gameStatus === "checkmate"
+          ? snapshot.turn === "w"
+            ? "black"
+            : "white"
+          : gameStatus === "resigned"
+            ? "black"
+            : null;
+
+      const result = await finalizeGameAction({
+        gameId,
+        status: gameStatus,
+        winner,
+        finalFen: built.finalFen,
+        pgn: built.pgn,
+        moves: movesRef.current.map((move) => ({
+          ply: move.ply,
+          moveNumber: move.moveNumber,
+          color: move.color,
+          actor: move.actor,
+          san: move.san,
+          uci: move.uci,
+          from: move.from,
+          to: move.to,
+          promotion: move.promotion ?? null,
+          fenBefore: move.fenBefore,
+          fenAfter: move.fenAfter,
+        })),
+      });
+
+      if (!result.ok) {
+        setPersistence({ kind: "disabled", reason: result.error });
+        return;
+      }
+
+      setPersistence({ kind: "saved", gameId });
+    })();
+  }, [gameStatus, fen, snapshot.turn, ensureGameStarted]);
+
   return (
     <main className="min-h-screen bg-bg">
       <div className="lab-grid pointer-events-none fixed inset-0 -z-10 opacity-20" />
@@ -178,7 +369,7 @@ export function PlayView() {
         <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              Phase 1 · Playable MVP
+              Phase 2 · Play & Review
             </p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
               Play against Stockfish
@@ -191,7 +382,7 @@ export function PlayView() {
                 type="button"
                 variant={difficulty === level ? "default" : "secondary"}
                 size="sm"
-                disabled={engineState === "thinking"}
+                disabled={engineState === "thinking" || moves.length > 0}
                 onClick={() => setDifficulty(level)}
               >
                 {ENGINE_PRESETS[level].label}
@@ -241,8 +432,8 @@ export function PlayView() {
                   <StatusBadge status={gameStatus} engineState={engineState} />
                 </div>
                 <CardDescription>
-                  Legal moves are handled by chess.js. The AI response comes
-                  from the Stockfish worker.
+                  Legal moves are validated by chess.js. AI responses come from
+                  the Stockfish worker.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -275,6 +466,12 @@ export function PlayView() {
                     <Swords /> Resign
                   </Button>
                 </div>
+
+                {persistence.kind === "disabled" ? (
+                  <p className="rounded-md border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
+                    Persistence offline: {persistence.reason}
+                  </p>
+                ) : null}
               </CardContent>
             </Card>
 
@@ -286,13 +483,12 @@ export function PlayView() {
                     Game finished
                   </CardTitle>
                   <CardDescription>
-                    Phase 2 will attach the review pipeline to this exact state.
+                    Engine analysis runs on the review screen — the AI Coach
+                    waits there.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button type="button" className="w-full">
-                    Review my mistakes
-                  </Button>
+                  <ReviewCta persistence={persistence} />
                 </CardContent>
               </Card>
             ) : null}
@@ -335,6 +531,42 @@ export function PlayView() {
         </section>
       </div>
     </main>
+  );
+}
+
+function ReviewCta({ persistence }: { persistence: PersistenceState }) {
+  if (persistence.kind === "saved" || persistence.kind === "ready") {
+    return (
+      <Button asChild type="button" className="w-full">
+        <Link href={`/review/${persistence.gameId}`}>
+          {persistence.kind === "saved"
+            ? "Review my mistakes"
+            : "Review my mistakes (saving…)"}
+        </Link>
+      </Button>
+    );
+  }
+
+  if (persistence.kind === "saving" || persistence.kind === "starting") {
+    return (
+      <Button type="button" className="w-full" disabled>
+        <Loader2 className="size-4 animate-spin" /> Saving game…
+      </Button>
+    );
+  }
+
+  if (persistence.kind === "disabled") {
+    return (
+      <Button type="button" className="w-full" disabled>
+        Review unavailable
+      </Button>
+    );
+  }
+
+  return (
+    <Button type="button" className="w-full" disabled>
+      Preparing review…
+    </Button>
   );
 }
 
