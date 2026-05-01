@@ -223,7 +223,10 @@ export function PlayView() {
     }
 
     setFen(result.snapshot.fen);
-    setMoves((current) => [...current, withGamePly(result.record, current.length)]);
+    setMoves((current) => [
+      ...current,
+      withGamePly(result.record, current.length),
+    ]);
     setSelectedSquare(null);
     setLegalTargets([]);
 
@@ -254,7 +257,10 @@ export function PlayView() {
 
       if (applied.ok) {
         setFen(applied.snapshot.fen);
-        setMoves((current) => [...current, withGamePly(applied.record, current.length)]);
+        setMoves((current) => [
+          ...current,
+          withGamePly(applied.record, current.length),
+        ]);
         setEngineState("idle");
         return;
       }
@@ -289,7 +295,10 @@ export function PlayView() {
 
     if (applied.ok) {
       setFen(applied.snapshot.fen);
-      setMoves((current) => [...current, withGamePly(applied.record, current.length)]);
+      setMoves((current) => [
+        ...current,
+        withGamePly(applied.record, current.length),
+      ]);
     }
 
     setEngineState("fallback");
