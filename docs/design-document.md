@@ -1,10 +1,19 @@
-# BlunderLab — Design Document v2
+# BlunderLab — Design Document v2.1
 
 Дата: Май 2026
-Статус: Applied Design Document v2.0
-Связанный документ: BlunderLab PRD v1.0
+Статус: Applied Design Document v2.1
+Связанные документы: [PRD v1.1](./PRD.md), [decisions.md (source of truth)](./decisions.md)
 Формат: Web Application / nFactorial Incubator Submission
 Цель: зафиксировать визуальную систему, экраны, компоненты и demo-ready product experience
+
+> **Все технические и визуальные параметры (палитра, шрифты, фигуры, токены) зафиксированы в [decisions.md](./decisions.md).** Этот документ описывает «как должно ощущаться», decisions.md — «какие именно значения».
+
+**Locked в decisions.md:**
+- Board palette: **Graphite** (значения OKLCH в decisions.md §5)
+- Pieces: **Cburnett SVG** (поставляется с react-chessboard)
+- Font: **Geist Sans + Geist Mono**
+- Theme default: **dark**
+- 8 blunder categories — финальный список в decisions.md §8
 
 ---
 

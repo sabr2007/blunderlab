@@ -1,10 +1,12 @@
 # BlunderLab — Product Requirements Document
 
 Дата: Май 2026
-Статус: Strategic PRD v1.0 — application prototype
+Статус: Strategic PRD v1.1 — application prototype
 Автор: Sabyrzhan, кандидат nFactorial Incubator 2026
 Формат: веб-приложение
-Рабочий стек: Next.js / React, Supabase, chess.js, Stockfish или lightweight AI, AI-assisted development через Claude Code / Codex
+Рабочий стек: Next.js 16 (App Router) / TypeScript / Tailwind v4 / shadcn/ui / Supabase / chess.js / stockfish.wasm / OpenAI gpt-4o-mini
+
+> **Все технические и продуктовые решения зафиксированы в [decisions.md](./decisions.md).** При расхождении с этим PRD — побеждает decisions.md. Этот документ описывает «зачем», decisions.md — «как именно».
 
 ---
 
