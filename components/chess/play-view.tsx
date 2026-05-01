@@ -39,6 +39,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DIFFICULTIES: AiDifficulty[] = ["beginner", "intermediate", "advanced"];
 
+// tryMove builds each MoveRecord from a freshly-instantiated chess.js position
+// (no prior history), so its `ply` and `moveNumber` always come back as 1.
+// Re-stamp them with the real game ply before persisting — otherwise the
+// game_moves unique (game_id, ply) constraint blows up at finalize time.
+function withGamePly(record: MoveRecord, priorMoves: number): MoveRecord {
+  const ply = priorMoves + 1;
+  return { ...record, ply, moveNumber: Math.ceil(ply / 2) };
+}
+
 type PersistenceState =
   | { kind: "idle" }
   | { kind: "starting" }
@@ -214,7 +223,7 @@ export function PlayView() {
     }
 
     setFen(result.snapshot.fen);
-    setMoves((current) => [...current, result.record]);
+    setMoves((current) => [...current, withGamePly(result.record, current.length)]);
     setSelectedSquare(null);
     setLegalTargets([]);
 
@@ -245,7 +254,7 @@ export function PlayView() {
 
       if (applied.ok) {
         setFen(applied.snapshot.fen);
-        setMoves((current) => [...current, applied.record]);
+        setMoves((current) => [...current, withGamePly(applied.record, current.length)]);
         setEngineState("idle");
         return;
       }
@@ -280,7 +289,7 @@ export function PlayView() {
 
     if (applied.ok) {
       setFen(applied.snapshot.fen);
-      setMoves((current) => [...current, applied.record]);
+      setMoves((current) => [...current, withGamePly(applied.record, current.length)]);
     }
 
     setEngineState("fallback");
