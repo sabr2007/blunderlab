@@ -1,18 +1,20 @@
 "use client";
 
 import { createBrowserClient } from "@supabase/ssr";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./database.generated";
 import { requireSupabasePublicConfig } from "./env";
 
-let cached: SupabaseClient | null = null;
+type BrowserSupabaseClient = ReturnType<typeof createBrowserClient<Database>>;
 
-export function getSupabaseBrowserClient(): SupabaseClient {
+let cached: BrowserSupabaseClient | null = null;
+
+export function getSupabaseBrowserClient(): BrowserSupabaseClient {
   if (cached) {
     return cached;
   }
 
   const { url, anonKey } = requireSupabasePublicConfig();
-  cached = createBrowserClient(url, anonKey);
+  cached = createBrowserClient<Database>(url, anonKey);
 
   return cached;
 }
