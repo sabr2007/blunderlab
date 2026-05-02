@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { ArrowRight, Target } from "lucide-react";
-import Link from "next/link";
 
 type TrainingGoalCardProps = {
   trainingGoal: string;

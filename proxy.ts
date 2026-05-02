@@ -1,11 +1,18 @@
 import {
+  defaultLocale,
+  splitLocalePathname,
+  withLocalePrefix,
+} from "@/i18n/routing";
+import {
   getSafeNextPath,
   isProtectedAppPath,
   isRealUser,
 } from "@/lib/auth/session";
 import type { Database } from "@/lib/supabase/database.generated";
 import { createServerClient } from "@supabase/ssr";
+import createIntlMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
+import { routing } from "./i18n/routing";
 
 type CookieToSet = {
   name: string;
@@ -14,7 +21,8 @@ type CookieToSet = {
 };
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const intlMiddleware = createIntlMiddleware(routing);
+  let response = intlMiddleware(request);
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -32,7 +40,7 @@ export async function proxy(request: NextRequest) {
           request.cookies.set(name, value);
         }
 
-        response = NextResponse.next({ request });
+        response = intlMiddleware(request);
 
         for (const { name, value, options } of cookiesToSet) {
           response.cookies.set(name, value, options);
@@ -44,16 +52,23 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const { locale, pathnameWithoutLocale } = splitLocalePathname(
+    request.nextUrl.pathname,
+  );
+  const activeLocale = locale ?? defaultLocale;
 
-  if (isProtectedAppPath(request.nextUrl.pathname) && !isRealUser(user)) {
+  if (isProtectedAppPath(pathnameWithoutLocale) && !isRealUser(user)) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/sign-in";
+    redirectUrl.pathname = withLocalePrefix("/sign-in", activeLocale);
     redirectUrl.search = "";
     redirectUrl.searchParams.set(
       "next",
       getSafeNextPath(
-        `${request.nextUrl.pathname}${request.nextUrl.search}`,
-        "/dashboard",
+        withLocalePrefix(
+          `${pathnameWithoutLocale}${request.nextUrl.search}`,
+          activeLocale,
+        ),
+        withLocalePrefix("/dashboard", activeLocale),
       ),
     );
     return NextResponse.redirect(redirectUrl);
@@ -64,6 +79,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|wasm|js)$).*)",
+    "/((?!api|auth|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|wasm|js|mp4|vtt)$).*)",
   ],
 };

@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { StockfishAnalyzer } from "@/lib/chess/analysis";
 import { selectCriticalMoments } from "@/lib/chess/critical-moments";
 import {
@@ -26,7 +27,7 @@ import type {
 } from "@/lib/review/types";
 import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
 import { AlertTriangle, Loader2, RotateCcw } from "lucide-react";
-import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReviewViewProps = {
@@ -49,6 +50,7 @@ const INITIAL_PROGRESS: PipelineProgress = {
 };
 
 export function ReviewView({ gameId, initialBundle, game }: ReviewViewProps) {
+  const locale = useLocale() === "ru" ? "ru" : "en";
   const initialPhase: Phase = initialBundle
     ? { kind: "ready", bundle: initialBundle }
     : !game.pgn
@@ -76,8 +78,8 @@ export function ReviewView({ gameId, initialBundle, game }: ReviewViewProps) {
     }
 
     ranRef.current = true;
-    void runPipeline({ gameId, game, setPhase });
-  }, [gameId, game, initialBundle]);
+    void runPipeline({ gameId, game, locale, setPhase });
+  }, [gameId, game, initialBundle, locale]);
 
   if (phase.kind === "ready") {
     return <ReviewLayout bundle={phase.bundle} />;
@@ -101,10 +103,12 @@ export function ReviewView({ gameId, initialBundle, game }: ReviewViewProps) {
 async function runPipeline({
   gameId,
   game,
+  locale,
   setPhase,
 }: {
   gameId: string;
   game: GameForReview;
+  locale: "en" | "ru";
   setPhase: (phase: Phase) => void;
 }) {
   if (!game.pgn) {
@@ -164,7 +168,7 @@ async function runPipeline({
     const result = await submitReviewAction({
       gameId,
       userColor,
-      locale: "en",
+      locale,
       criticalMoments: inputs,
     });
 

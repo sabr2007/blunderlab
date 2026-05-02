@@ -1,20 +1,29 @@
 import { AppShell } from "@/components/app/app-shell";
+import { isLocale, withLocalePrefix } from "@/i18n/routing";
 import { getDisplayName, isRealUser } from "@/lib/auth/session";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function ServiceLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : "en";
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!isRealUser(user)) {
-    redirect("/sign-in?next=/dashboard");
+    redirect(
+      `${withLocalePrefix("/sign-in", locale)}?next=${encodeURIComponent(
+        withLocalePrefix("/dashboard", locale),
+      )}`,
+    );
   }
 
   const profile = await supabase
@@ -24,7 +33,11 @@ export default async function ServiceLayout({
     .maybeSingle();
 
   if (!profile.data?.display_name || profile.data.deleted_at) {
-    redirect("/onboarding?next=/dashboard");
+    redirect(
+      `${withLocalePrefix("/onboarding", locale)}?next=${encodeURIComponent(
+        withLocalePrefix("/dashboard", locale),
+      )}`,
+    );
   }
 
   return (

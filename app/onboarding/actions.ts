@@ -1,6 +1,11 @@
 "use server";
 
 import {
+  defaultLocale,
+  splitLocalePathname,
+  withLocalePrefix,
+} from "@/i18n/routing";
+import {
   getDisplayName,
   getSafeNextPath,
   isRealUser,
@@ -25,9 +30,12 @@ export async function completeOnboardingAction(formData: FormData) {
     next: formData.get("next") ?? undefined,
   });
   const nextPath = getSafeNextPath(String(formData.get("next") ?? ""));
+  const activeLocale = splitLocalePathname(nextPath).locale ?? defaultLocale;
 
   if (!parsed.success) {
-    redirect(`/onboarding?error=invalid&next=${encodeURIComponent(nextPath)}`);
+    redirect(
+      `${withLocalePrefix("/onboarding", activeLocale)}?error=invalid&next=${encodeURIComponent(nextPath)}`,
+    );
   }
 
   const supabase = await getSupabaseServerClient();
@@ -36,7 +44,11 @@ export async function completeOnboardingAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!isRealUser(user)) {
-    redirect(`/sign-in?next=${encodeURIComponent("/onboarding")}`);
+    redirect(
+      `${withLocalePrefix("/sign-in", activeLocale)}?next=${encodeURIComponent(
+        withLocalePrefix("/onboarding", activeLocale),
+      )}`,
+    );
   }
 
   const displayName =

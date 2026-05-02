@@ -1,3 +1,4 @@
+import { splitLocalePathname } from "@/i18n/routing";
 import type { User } from "@supabase/supabase-js";
 
 export const PROTECTED_APP_PREFIXES = [
@@ -24,8 +25,12 @@ export function isRealUser(user: User | null | undefined): user is User {
 }
 
 export function isProtectedAppPath(pathname: string): boolean {
+  const { pathnameWithoutLocale } = splitLocalePathname(pathname);
+
   return PROTECTED_APP_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    (prefix) =>
+      pathnameWithoutLocale === prefix ||
+      pathnameWithoutLocale.startsWith(`${prefix}/`),
   );
 }
 
@@ -41,8 +46,12 @@ export function getSafeNextPath(
     return fallback;
   }
 
+  const [pathname] = raw.split(/[?#]/);
+  const { pathnameWithoutLocale } = splitLocalePathname(pathname);
   const allowed = ALLOWED_NEXT_PREFIXES.some(
-    (prefix) => raw === prefix || raw.startsWith(`${prefix}/`),
+    (prefix) =>
+      pathnameWithoutLocale === prefix ||
+      pathnameWithoutLocale.startsWith(`${prefix}/`),
   );
 
   return allowed ? raw : fallback;

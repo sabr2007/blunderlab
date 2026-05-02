@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
-  params: Promise<{ gameId: string }>;
+  params: Promise<{ locale: string; gameId: string }>;
 };
 
 export default async function ReviewPage({ params }: PageProps) {

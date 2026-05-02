@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { ENGINE_PRESETS, StockfishEngine } from "@/lib/chess/engine";
 import {
   STARTING_FEN,
@@ -34,7 +35,6 @@ import {
   RotateCcw,
   Swords,
 } from "lucide-react";
-import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DIFFICULTIES: AiDifficulty[] = ["beginner", "intermediate", "advanced"];

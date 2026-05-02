@@ -1,9 +1,9 @@
 import { getOrCreateTodaysBlunder } from "@/app/(service)/daily-blunder/actions";
 import { DailyBlunderTrainer } from "@/components/daily-blunder/daily-blunder-trainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Daily Blunder",

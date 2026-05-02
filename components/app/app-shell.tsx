@@ -1,7 +1,9 @@
 "use client";
 
 import { signOutAction } from "@/app/(service)/actions";
+import { LocaleSwitcher } from "@/components/common/locale-switcher";
 import { Button } from "@/components/ui/button";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
@@ -13,15 +15,14 @@ import {
   Swords,
   Trophy,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const NAV_ITEMS = [
-  { href: "/play", label: "Play", icon: Swords },
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/daily-blunder", label: "Daily", icon: Sparkles },
-  { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/play", labelKey: "play", icon: Swords },
+  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/daily-blunder", labelKey: "daily", icon: Sparkles },
+  { href: "/leaderboard", labelKey: "leaderboard", icon: Trophy },
+  { href: "/settings", labelKey: "settings", icon: Settings },
 ] as const;
 
 type AppShellProps = {
@@ -35,6 +36,7 @@ type AppShellProps = {
 
 export function AppShell({ children, user }: AppShellProps) {
   const pathname = usePathname();
+  const t = useTranslations("common");
 
   return (
     <div className="min-h-screen bg-bg">
@@ -67,12 +69,15 @@ export function AppShell({ children, user }: AppShellProps) {
                   )}
                 >
                   <Icon className="size-4" />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
           </nav>
           <div className="mt-auto border-t border-border p-4">
+            <div className="mb-3">
+              <LocaleSwitcher />
+            </div>
             <div className="rounded-md border border-border bg-bg/40 p-3">
               <p className="truncate text-sm font-medium">{user.displayName}</p>
               <p className="mt-1 truncate text-xs text-fg-muted">
@@ -93,7 +98,7 @@ export function AppShell({ children, user }: AppShellProps) {
             <Button asChild variant="secondary" className="mt-3 w-full">
               <Link href="/pro">
                 <Crown className="size-4" />
-                Pro waitlist
+                {t("proWaitlist")}
               </Link>
             </Button>
           </div>
@@ -113,7 +118,7 @@ export function AppShell({ children, user }: AppShellProps) {
                 className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs text-fg-muted"
               >
                 <Crown className="size-3" />
-                Pro
+                {t("pro")}
               </Link>
             </div>
           </header>
@@ -139,7 +144,7 @@ export function AppShell({ children, user }: AppShellProps) {
             >
               <span className="grid gap-1 place-items-center">
                 <Icon className="size-4" />
-                {item.label}
+                {t(item.labelKey)}
               </span>
             </Link>
           );

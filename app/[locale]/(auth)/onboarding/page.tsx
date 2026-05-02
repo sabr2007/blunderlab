@@ -1,4 +1,5 @@
 import { completeOnboardingAction } from "@/app/onboarding/actions";
+import { isLocale, withLocalePrefix } from "@/i18n/routing";
 import {
   getDisplayName,
   getSafeNextPath,
@@ -6,6 +7,7 @@ import {
 } from "@/lib/auth/session";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -34,6 +36,7 @@ const SKILLS = [
 const CITIES = ["Almaty", "Astana", "Shymkent", "Other"] as const;
 
 type PageProps = {
+  params: Promise<{ locale: string }>;
   searchParams?: Promise<{
     next?: string;
     name?: string;
@@ -41,16 +44,29 @@ type PageProps = {
   }>;
 };
 
-export default async function OnboardingPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const nextPath = getSafeNextPath(params?.next, "/dashboard");
+export default async function OnboardingPage({
+  params,
+  searchParams,
+}: PageProps) {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : "en";
+  const query = await searchParams;
+  const t = await getTranslations("auth");
+  const nextPath = withLocalePrefix(
+    getSafeNextPath(query?.next, withLocalePrefix("/dashboard", locale)),
+    locale,
+  );
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!isRealUser(user)) {
-    redirect(`/sign-in?next=${encodeURIComponent("/onboarding")}`);
+    redirect(
+      `${withLocalePrefix("/sign-in", locale)}?next=${encodeURIComponent(
+        withLocalePrefix("/onboarding", locale),
+      )}`,
+    );
   }
 
   const profile = await supabase
@@ -63,7 +79,7 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
     redirect(nextPath);
   }
 
-  const suggestedName = params?.name?.trim() || getDisplayName(user);
+  const suggestedName = query?.name?.trim() || getDisplayName(user);
 
   return (
     <main className="min-h-screen bg-bg">
@@ -76,18 +92,17 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
           <input type="hidden" name="next" value={nextPath} />
           <div className="max-w-2xl">
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              Setup
+              {t("onboardingEyebrow")}
             </p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
-              Tune BlunderLab to your games.
+              {t("onboardingTitle")}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-              Your level controls the default Stockfish opponent. Your city is
-              only used for the local improvers leaderboard.
+              {t("onboardingText")}
             </p>
           </div>
 
-          {params?.error ? (
+          {query?.error ? (
             <p className="mt-5 rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
               Check your display name, level, and city before continuing.
             </p>
@@ -95,7 +110,7 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
 
           <div className="mt-6 grid gap-6">
             <label className="grid gap-2 text-sm">
-              <span className="font-medium text-fg">Display name</span>
+              <span className="font-medium text-fg">{t("displayName")}</span>
               <input
                 name="displayName"
                 defaultValue={suggestedName}
@@ -106,7 +121,7 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
 
             <fieldset>
               <legend className="text-sm font-medium text-fg">
-                Skill level
+                {t("skillLevel")}
               </legend>
               <div className="mt-3 grid gap-3 md:grid-cols-3">
                 {SKILLS.map((skill) => (
@@ -131,7 +146,9 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
             </fieldset>
 
             <fieldset>
-              <legend className="text-sm font-medium text-fg">City</legend>
+              <legend className="text-sm font-medium text-fg">
+                {t("city")}
+              </legend>
               <div className="mt-3 flex flex-wrap gap-2">
                 {CITIES.map((city) => (
                   <label
@@ -160,7 +177,7 @@ export default async function OnboardingPage({ searchParams }: PageProps) {
               type="submit"
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-5 text-sm font-medium text-bg transition hover:opacity-90"
             >
-              Open dashboard
+              {t("openDashboard")}
             </button>
           </div>
         </form>

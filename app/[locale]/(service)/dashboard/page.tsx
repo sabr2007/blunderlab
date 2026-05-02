@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import type {
   BlunderCategory,
   City,
@@ -20,7 +21,6 @@ import type {
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { CalendarCheck, Flame, Target, Trophy } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Dashboard",

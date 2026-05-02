@@ -6,10 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import type { City, Json } from "@/lib/supabase/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Leaderboard",

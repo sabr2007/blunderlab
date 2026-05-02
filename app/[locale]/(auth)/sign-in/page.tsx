@@ -1,7 +1,9 @@
 import { SignInForm } from "@/components/auth/sign-in-form";
+import { Link } from "@/i18n/navigation";
+import { isLocale, withLocalePrefix } from "@/i18n/routing";
 import { getSafeNextPath } from "@/lib/auth/session";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -9,15 +11,22 @@ export const metadata: Metadata = {
 };
 
 type PageProps = {
+  params: Promise<{ locale: string }>;
   searchParams?: Promise<{
     next?: string;
     error?: string;
   }>;
 };
 
-export default async function SignInPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const nextPath = getSafeNextPath(params?.next, "/dashboard");
+export default async function SignInPage({ params, searchParams }: PageProps) {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : "en";
+  const query = await searchParams;
+  const t = await getTranslations("auth");
+  const nextPath = withLocalePrefix(
+    getSafeNextPath(query?.next, withLocalePrefix("/dashboard", locale)),
+    locale,
+  );
 
   return (
     <main className="min-h-screen bg-bg">
@@ -34,11 +43,11 @@ export default async function SignInPage({ searchParams }: PageProps) {
             href="/play"
             className="text-sm text-fg-muted underline-offset-4 hover:text-fg hover:underline"
           >
-            Play first
+            {t("playFirst")}
           </Link>
         </header>
         <section className="grid flex-1 place-items-center py-10">
-          <SignInForm nextPath={nextPath} error={params?.error ?? null} />
+          <SignInForm nextPath={nextPath} error={query?.error ?? null} />
         </section>
       </div>
     </main>

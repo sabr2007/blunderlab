@@ -8,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { ArrowRight, Loader2, Mail, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -28,6 +29,7 @@ type Status =
   | { kind: "error"; message: string };
 
 export function SignInForm({ nextPath, error }: SignInFormProps) {
+  const t = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>(
     error
@@ -133,12 +135,9 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShieldCheck className="size-5 text-accent" />
-          Sign in to BlunderLab
+          {t("signInTitle")}
         </CardTitle>
-        <CardDescription>
-          Keep your reviews, unlock the dashboard, and turn past mistakes into
-          daily training.
-        </CardDescription>
+        <CardDescription>{t("signInText")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button
@@ -150,18 +149,18 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
           {isLoading && status.label === "Opening Google..." ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
-          Continue with Google
+          {t("google")}
         </Button>
 
         <div className="flex items-center gap-3 text-xs uppercase tracking-[0.16em] text-fg-muted">
           <span className="h-px flex-1 bg-border" />
-          or
+          {t("or")}
           <span className="h-px flex-1 bg-border" />
         </div>
 
         <form className="space-y-3" onSubmit={continueWithEmail}>
           <label className="grid gap-2 text-sm">
-            <span className="text-fg-muted">Email magic link</span>
+            <span className="text-fg-muted">{t("emailLabel")}</span>
             <input
               type="email"
               value={email}
@@ -182,7 +181,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
             ) : (
               <Mail className="size-4" />
             )}
-            Send magic link
+            {t("emailButton")}
           </Button>
         </form>
 
@@ -201,14 +200,14 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
 
         <div className="flex items-center justify-between pt-2 text-sm">
           <Link href="/play" className="text-fg-muted hover:text-fg">
-            Try without account
+            {t("tryWithoutAccount")}
           </Link>
-          <Link
+          <a
             href={nextPath}
             className="inline-flex items-center gap-1 text-accent hover:underline"
           >
-            Continue <ArrowRight className="size-3" />
-          </Link>
+            {t("continue")} <ArrowRight className="size-3" />
+          </a>
         </div>
       </CardContent>
     </Card>

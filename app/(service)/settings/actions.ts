@@ -1,8 +1,10 @@
 "use server";
 
+import { isLocale, withLocalePrefix } from "@/i18n/routing";
 import { isRealUser } from "@/lib/auth/session";
 import type { AiDifficulty, City } from "@/lib/supabase/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -13,6 +15,8 @@ const profileSchema = z.object({
 });
 
 export async function updateProfileAction(formData: FormData) {
+  const locale = await getActionLocale();
+
   const parsed = profileSchema.safeParse({
     displayName: formData.get("displayName"),
     city: formData.get("city"),
@@ -20,7 +24,7 @@ export async function updateProfileAction(formData: FormData) {
   });
 
   if (!parsed.success) {
-    redirect("/settings?error=invalid");
+    redirect(`${withLocalePrefix("/settings", locale)}?error=invalid`);
   }
 
   const supabase = await getSupabaseServerClient();
@@ -29,7 +33,11 @@ export async function updateProfileAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!isRealUser(user)) {
-    redirect("/sign-in?next=/settings");
+    redirect(
+      `${withLocalePrefix("/sign-in", locale)}?next=${encodeURIComponent(
+        withLocalePrefix("/settings", locale),
+      )}`,
+    );
   }
 
   await supabase
@@ -42,10 +50,11 @@ export async function updateProfileAction(formData: FormData) {
     })
     .eq("id", user.id);
 
-  redirect("/settings?saved=1");
+  redirect(`${withLocalePrefix("/settings", locale)}?saved=1`);
 }
 
 export async function softDeleteAccountAction() {
+  const locale = await getActionLocale();
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -59,5 +68,10 @@ export async function softDeleteAccountAction() {
   }
 
   await supabase.auth.signOut();
-  redirect("/");
+  redirect(withLocalePrefix("/", locale));
+}
+
+async function getActionLocale() {
+  const locale = await getLocale();
+  return isLocale(locale) ? locale : "en";
 }
