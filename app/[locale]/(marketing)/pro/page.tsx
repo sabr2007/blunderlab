@@ -1,3 +1,4 @@
+import { LocaleSwitcher } from "@/components/common/locale-switcher";
 import { WaitlistForm } from "@/components/pro/waitlist-form";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -7,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { Check, Minus } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Pro",
@@ -51,7 +53,10 @@ const FEATURES = [
   ["Coach dashboard", false, false, true],
 ] as const;
 
-export default function ProPage() {
+export default async function ProPage() {
+  const t = await getTranslations("pro");
+  const common = await getTranslations("common");
+
   return (
     <main className="min-h-screen bg-bg">
       <div className="lab-grid pointer-events-none fixed inset-0 -z-10 opacity-20" />
@@ -63,14 +68,15 @@ export default function ProPage() {
           BlunderLab
         </Link>
         <nav className="flex items-center gap-3 text-sm">
+          <LocaleSwitcher compact />
           <Link href="/sign-in" className="text-fg-muted hover:text-fg">
-            Sign in
+            {common("signIn")}
           </Link>
           <Link
             href="/play"
             className="rounded-md bg-accent px-3.5 py-2 font-medium text-bg transition hover:opacity-90"
           >
-            Start training
+            {common("startTraining")}
           </Link>
         </nav>
       </header>
@@ -78,15 +84,13 @@ export default function ProPage() {
       <section className="container py-12 md:py-16">
         <div className="max-w-3xl">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            Business model
+            {t("eyebrow")}
           </p>
           <h1 className="mt-3 text-4xl font-semibold tracking-normal md:text-6xl">
-            Upgrade when reviews become a habit.
+            {t("title")}
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-fg-muted">
-            Phase 3 keeps payments out of scope, but makes the monetization
-            logic visible: Free proves the loop, Pro expands depth, School opens
-            the mentor use case.
+            {t("text")}
           </p>
         </div>
 
@@ -129,7 +133,7 @@ export default function ProPage() {
 
         <Card className="mt-6 border-accent/30 bg-accent/5">
           <CardHeader>
-            <CardTitle>Join the Pro waitlist</CardTitle>
+            <CardTitle>{t("join")}</CardTitle>
             <CardDescription>
               No Stripe yet. This records upgrade intent for the prototype.
             </CardDescription>
@@ -141,7 +145,7 @@ export default function ProPage() {
 
         <Card className="mt-6 overflow-hidden">
           <CardHeader>
-            <CardTitle>Plan comparison</CardTitle>
+            <CardTitle>{t("comparison")}</CardTitle>
             <CardDescription>
               The features map directly to the Phase 3 retention loop.
             </CardDescription>
