@@ -970,22 +970,7 @@ README должен выглядеть как mini-product page внутри Git
 
 ---
 
-## 25. Next Document
 
-Следующий отдельный документ:
-
-# BlunderLab — Customer Journey Map
-
-Формат:
-
-* markdown;
-* таблицы journey stages;
-* emotions/thoughts/frictions;
-* product opportunities;
-* Mermaid diagrams;
-* path from first landing visit to returning for Daily Blunder / Pro upgrade.
-
----
 
 ## 26. Final Design Principle
 
