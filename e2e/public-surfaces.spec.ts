@@ -13,7 +13,7 @@ test("landing exposes start and sign-in CTAs", async ({ page }) => {
 test("pro page renders tiers and waitlist", async ({ page }) => {
   await page.goto("/en/pro");
   await expect(
-    page.getByRole("heading", { name: /upgrade when reviews/i }),
+    page.getByRole("heading", { name: /deeper training modes/i }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Free", exact: true }),
@@ -26,5 +26,28 @@ test("pro page renders tiers and waitlist", async ({ page }) => {
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /join waitlist/i }),
+  ).toBeVisible();
+});
+
+test("builders landing renders the focused audience narrative", async ({
+  page,
+}) => {
+  await page.goto("/en/builders");
+  await expect(
+    page.getByRole("heading", {
+      name: /pattern recognition is your superpower/i,
+    }),
+  ).toBeVisible();
+  await expect(page.getByText(/decision-making gym/i)).toBeVisible();
+});
+
+test("play page exposes training modes", async ({ page }) => {
+  await page.goto("/en/play");
+  await expect(
+    page.getByRole("heading", { name: /pick the kind of thinking/i }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /classic game/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /pattern drill/i }),
   ).toBeVisible();
 });
