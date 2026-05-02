@@ -1,3 +1,4 @@
+import { ChessBoardWrapper } from "@/components/chess/chess-board-wrapper";
 import { Reveal } from "@/components/common/reveal";
 import { AnimatedBoard } from "@/components/marketing/animated-board";
 import { LaptopMockup } from "@/components/marketing/laptop-mockup";
@@ -604,30 +605,15 @@ function MiniMetric({
 }
 
 function MiniBoard() {
-  const cells = Array.from({ length: 64 }, (_, i) => i);
+  const dailyBlunderFen =
+    "r2qk2r/ppp2ppp/2n1bn2/1N1pp3/2B1P3/5N2/PPPP1PPP/R1BQ1RK1 w kq - 0 8";
+
   return (
-    <div className="aspect-square w-full overflow-hidden rounded-lg border border-border-strong/70 bg-[oklch(20%_0.01_60)] p-2">
-      <div className="grid h-full grid-cols-8 grid-rows-8 overflow-hidden rounded-md">
-        {cells.map((i) => {
-          const fx = i % 8;
-          const ry = Math.floor(i / 8);
-          const isLight = (fx + ry) % 2 === 0;
-          const isHi = i === 35 || i === 28; // d4, e5 highlight
-          return (
-            <span
-              key={i}
-              className={isLight ? "bg-board-light" : "bg-board-dark"}
-              style={
-                isHi
-                  ? {
-                      boxShadow: "inset 0 0 0 9999px oklch(78% 0.16 72 / 0.4)",
-                    }
-                  : undefined
-              }
-            />
-          );
-        })}
-      </div>
-    </div>
+    <ChessBoardWrapper
+      fen={dailyBlunderFen}
+      disabled
+      bestMove={{ from: "b5", to: "c7" }}
+      className="max-w-none rounded-lg border-border-strong/70 p-2 shadow-board"
+    />
   );
 }
