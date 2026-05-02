@@ -1,35 +1,55 @@
 # BlunderLab
 
-> AI chess coach that turns every blunder into your next training plan.
+> AI chess coach that turns your blunders into a personalized training plan.
+
+[Live demo](https://blunderlab.vercel.app) · [Demo slot](https://blunderlab.vercel.app/en#demo) · [Submission one-pager](docs/submission.md) · [Demo script](docs/demo-script.md) · [Decisions log](docs/decisions.md)
 
 Built for the **nFactorial Incubator 2026** application stage.
 
-BlunderLab is intentionally **not** a Chess.com or Lichess clone. The product gap it targets is the moment _after_ a game: beginners see "this was a blunder" but rarely understand the thinking pattern that caused it. BlunderLab closes that loop with a focused review — three critical moments, one repeating pattern, one goal for the next match.
+## The Problem
 
-## Documents
+Most chess platforms tell you *what move was wrong*. They rarely help beginners understand *why the same mistake keeps repeating* or what to train next.
 
-- [`docs/PRD.md`](./docs/PRD.md) — product requirements, audience, gap analysis.
-- [`docs/design-document.md`](./docs/design-document.md) — visual system and screen specs.
-- [`docs/decisions.md`](./docs/decisions.md) — **source of truth** for stack, palette, taxonomy, formulas.
-- [`docs/CJM.md`](./docs/CJM.md) — customer journey map.
+BlunderLab focuses on that gap after the game: review the critical moments, classify the thinking pattern, and leave the player with one concrete goal for the next match.
 
-## Stack (locked — see `docs/decisions.md`)
+## What BlunderLab Does
 
-- **Next.js 16** (App Router) + TypeScript + Tailwind v4
-- **Supabase** (Postgres + Auth + RLS)
-- **chess.js** + **react-chessboard** + **stockfish.wasm** (Web Worker)
-- **OpenAI gpt-4o-mini** for coach explanations, with deterministic templates as fallback
-- **next-intl** (EN + RU at MVP)
-- **Biome** for lint/format, **Vitest** + **Playwright** for tests
-- Deployed on **Vercel**
+1. Lets a player play against Stockfish in the browser.
+2. Detects the critical moments where the evaluation changed.
+3. Classifies each mistake into one of 8 blunder patterns.
+4. Explains the mistake through BlunderLab Coach in EN or RU.
+5. Turns old mistakes into Daily Blunder puzzles and progress tracking.
 
-## Run locally
+## Why This Is Different
+
+BlunderLab is intentionally not a Chess.com or Lichess clone. The product value is the learning loop after a game: *Play → Review → Pattern → Train*.
+
+The current landing includes a reserved empty slot for the future Remotion demo video. The video production itself is deferred and will be added later.
+
+## Key Features
+
+- Play vs Stockfish with legal move validation through `chess.js`.
+- Post-game Review with Stockfish analysis and AI Coach explanations.
+- 8-pattern blunder taxonomy: Hanging Piece, Missed Tactic, King Safety, Tunnel Vision, Greedy Move, Time Panic, Opening Drift, Endgame Technique.
+- EN/RU locale routing through `next-intl`.
+- Daily Blunder generated from the player’s own reviewed mistakes.
+- Dashboard with top weakness, streak, recent reviews, and city rank.
+- City leaderboard ranked by improvement, not rating.
+- Pro waitlist and pricing teaser for the submission narrative.
+
+## Tech Stack
+
+Next.js 16 · TypeScript strict · Tailwind CSS v4 · Supabase Auth/Postgres/RLS · `chess.js` · `react-chessboard` · Stockfish WASM · OpenAI `gpt-4o-mini` with deterministic fallback templates · `next-intl` · Framer Motion · Vercel Analytics · Playwright · Vitest · Biome.
+
+## Run Locally
 
 ```bash
 pnpm install
-cp .env.example .env.local       # fill in Supabase + OpenAI keys
-pnpm dev                         # http://localhost:3000
+cp .env.example .env.local
+pnpm dev
 ```
+
+Open `http://localhost:3000/en`.
 
 ## Scripts
 
@@ -42,21 +62,23 @@ pnpm dev                         # http://localhost:3000
 | `pnpm format` | Biome format write |
 | `pnpm test` | Vitest unit tests |
 | `pnpm test:e2e` | Playwright E2E tests |
-| `pnpm db:types` | Regenerate Supabase TypeScript types from the linked project |
+| `pnpm db:types` | Regenerate Supabase TypeScript types |
+
+## Project Status
+
+- Phase 1: playable foundation.
+- Phase 2: review core.
+- Phase 3: service layer.
+- Phase 4: i18n, final landing, submission docs, SEO/social preview, analytics, error pages. Demo video is intentionally left as a landing placeholder for later Remotion production.
+
+## For nFactorial Committee
+
+- [Submission one-pager](docs/submission.md)
+- [Demo script](docs/demo-script.md)
+- [PRD](docs/PRD.md)
+- [Design document](docs/design-document.md)
+- [Decisions log](docs/decisions.md)
 
 ## Roadmap
 
-Phases are in `docs/decisions.md` §10. Current phase: **Phase 3 — service layer (initial pass)**.
-
-Implemented surfaces:
-
-- `/play` and `/review/[gameId]` — anonymous Play → Review loop from Phases 1–2.
-- `/sign-in` and `/auth/callback` — Google OAuth / email magic-link entry points.
-- `/onboarding` — skill level and city setup.
-- `/dashboard`, `/daily-blunder`, `/leaderboard`, `/settings` — authed retention loop.
-- `/pro` — pricing tiers and waitlist capture.
-- `/api/cron/leaderboard-snapshot` — Vercel Cron endpoint for city snapshots.
-
-## Why this product
-
-> I intentionally did not try to clone Chess.com or Lichess. Instead I focused on one product gap: beginners often receive engine feedback but do not understand how to convert it into a learning loop. BlunderLab is built around that loop.
+KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, custom board skins, real Stripe checkout, and school/team coach dashboard.
