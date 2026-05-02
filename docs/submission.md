@@ -18,7 +18,9 @@ BlunderLab analyzes a game with Stockfish, selects the critical moments, classif
 - Final landing page with product narrative and empty reserved demo-video slot.
 - Play vs Stockfish.
 - Review pipeline with deterministic fallback if OpenAI is unavailable.
-- Dashboard, Daily Blunder, leaderboard, settings, and Pro waitlist.
+- Dashboard, Daily Blunder, leaderboard, settings, training modes, and Pro waitlist.
+- Training Goal continuity from Review back into the next game.
+- Chess for Builders landing variant for the nFactorial audience.
 - Vercel Analytics, OG/Twitter preview, sitemap, robots, and localized error pages.
 
 ## Demo Video Status
@@ -35,4 +37,4 @@ The landing keeps the demo-video area intentionally empty. The video will be pro
 
 ## Roadmap
 
-KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, custom board skins, real checkout, and school/team coach dashboard.
+KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, fully generated pattern drills, real checkout, and school/team coach dashboard.

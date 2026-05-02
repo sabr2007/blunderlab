@@ -91,11 +91,12 @@
 
 ### Pieces
 - **Cburnett SVG set** (классический шахматный wikipedia-стандарт, ships с `react-chessboard`).
-- Не делаем кастомный набор для MVP. В Pro-странице обещаем skins, но не реализуем.
+- Не делаем кастомный набор для MVP/submission.
+- Pro-value для submission строится вокруг training modes и deeper review, а не вокруг piece skins.
 
 ### Theme
 - **Default: dark.** Это редкий случай, где dark уместен — лабораторная эстетика, чтение review вечером.
-- Light toggle добавляем после core flow (не блокер).
+- Light toggle **не входит** в submission-scope. Dark остаётся единственной поддерживаемой темой до подачи.
 
 ### Typography
 - UI: **Geist Sans**, weights 400/500/600/700.
@@ -283,6 +284,12 @@ blunderlab/
 - Landing final.
 - Submission материалы.
 
+### Final submission sprint — locked 2026-05-02
+- См. [plans/submission-final-scope.md](./plans/submission-final-scope.md).
+- Must-do: Training Goal continuity on Play, Weekly Weakness + Identity Label, training modes surface, Chess for Builders landing, Pro page copy sync.
+- Pro-value: unlockable training modes, unlimited/deeper review, pattern drills, weekly personalized plan. Не cosmetic skins.
+- Out of scope for submission: light theme, custom board palettes, custom piece skins, PostHog funnel, Sentry, legal expansion, PWA, public profiles, shareable OG cards, real Stripe.
+
 ---
 
 ## 11. Out of scope (не сейчас)
@@ -292,7 +299,8 @@ blunderlab/
 - Турниры, рейтинг ELO.
 - Mobile apps.
 - KZ локаль.
-- Custom piece skins (только UI-обещание).
+- Light theme toggle for submission.
+- Custom board palettes / custom piece skins as Pro-value for submission.
 - Social network features (friends, chat).
 
 ---
@@ -303,3 +311,4 @@ blunderlab/
 - Аналитика — **closed in Phase 4**: Vercel Analytics как минимальный submission-ready вариант. PostHog event tracking остаётся roadmap.
 - Pro pricing local currency — deferred until payments become real. Current submission pricing stays USD prototype copy.
 - Demo video — Remotion remains the chosen production path, but the landing currently keeps an empty reserved slot; actual video production is deferred by explicit execution decision.
+- Final sprint scope — **closed 2026-05-02**: implement the committee-visible loop from `Play -> Review -> Training Goal -> Play again`, add Weekly Weakness + Identity Label, add training modes as Pro-value, and add Chess for Builders. Light theme and cosmetic skins are explicitly deferred.

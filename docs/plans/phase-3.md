@@ -66,7 +66,7 @@ Implementation note:
 - Реальные платежи (Stripe / Paddle). Pro waitlist собирает только email; ничего не списывается.
 - B2B coach dashboard для школ (только UI-карточка School-tier, без функциональности).
 - Tournaments, ELO-rating, сезонные ивенты.
-- Custom board skins / piece skins (только обещание на Pro page).
+- Training modes are the preferred future Pro-value. Custom board skins / piece skins are cosmetic roadmap only, not the main Pro promise.
 - Push notifications, web push, email-нотификации (рассылки про Daily Blunder).
 - Real-time multiplayer, friends, social features.
 - KZ локаль (Phase 4 вместе с RU полировкой).
@@ -367,9 +367,11 @@ Tabs по городам, default — `profiles.city` юзера. Top-10 row: ra
 | AI Coach explanations            | basic | deep         | deep |
 | Pattern history                  | 7 days | full       | full |
 | Daily Blunder                    | ✓    | ✓            | ✓ |
+| Goal Focus / Pattern Drill modes | preview | ✓         | ✓ |
+| Deep Review mode                 | —    | ✓            | ✓ |
 | Weekly training plan             | —    | ✓            | ✓ |
 | City Leaderboard                 | ✓    | ✓            | ✓ |
-| Custom board / piece skins       | —    | ✓            | ✓ |
+| Custom board / piece skins       | roadmap | roadmap  | roadmap |
 | Shareable progress cards         | —    | ✓            | ✓ |
 | Coach dashboard for students     | —    | —            | ✓ |
 | Class leaderboard                | —    | —            | ✓ |

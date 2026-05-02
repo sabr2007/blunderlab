@@ -79,7 +79,7 @@ Phase 1–3 закрыли продуктовую механику: партия
 - KZ-локаль (roadmap, decisions.md §11).
 - Stripe / реальные платежи — Pro page остаётся waitlist.
 - Multiplayer-by-link (PRD §9.3 could-have, но не Phase 4 polish).
-- Custom piece skins / board themes — только обещание на Pro page.
+- Training modes become the preferred Pro-value. Custom piece skins / board themes stay cosmetic roadmap only.
 - Weekly report email-рассылки (PRD §9.3 could-have).
 - Shareable review cards в виде image generation на сервере (image-rendered share). Если будет время — fallback на text-share через Web Share API.
 - School/team coach dashboard — только UI-карточка на Pro page (Phase 3 уже это закрыл).
@@ -537,7 +537,7 @@ Next.js 16 · TypeScript strict · Tailwind v4 · shadcn/ui · Supabase (Postgre
 - Phase 3 ✅ Service layer
 - Phase 4 ✅ Polish + demo (you're here)
 
-Roadmap: KZ locale, multiplayer-by-link, weekly reports, custom board skins, school dashboard.
+Roadmap: KZ locale, multiplayer-by-link, weekly reports, training modes, shareable review cards, school dashboard.
 
 ## For nFactorial committee
 
@@ -601,14 +601,15 @@ Phase 4 done, когда:
 
 Если submission принят и есть бюджет на следующую итерацию — приоритеты в порядке value/effort:
 
-1. **Multiplayer-by-link** (PRD §9.3 could-have). Live socket через Supabase Realtime или Liveblocks. Партии тоже сохраняются в `games`, review pipeline переиспользуется. ~2 недели.
-2. **Weekly report email** через Supabase Edge Functions + Resend. Раз в неделю — top weakness, blunders reduced, city rank. Driver retention. ~1 неделя.
-3. **Shareable review cards** — image generation через `@vercel/og` или Satori. URL-shareable: `https://blunderlab.app/share/[reviewId]`. ~1 неделя.
-4. **KZ-локаль** — copy-paste RU → KZ через профессионального переводчика. AI Coach prompt получает `kk` locale. ~3 дня.
-5. **Custom board skins** — Pro feature, реальная реализация (4 board palettes + 3 piece sets). Хранение в `profiles.preferences`. ~5 дней.
-6. **School/team dashboard** — отдельная RLS-роль `coach`, видит ученические `game_reviews`. Big feature. ~3 недели.
-7. **Stripe payments** — Pro waitlist становится реальным checkout. ~1 неделя на подключение + compliance.
-8. **Account merge** для users с двумя anon-сессиями (Phase 3 unresolved risk). Migration script + UI confirmation. ~3 дня.
+1. **Training modes** — Pattern Drill, Deep Review, Goal Focus, Builder Sprint. Pro-value строится вокруг learning depth, не skins. ~3-5 дней.
+2. **Multiplayer-by-link** (PRD §9.3 could-have). Live socket через Supabase Realtime или Liveblocks. Партии тоже сохраняются в `games`, review pipeline переиспользуется. ~2 недели.
+3. **Weekly report email** через Supabase Edge Functions + Resend. Раз в неделю — top weakness, blunders reduced, city rank. Driver retention. ~1 неделя.
+4. **Shareable review cards** — image generation через `@vercel/og` или Satori. URL-shareable: `https://blunderlab.app/share/[reviewId]`. ~1 неделя.
+5. **KZ-локаль** — copy-paste RU → KZ через профессионального переводчика. AI Coach prompt получает `kk` locale. ~3 дня.
+6. **Custom board skins** — cosmetic roadmap only, не главный Pro-value. Хранение в `profiles.preferences` если когда-нибудь понадобится. ~5 дней.
+7. **School/team dashboard** — отдельная RLS-роль `coach`, видит ученические `game_reviews`. Big feature. ~3 недели.
+8. **Stripe payments** — Pro waitlist становится реальным checkout. ~1 неделя на подключение + compliance.
+9. **Account merge** для users с двумя anon-сессиями (Phase 3 unresolved risk). Migration script + UI confirmation. ~3 дня.
 
 ---
 

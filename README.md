@@ -81,4 +81,4 @@ Open `http://localhost:3000/en`.
 
 ## Roadmap
 
-KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, custom board skins, real Stripe checkout, and school/team coach dashboard.
+KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, fully generated pattern drills, real Stripe checkout, and school/team coach dashboard.
