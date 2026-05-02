@@ -392,11 +392,11 @@ export function PlayView({
   return (
     <main className="min-h-screen bg-bg">
       <div className="lab-grid pointer-events-none fixed inset-0 -z-10 opacity-20" />
-      <div className="container py-6 md:py-8">
+      <div className="container px-4 py-6 md:py-8">
         <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              Phase 2 · Play & Review
+              Training board
             </p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
               Play against Stockfish
@@ -457,7 +457,7 @@ export function PlayView({
           </section>
         ) : null}
 
-        <div className="mb-6">
+        <div className="mb-6 hidden md:block">
           <TrainingModes
             activeGoalId={activeGoal?.id}
             activeGoalText={activeGoal?.text}
@@ -601,6 +601,14 @@ export function PlayView({
               </CardContent>
             </Card>
           </aside>
+        </section>
+
+        <section className="mt-6 md:hidden">
+          <TrainingModes
+            compact
+            activeGoalId={activeGoal?.id}
+            activeGoalText={activeGoal?.text}
+          />
         </section>
       </div>
     </main>

@@ -53,8 +53,14 @@ export async function updateProfileAction(formData: FormData) {
   redirect(`${withLocalePrefix("/settings", locale)}?saved=1`);
 }
 
-export async function softDeleteAccountAction() {
+export async function softDeleteAccountAction(formData: FormData) {
   const locale = await getActionLocale();
+  const confirmation = formData.get("confirmDelete");
+
+  if (confirmation !== "DELETE") {
+    redirect(`${withLocalePrefix("/settings", locale)}?error=confirm-delete`);
+  }
+
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },

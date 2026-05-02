@@ -1,8 +1,6 @@
 import { signOutAction } from "@/app/(service)/actions";
-import {
-  softDeleteAccountAction,
-  updateProfileAction,
-} from "@/app/(service)/settings/actions";
+import { updateProfileAction } from "@/app/(service)/settings/actions";
+import { DeleteAccountForm } from "@/components/settings/delete-account-form";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { LogOut, Trash2 } from "lucide-react";
+import { LogOut } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -61,7 +59,9 @@ export default async function SettingsPage({ searchParams }: PageProps) {
         ) : null}
         {params?.error ? (
           <p className="rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
-            Check the form values and try again.
+            {params.error === "confirm-delete"
+              ? "Confirm account deletion before continuing."
+              : "Check the form values and try again."}
           </p>
         ) : null}
 
@@ -140,12 +140,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
                 Sign out
               </Button>
             </form>
-            <form action={softDeleteAccountAction}>
-              <Button type="submit" variant="danger">
-                <Trash2 className="size-4" />
-                Delete account
-              </Button>
-            </form>
+            <DeleteAccountForm />
           </CardContent>
         </Card>
       </div>

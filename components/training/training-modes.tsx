@@ -11,11 +11,21 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
+import type React from "react";
 
 type TrainingModesProps = {
   activeGoalId?: string | null;
   activeGoalText?: string | null;
   compact?: boolean;
+};
+
+type TrainingMode = {
+  title: string;
+  eyebrow: string;
+  description: string;
+  href: string | null;
+  icon: React.ComponentType<{ className?: string }>;
+  state: "available" | "locked" | "preview";
 };
 
 const baseModes = [
@@ -59,7 +69,7 @@ const baseModes = [
     icon: Crown,
     state: "preview",
   },
-] as const;
+] satisfies TrainingMode[];
 
 export function TrainingModes({
   activeGoalId,
@@ -72,10 +82,10 @@ export function TrainingModes({
     description: activeGoalText
       ? activeGoalText
       : "Finish a review to carry one concrete goal into the next game.",
-    href: activeGoalId ? `/play?goal=${activeGoalId}` : "/play",
+    href: activeGoalId ? `/play?goal=${activeGoalId}` : null,
     icon: Goal,
     state: activeGoalText ? "available" : "locked",
-  } as const;
+  } satisfies TrainingMode;
   const modes = [baseModes[0], goalMode, ...baseModes.slice(1)];
 
   return (
@@ -98,43 +108,61 @@ export function TrainingModes({
           const Icon = mode.icon;
           const isLocked = mode.state === "locked";
 
+          const card = (
+            <Card
+              className={cn(
+                "h-full transition group-hover:border-accent/50 group-hover:bg-surface-elevated/60",
+                isLocked
+                  ? "border-border/80 bg-surface/65 opacity-85"
+                  : undefined,
+                mode.state === "preview"
+                  ? "border-accent/30 bg-accent/5"
+                  : undefined,
+              )}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <span className="grid size-9 place-items-center rounded-md bg-accent/10 text-accent">
+                    <Icon className="size-4" />
+                  </span>
+                  <Badge
+                    variant={
+                      mode.state === "available"
+                        ? "success"
+                        : mode.state === "preview"
+                          ? "accent"
+                          : "warning"
+                    }
+                  >
+                    {isLocked ? <Lock className="mr-1 size-3" /> : null}
+                    {mode.eyebrow}
+                  </Badge>
+                </div>
+                <h3 className="mt-4 font-semibold tracking-normal">
+                  {mode.title}
+                </h3>
+                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-fg-muted">
+                  {mode.description}
+                </p>
+              </CardContent>
+            </Card>
+          );
+
+          if (!mode.href) {
+            return (
+              <div
+                key={mode.title}
+                aria-disabled="true"
+                className="cursor-not-allowed"
+              >
+                {card}
+              </div>
+            );
+          }
+
           return (
             <Link key={mode.title} href={mode.href} className="group">
-              <Card
-                className={cn(
-                  "h-full transition group-hover:border-accent/50 group-hover:bg-surface-elevated/60",
-                  isLocked ? "border-border/80 bg-surface/65" : undefined,
-                  mode.state === "preview"
-                    ? "border-accent/30 bg-accent/5"
-                    : undefined,
-                )}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="grid size-9 place-items-center rounded-md bg-accent/10 text-accent">
-                      <Icon className="size-4" />
-                    </span>
-                    <Badge
-                      variant={
-                        mode.state === "available"
-                          ? "success"
-                          : mode.state === "preview"
-                            ? "accent"
-                            : "warning"
-                      }
-                    >
-                      {isLocked ? <Lock className="mr-1 size-3" /> : null}
-                      {mode.eyebrow}
-                    </Badge>
-                  </div>
-                  <h3 className="mt-4 font-semibold tracking-normal">
-                    {mode.title}
-                  </h3>
-                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-fg-muted">
-                    {mode.description}
-                  </p>
-                </CardContent>
-              </Card>
+              {card}
             </Link>
           );
         })}

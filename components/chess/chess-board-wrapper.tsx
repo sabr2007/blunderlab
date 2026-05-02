@@ -86,7 +86,7 @@ export function ChessBoardWrapper({
   return (
     <div
       className={cn(
-        "mx-auto aspect-square w-full max-w-[min(84vw,620px)] overflow-hidden rounded-md border border-border bg-surface shadow-2xl shadow-black/30",
+        "mx-auto aspect-square w-full max-w-[min(100%,620px)] overflow-hidden rounded-md border border-border bg-surface shadow-2xl shadow-black/30",
         className,
       )}
     >
