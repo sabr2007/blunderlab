@@ -21,6 +21,7 @@
     "navHow": "How it works",
     "navPatterns": "Patterns",
     "navPricing": "Pricing",
+    "navBuilders": "For builders",
     "heroTitle": "Turn every blunder into your next training plan.",
     "heroText": "BlunderLab reviews your games, explains mistakes in plain language, detects recurring patterns, and gives you one clear goal for the next match.",
     "watchDemo": "Watch demo",
@@ -80,10 +81,43 @@
   },
   "pro": {
     "eyebrow": "Business model",
-    "title": "Upgrade when reviews become a habit.",
-    "text": "Free proves the learning loop, Pro expands depth, and School opens the mentor use case.",
+    "title": "Upgrade when you want deeper training modes.",
+    "text": "Free proves the learning loop, Pro expands it with Pattern Drill, Deep Review, Goal Focus, and full mistake history. School opens the mentor use case.",
     "join": "Join the Pro waitlist",
     "comparison": "Plan comparison"
+  },
+  "builders": {
+    "prototype": "Chess for builders · nFactorial Incubator 2026",
+    "heroTitle": "Pattern recognition is your superpower. Train it on chess.",
+    "heroText": "BlunderLab turns chess mistakes into a practical loop for builders: spot patterns, make decisions under pressure, review the failure, and carry one concrete improvement into the next attempt.",
+    "mainLanding": "Main landing",
+    "coachTitle": "Builder-focused coach",
+    "coachText": "You did not just miss a move. You committed too early to one plan and skipped the opponent's strongest reply. That is the same review habit builders need when debugging product decisions.",
+    "goalTitle": "Sprint goal",
+    "goalText": "Before every forcing move, pause for one counterexample: what is the strongest reply against my plan?",
+    "patterns": {
+      "recognition": "Pattern recognition",
+      "pressure": "Decision pressure",
+      "postmortem": "Post-mortem habit",
+      "iteration": "Focused iteration"
+    },
+    "cards": {
+      "patterns": {
+        "title": "Recognize patterns faster",
+        "text": "Blunder categories turn raw mistakes into named habits you can notice earlier next time."
+      },
+      "pressure": {
+        "title": "Decide under pressure",
+        "text": "Short games force tradeoffs, but the review teaches you which checks you skipped."
+      },
+      "iteration": {
+        "title": "Review, then iterate",
+        "text": "Every game ends with one next action, not a vague feeling that you should improve."
+      }
+    },
+    "ctaEyebrow": "Training loop",
+    "ctaTitle": "Use chess as a decision-making gym.",
+    "ctaText": "Play one game, review the critical moment, and bring a sharper thinking habit into the next game."
   },
   "auth": {
     "playFirst": "Play first",

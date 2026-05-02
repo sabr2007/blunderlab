@@ -35,7 +35,7 @@ const TIERS = [
   {
     name: "Pro",
     price: "$4.99",
-    features: ["Unlimited reviews", "Full history", "Weekly plan"],
+    features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
   },
   {
     name: "School",
@@ -77,6 +77,9 @@ export default async function LandingPage() {
           </a>
           <Link href="/pro" className="hover:text-fg">
             {t("navPricing")}
+          </Link>
+          <Link href="/builders" className="hover:text-fg">
+            {t("navBuilders")}
           </Link>
         </nav>
         <div className="flex items-center gap-2">
@@ -392,6 +395,9 @@ export default async function LandingPage() {
             >
               {t("footerDocs")}
             </a>
+            <Link href="/builders" className="hover:text-fg">
+              {t("navBuilders")}
+            </Link>
           </div>
         </div>
       </footer>

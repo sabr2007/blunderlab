@@ -23,14 +23,14 @@ const TIERS = [
     name: "Free",
     price: "$0",
     description: "For the first insight loop.",
-    features: ["3 reviews/day", "Daily Blunder", "City leaderboard"],
+    features: ["3 reviews/day", "Classic Game", "Daily Blunder"],
     highlighted: false,
   },
   {
     name: "Pro",
     price: "$4.99",
-    description: "For players who review every game.",
-    features: ["Unlimited reviews", "Full pattern history", "Weekly plan"],
+    description: "For players who want focused training modes.",
+    features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
     highlighted: true,
   },
   {
@@ -48,8 +48,10 @@ const FEATURES = [
   ["AI Coach explanations", "Basic", "Deep", "Deep"],
   ["Pattern history", "7 days", "Full", "Full"],
   ["Daily Blunder", true, true, true],
+  ["Goal Focus mode", true, true, true],
+  ["Pattern Drill mode", false, true, true],
+  ["Builder Sprint mode", false, true, true],
   ["Weekly training plan", false, true, true],
-  ["Custom board skins", false, true, true],
   ["Coach dashboard", false, false, true],
 ] as const;
 
@@ -135,7 +137,8 @@ export default async function ProPage() {
           <CardHeader>
             <CardTitle>{t("join")}</CardTitle>
             <CardDescription>
-              No Stripe yet. This records upgrade intent for the prototype.
+              Payments are not live in the submission prototype. This records
+              upgrade intent for deeper training modes.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -147,7 +150,7 @@ export default async function ProPage() {
           <CardHeader>
             <CardTitle>{t("comparison")}</CardTitle>
             <CardDescription>
-              The features map directly to the Phase 3 retention loop.
+              Pro is framed around learning depth, not cosmetic board changes.
             </CardDescription>
           </CardHeader>
           <CardContent className="overflow-x-auto">
