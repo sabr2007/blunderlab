@@ -297,8 +297,9 @@ blunderlab/
 
 ---
 
-## 12. Open questions (НЕ блокеры, можно отложить)
+## 12. Closed / deferred questions
 
-- Конкретный голос AI Coach (имя, аватар) — определим во Phase 4.
-- Pro pricing local currency — отложено до landing polish.
-- Аналитика (PostHog vs Vercel Analytics) — добавим в Phase 3.
+- AI Coach voice — **closed in Phase 4**: имя `BlunderLab Coach`, UI avatar `BrainCircuit`, tone `precise, supportive, never humiliating`; спокойный шахматный наставник без filler-фраз.
+- Аналитика — **closed in Phase 4**: Vercel Analytics как минимальный submission-ready вариант. PostHog event tracking остаётся roadmap.
+- Pro pricing local currency — deferred until payments become real. Current submission pricing stays USD prototype copy.
+- Demo video — Remotion remains the chosen production path, but the landing currently keeps an empty reserved slot; actual video production is deferred by explicit execution decision.

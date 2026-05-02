@@ -83,8 +83,10 @@ const TEMPLATES: Record<BlunderCategory, TemplatePack> = {
       ctx.locale === "ru"
         ? `Похоже на быстрое решение. Замедление позволило бы найти ${ctx.bestMove}.`
         : `This looks like a quick decision. Slowing down would have revealed ${ctx.bestMove}.`,
-    trainingHint: () =>
-      "Take a deep breath before each critical move and recheck the threats.",
+    trainingHint: (ctx) =>
+      ctx.locale === "ru"
+        ? "Перед критическим ходом остановись на несколько секунд и заново проверь угрозы."
+        : "Take a deep breath before each critical move and recheck the threats.",
   },
   "Opening Drift": {
     explanation: (ctx) =>
