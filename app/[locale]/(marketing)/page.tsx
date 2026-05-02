@@ -1,15 +1,14 @@
 import { ChessBoardWrapper } from "@/components/chess/chess-board-wrapper";
 import { Reveal } from "@/components/common/reveal";
-import { AnimatedBoard } from "@/components/marketing/animated-board";
 import { LaptopMockup } from "@/components/marketing/laptop-mockup";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingNav } from "@/components/marketing/marketing-nav";
+import { GlowyWavesHero } from "@/components/ui/glowy-waves-hero-shadcnui";
 import { Link } from "@/i18n/navigation";
 import {
   ArrowRight,
   BrainCircuit,
   ChartNoAxesCombined,
-  CirclePlay,
   Crosshair,
   Goal,
   Sparkles,
@@ -101,89 +100,19 @@ export default async function LandingPage() {
 
       <main>
         {/* HERO ------------------------------------------------------- */}
-        <section
-          aria-labelledby="hero-heading"
-          className="relative isolate overflow-hidden pb-12 pt-12 md:pb-20 md:pt-20"
-        >
-          <div className="hero-grid pointer-events-none absolute inset-0 -z-10 opacity-40" />
-          <div
-            aria-hidden
-            className="hero-orb pointer-events-none absolute left-1/2 top-[-12%] -z-10 h-[640px] w-[860px] -translate-x-1/2"
-          />
-
-          <div className="container">
-            <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-              <Reveal>
-                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-bg-elevated/80 px-3.5 py-1.5 text-xs text-fg-muted backdrop-blur">
-                  <span className="relative inline-flex">
-                    <span className="size-1.5 rounded-full bg-accent" />
-                    <span className="absolute inset-0 size-1.5 rounded-full bg-accent pulse-dot" />
-                  </span>
-                  {t("heroPill")}
-                </span>
-              </Reveal>
-
-              <Reveal delay={80}>
-                <h1
-                  id="hero-heading"
-                  className="text-mega mt-6 text-balance font-semibold"
-                >
-                  Turn every{" "}
-                  <span className="text-amber-emphasis">blunder</span> into your
-                  next training plan.
-                </h1>
-              </Reveal>
-
-              <Reveal delay={140}>
-                <p className="text-pretty mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted">
-                  {t("heroText")}
-                </p>
-              </Reveal>
-
-              <Reveal delay={200}>
-                <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-                  <Link
-                    href="/play"
-                    className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
-                  >
-                    {common("startTraining")}
-                    <ArrowRight className="size-4" />
-                  </Link>
-                  <a
-                    href="#demo"
-                    className="btn-secondary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
-                  >
-                    <CirclePlay className="size-4" />
-                    {t("watchDemo")}
-                  </a>
-                </div>
-              </Reveal>
-
-              <Reveal delay={260}>
-                <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-fg-subtle">
-                  <li className="inline-flex items-center gap-1.5">
-                    <Sparkles className="size-3.5 text-accent" />
-                    {t("heroSignalA")}
-                  </li>
-                  <li className="inline-flex items-center gap-1.5">
-                    <Target className="size-3.5 text-accent" />
-                    {t("heroSignalB")}
-                  </li>
-                  <li className="inline-flex items-center gap-1.5">
-                    <Goal className="size-3.5 text-accent" />
-                    {t("heroSignalC")}
-                  </li>
-                </ul>
-              </Reveal>
-            </div>
-
-            <Reveal delay={340} className="mt-14 md:mt-20">
-              <div className="mx-auto w-full max-w-[640px]">
-                <AnimatedBoard />
-              </div>
-            </Reveal>
-          </div>
-        </section>
+        <GlowyWavesHero
+          copy={{
+            pill: t("heroPill"),
+            title: t("heroTitle"),
+            titleAccent: t("heroTitle").includes("blunder")
+              ? "blunder"
+              : "ошибку",
+            text: t("heroText"),
+            primaryCta: common("startTraining"),
+            secondaryCta: t("watchDemo"),
+            signals: [t("heroSignalA"), t("heroSignalB"), t("heroSignalC")],
+          }}
+        />
 
         {/* DEMO LAPTOP ----------------------------------------------- */}
         <section
