@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatedBoard } from "@/components/marketing/animated-board";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { type Variants, motion } from "framer-motion";
@@ -246,12 +245,12 @@ export function GlowyWavesHero({ copy }: { copy: HeroCopy }) {
         className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(15,14,12,0.08),rgba(15,14,12,0.42)_62%,rgba(15,14,12,0.94))]"
       />
 
-      <div className="container relative z-10 grid min-h-[82svh] items-center gap-10 py-14 md:py-18 lg:grid-cols-[1fr_0.86fr] lg:py-20">
+      <div className="container relative z-10 flex min-h-[82svh] items-center py-14 md:py-18 lg:py-20">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-3xl text-center lg:text-left"
+          className="mx-auto max-w-3xl text-center"
         >
           <motion.span
             variants={itemVariants}
@@ -278,14 +277,14 @@ export function GlowyWavesHero({ copy }: { copy: HeroCopy }) {
 
           <motion.p
             variants={itemVariants}
-            className="text-pretty mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted lg:mx-0"
+            className="text-pretty mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted"
           >
             {copy.text}
           </motion.p>
 
           <motion.div
             variants={itemVariants}
-            className="mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start"
+            className="mt-9 flex flex-wrap items-center justify-center gap-3"
           >
             <Button asChild size="lg" className="rounded-full px-5">
               <Link href="/play">
@@ -308,7 +307,7 @@ export function GlowyWavesHero({ copy }: { copy: HeroCopy }) {
 
           <motion.ul
             variants={itemVariants}
-            className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-fg-subtle lg:justify-start"
+            className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-fg-subtle"
           >
             <li className="inline-flex items-center gap-1.5">
               <Sparkles className="size-3.5 text-accent" />
@@ -323,17 +322,6 @@ export function GlowyWavesHero({ copy }: { copy: HeroCopy }) {
               {copy.signals[2]}
             </li>
           </motion.ul>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="mx-auto w-full max-w-[500px] lg:max-w-[540px]"
-        >
-          <motion.div variants={itemVariants}>
-            <AnimatedBoard />
-          </motion.div>
         </motion.div>
       </div>
     </section>

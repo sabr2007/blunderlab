@@ -615,9 +615,6 @@ export function PlayView({
                 <Card>
                   <CardHeader>
                     <CardTitle>{t("moveHistory")}</CardTitle>
-                    <CardDescription>
-                      {t("moveHistoryDescription")}
-                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     {moves.length > 0 ? (

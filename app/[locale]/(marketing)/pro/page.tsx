@@ -199,8 +199,7 @@ export default async function ProPage() {
                     "linear-gradient(180deg, oklch(78% 0.16 72 / 0.06), transparent)",
                 }}
               >
-                <p className="text-eyebrow">{t("eyebrow")}</p>
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                   {t("join")}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-fg-muted">
