@@ -72,7 +72,7 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
           {/* editorial side ----------------------------------------- */}
           <section className="hidden flex-col gap-8 lg:flex">
             <Link href="/" aria-label="BlunderLab" className="inline-flex">
-              <BrandLogo variant="full" className="h-24 w-24" />
+              <BrandLogo variant="horizontal" className="h-16 w-auto" />
             </Link>
             <div className="max-w-lg">
               <p className="text-eyebrow">Welcome back</p>
@@ -102,7 +102,7 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
           <section className="mx-auto flex w-full justify-center lg:mx-0 lg:justify-end">
             <div className="w-full max-w-md">
               <div className="lg:hidden">
-                <BrandLogo variant="full" className="h-16 w-16" />
+                <BrandLogo variant="horizontal" className="h-12 w-auto" />
               </div>
               <div className="mt-4 lg:mt-0">
                 <SignInForm nextPath={nextPath} error={query?.error ?? null} />
