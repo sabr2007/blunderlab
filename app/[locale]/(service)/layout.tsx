@@ -2,6 +2,7 @@ import { AppShell } from "@/components/app/app-shell";
 import { isLocale, withLocalePrefix } from "@/i18n/routing";
 import { getDisplayName, isRealUser } from "@/lib/auth/session";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { loadIdentityLabel } from "@/lib/training/progress";
 import { redirect } from "next/navigation";
 
 export default async function ServiceLayout({
@@ -40,12 +41,15 @@ export default async function ServiceLayout({
     );
   }
 
+  const identity = await loadIdentityLabel(user.id);
+
   return (
     <AppShell
       user={{
         email: user.email ?? null,
         displayName: profile.data.display_name ?? getDisplayName(user),
         city: profile.data.city,
+        identityLabel: identity.label,
       }}
     >
       {children}

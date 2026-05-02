@@ -31,6 +31,7 @@ type AppShellProps = {
     email: string | null;
     displayName: string;
     city: string;
+    identityLabel?: string;
   };
 };
 
@@ -88,6 +89,11 @@ export function AppShell({ children, user }: AppShellProps) {
                   <BarChart3 className="size-3" />
                   {user.city}
                 </span>
+                {user.identityLabel ? (
+                  <span className="rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-xs text-accent">
+                    {user.identityLabel}
+                  </span>
+                ) : null}
                 <form action={signOutAction}>
                   <Button type="submit" variant="ghost" size="sm">
                     <LogOut className="size-4" />

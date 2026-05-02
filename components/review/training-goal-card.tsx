@@ -11,9 +11,13 @@ import { ArrowRight, Target } from "lucide-react";
 
 type TrainingGoalCardProps = {
   trainingGoal: string;
+  reviewId: string;
 };
 
-export function TrainingGoalCard({ trainingGoal }: TrainingGoalCardProps) {
+export function TrainingGoalCard({
+  trainingGoal,
+  reviewId,
+}: TrainingGoalCardProps) {
   return (
     <Card className="border-success/40 bg-success/5">
       <CardHeader>
@@ -28,7 +32,7 @@ export function TrainingGoalCard({ trainingGoal }: TrainingGoalCardProps) {
       <CardContent className="space-y-4">
         <p className="text-sm leading-relaxed text-fg">{trainingGoal}</p>
         <Button asChild className="w-full">
-          <Link href="/play">
+          <Link href={`/play?goal=${reviewId}`}>
             Play again with this goal <ArrowRight className="size-4" />
           </Link>
         </Button>

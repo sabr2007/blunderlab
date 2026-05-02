@@ -236,7 +236,10 @@ function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
           <div className="grid gap-5 lg:sticky lg:top-6 lg:self-start">
             <GameSummaryCard bundle={bundle} />
             {bundle.review.trainingGoal ? (
-              <TrainingGoalCard trainingGoal={bundle.review.trainingGoal} />
+              <TrainingGoalCard
+                reviewId={bundle.review.id}
+                trainingGoal={bundle.review.trainingGoal}
+              />
             ) : null}
             {bundle.review.reviewModel === "fallback" ? (
               <p className="rounded-md border border-warning/40 bg-warning/5 p-3 text-xs text-warning">

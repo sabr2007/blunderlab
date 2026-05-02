@@ -2,6 +2,7 @@
 
 import { finalizeGameAction, startGameAction } from "@/app/play/actions";
 import { ChessBoardWrapper } from "@/components/chess/chess-board-wrapper";
+import { TrainingModes } from "@/components/training/training-modes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,14 +27,17 @@ import {
 import type { AiDifficulty, GameStatus, MoveRecord } from "@/lib/chess/types";
 import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
 import { getSupabasePublicConfig } from "@/lib/supabase/env";
+import type { ActiveTrainingGoal } from "@/lib/training/progress";
 import type { Square } from "chess.js";
 import {
   Activity,
   Brain,
   CheckCircle2,
+  Goal,
   Loader2,
   RotateCcw,
   Swords,
+  X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -56,10 +60,15 @@ type PersistenceState =
   | { kind: "saved"; gameId: string }
   | { kind: "disabled"; reason: string };
 
-export function PlayView() {
+export function PlayView({
+  activeGoal,
+}: {
+  activeGoal?: ActiveTrainingGoal | null;
+}) {
   const [fen, setFen] = useState(STARTING_FEN);
   const [difficulty, setDifficulty] = useState<AiDifficulty>("beginner");
   const [moves, setMoves] = useState<MoveRecord[]>([]);
+  const [goalDismissed, setGoalDismissed] = useState(false);
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [legalTargets, setLegalTargets] = useState<Square[]>([]);
   const [engineState, setEngineState] = useState<
@@ -408,6 +417,52 @@ export function PlayView() {
             ))}
           </div>
         </header>
+
+        {activeGoal && !goalDismissed ? (
+          <section className="mb-5 rounded-md border border-success/35 bg-success/10 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex gap-3">
+                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-md bg-success/15 text-success">
+                  <Goal className="size-4" />
+                </span>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-semibold text-success">
+                      Current goal
+                    </p>
+                    {activeGoal.category ? (
+                      <Badge variant="success">{activeGoal.category}</Badge>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 max-w-3xl text-sm leading-relaxed text-fg">
+                    {activeGoal.text}
+                  </p>
+                  <p className="mt-2 text-xs text-fg-muted">
+                    Carried from your latest review. Use this game to test one
+                    better habit.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="self-start"
+                aria-label="Dismiss current training goal"
+                onClick={() => setGoalDismissed(true)}
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          </section>
+        ) : null}
+
+        <div className="mb-6">
+          <TrainingModes
+            activeGoalId={activeGoal?.id}
+            activeGoalText={activeGoal?.text}
+          />
+        </div>
 
         <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           <ChessBoardWrapper

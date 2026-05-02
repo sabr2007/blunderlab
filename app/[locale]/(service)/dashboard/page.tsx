@@ -3,6 +3,7 @@ import {
   type PatternTrendPoint,
 } from "@/components/dashboard/pattern-trend-chart";
 import { BlunderPatternBadge } from "@/components/review/blunder-pattern-badge";
+import { TrainingModes } from "@/components/training/training-modes";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -19,7 +20,21 @@ import type {
   Json,
 } from "@/lib/supabase/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { CalendarCheck, Flame, Target, Trophy } from "lucide-react";
+import {
+  type WeeklyWeakness,
+  loadActiveTrainingGoal,
+  loadIdentityLabel,
+  loadWeeklyWeakness,
+} from "@/lib/training/progress";
+import {
+  CalendarCheck,
+  Flame,
+  Sparkles,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Trophy,
+} from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -70,6 +85,9 @@ export default async function DashboardPage() {
     streak,
     dailyStatus,
     cityRank,
+    weeklyWeakness,
+    identity,
+    activeGoal,
   ] = await Promise.all([
     loadReviewedCount(user.id),
     loadRecentReviews(user.id),
@@ -78,6 +96,9 @@ export default async function DashboardPage() {
     loadStreak(user.id),
     loadDailyStatus(user.id),
     loadCityRank(user.id, city),
+    loadWeeklyWeakness(user.id),
+    loadIdentityLabel(user.id),
+    loadActiveTrainingGoal(),
   ]);
 
   return (
@@ -120,6 +141,13 @@ export default async function DashboardPage() {
 
       <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(340px,0.9fr)]">
         <div className="grid gap-5">
+          <WeeklyWeaknessCard weeklyWeakness={weeklyWeakness} />
+
+          <IdentityCard
+            label={identity.label}
+            description={identity.description}
+          />
+
           <Card>
             <CardHeader>
               <CardTitle>Pattern trend</CardTitle>
@@ -189,6 +217,32 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid gap-5 xl:self-start">
+          <Card className="border-accent/30 bg-accent/5">
+            <CardHeader>
+              <CardTitle>Active training goal</CardTitle>
+              <CardDescription>
+                The next game should test one better habit.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {activeGoal ? (
+                <>
+                  <p className="text-sm leading-relaxed text-fg-muted">
+                    {activeGoal.text}
+                  </p>
+                  <Link
+                    href={`/play?goal=${activeGoal.id}`}
+                    className="inline-flex h-10 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-bg transition hover:opacity-90"
+                  >
+                    Play with this goal
+                  </Link>
+                </>
+              ) : (
+                <EmptyState text="Run a review to create your first active goal." />
+              )}
+            </CardContent>
+          </Card>
+
           <Card className="border-success/30 bg-success/5">
             <CardHeader>
               <CardTitle>Daily Blunder</CardTitle>
@@ -244,7 +298,115 @@ export default async function DashboardPage() {
           </Card>
         </div>
       </section>
+
+      <section className="mt-6">
+        <TrainingModes
+          compact
+          activeGoalId={activeGoal?.id}
+          activeGoalText={activeGoal?.text}
+        />
+      </section>
     </main>
+  );
+}
+
+function WeeklyWeaknessCard({
+  weeklyWeakness,
+}: {
+  weeklyWeakness: WeeklyWeakness;
+}) {
+  const improved = weeklyWeakness.direction === "down";
+  const worsened = weeklyWeakness.direction === "up";
+
+  return (
+    <Card className="border-accent/25 bg-accent/5">
+      <CardHeader>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <CardTitle>Weekly Weakness</CardTitle>
+            <CardDescription>
+              Current 7 days compared with the previous 7 days.
+            </CardDescription>
+          </div>
+          {weeklyWeakness.category ? (
+            <BlunderPatternBadge category={weeklyWeakness.category} />
+          ) : (
+            <Badge>Need data</Badge>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {weeklyWeakness.direction === "insufficient" ? (
+          <EmptyState
+            text={`Need more reviewed games to compare. Current week: ${weeklyWeakness.currentGames}, previous week: ${weeklyWeakness.previousGames}.`}
+          />
+        ) : (
+          <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-sm text-fg-muted">
+                Your top weakness this week is{" "}
+                <span className="font-medium text-fg">
+                  {weeklyWeakness.category}
+                </span>
+                .
+              </p>
+              <p className="mt-2 text-sm text-fg-muted">
+                It moved from{" "}
+                <span className="font-mono text-fg">
+                  {formatPerGame(weeklyWeakness.previousPerGame)}
+                </span>{" "}
+                to{" "}
+                <span className="font-mono text-fg">
+                  {formatPerGame(weeklyWeakness.currentPerGame)}
+                </span>{" "}
+                per reviewed game.
+              </p>
+            </div>
+            <Badge
+              variant={improved ? "success" : worsened ? "danger" : "warning"}
+              className="justify-center py-1.5"
+            >
+              {improved ? (
+                <TrendingDown className="mr-1 size-3" />
+              ) : worsened ? (
+                <TrendingUp className="mr-1 size-3" />
+              ) : null}
+              {improved ? "Improving" : worsened ? "Needs focus" : "Stable"}
+            </Badge>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function IdentityCard({
+  label,
+  description,
+}: {
+  label: string;
+  description: string;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Sparkles className="size-5 text-accent" />
+          Chess identity
+        </CardTitle>
+        <CardDescription>
+          A lightweight label based on your review habit and patterns.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border border-accent/30 bg-accent/10 p-4">
+          <p className="font-semibold text-accent">{label}</p>
+          <p className="mt-2 text-sm leading-relaxed text-fg-muted">
+            {description}
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -279,6 +441,14 @@ function EmptyState({ text }: { text: string }) {
       {text}
     </p>
   );
+}
+
+function formatPerGame(value: number | null): string {
+  if (value === null) {
+    return "n/a";
+  }
+
+  return value.toFixed(1);
 }
 
 async function loadReviewedCount(userId: string) {
