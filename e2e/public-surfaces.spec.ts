@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("landing exposes start and sign-in CTAs", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/en");
   await expect(
     page.getByRole("link", { name: /start training/i }).first(),
   ).toBeVisible();
@@ -11,7 +11,7 @@ test("landing exposes start and sign-in CTAs", async ({ page }) => {
 });
 
 test("pro page renders tiers and waitlist", async ({ page }) => {
-  await page.goto("/pro");
+  await page.goto("/en/pro");
   await expect(
     page.getByRole("heading", { name: /upgrade when reviews/i }),
   ).toBeVisible();
