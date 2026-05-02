@@ -41,13 +41,18 @@ test("builders landing renders the focused audience narrative", async ({
   await expect(page.getByText(/decision-making gym/i)).toBeVisible();
 });
 
-test("play page exposes training modes", async ({ page }) => {
+test("play page starts from mode selection", async ({ page }) => {
   await page.goto("/en/play");
   await expect(
-    page.getByRole("heading", { name: /pick the kind of thinking/i }),
+    page.getByRole("heading", { name: /choose the mode/i }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: /classic game/i })).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /pattern drill/i }),
+    page.getByRole("button", { name: /classic game/i }),
   ).toBeVisible();
+  await expect(page.getByRole("button", { name: /goal focus/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /dashboard/i }).first(),
+  ).toBeVisible();
+  await page.getByRole("button", { name: /start game/i }).click();
+  await expect(page.getByText(/game status/i)).toBeVisible();
 });

@@ -20,6 +20,7 @@ import {
 import { getLegalTargetSquares, isSquare, tryMove } from "@/lib/chess/rules";
 import type { Square } from "chess.js";
 import { CheckCircle2, Eye, Loader2, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 
 export function DailyBlunderTrainer({
@@ -27,6 +28,7 @@ export function DailyBlunderTrainer({
 }: {
   payload: DailyBlunderPayload;
 }) {
+  const t = useTranslations("dailyTrainer");
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [legalTargets, setLegalTargets] = useState<Square[]>([]);
   const [previewFen, setPreviewFen] = useState(payload.moment.fen_before);
@@ -67,10 +69,10 @@ export function DailyBlunderTrainer({
   const ageLabel = useMemo(() => {
     const ageMs = Date.now() - new Date(payload.moment.created_at).getTime();
     const days = Math.max(0, Math.floor(ageMs / (24 * 60 * 60 * 1000)));
-    if (days === 0) return "from a recent review";
-    if (days === 1) return "from yesterday's review";
-    return `from ${days} days ago`;
-  }, [payload.moment.created_at]);
+    if (days === 0) return t("recentReview");
+    if (days === 1) return t("yesterdayReview");
+    return t("daysAgo", { days });
+  }, [payload.moment.created_at, t]);
 
   function chooseMove(from: string, to: string) {
     if (!isSquare(from) || !isSquare(to) || solvedOrRevealed) {
@@ -132,11 +134,11 @@ export function DailyBlunderTrainer({
       <Card>
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <CardTitle>Find the move you missed</CardTitle>
+            <CardTitle>{t("findMove")}</CardTitle>
             <BlunderPatternBadge category={payload.moment.category} />
           </div>
           <CardDescription>
-            Move {payload.moment.move_number} · {ageLabel}
+            {t("moveFrom", { move: payload.moment.move_number, age: ageLabel })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -164,17 +166,17 @@ export function DailyBlunderTrainer({
       <div className="grid gap-5 xl:self-start">
         <Card>
           <CardHeader>
-            <CardTitle>Your answer</CardTitle>
-            <CardDescription>
-              Submit the best move, not the move you actually played.
-            </CardDescription>
+            <CardTitle>{t("yourAnswer")}</CardTitle>
+            <CardDescription>{t("answerDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <MovePanel label="Selected" value={answer ?? "—"} />
+              <MovePanel label={t("selected")} value={answer ?? "—"} />
               <MovePanel
-                label="Best move"
-                value={solvedOrRevealed ? payload.moment.best_move : "Hidden"}
+                label={t("bestMove")}
+                value={
+                  solvedOrRevealed ? payload.moment.best_move : t("hidden")
+                }
                 tone={solvedOrRevealed ? "success" : "muted"}
               />
             </div>
@@ -186,7 +188,7 @@ export function DailyBlunderTrainer({
                 onClick={submit}
               >
                 {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-                Submit move
+                {t("submitMove")}
               </Button>
               <Button
                 type="button"
@@ -195,7 +197,7 @@ export function DailyBlunderTrainer({
                 onClick={reveal}
               >
                 <Eye className="size-4" />
-                Reveal
+                {t("reveal")}
               </Button>
             </div>
           </CardContent>
@@ -216,10 +218,10 @@ export function DailyBlunderTrainer({
                 ) : (
                   <XCircle className="size-5 text-warning" />
                 )}
-                {result.success ? "Solved" : "Review the idea"}
+                {result.success ? t("solved") : t("reviewIdea")}
               </CardTitle>
               <CardDescription>
-                Correct move: {result.correctMove}
+                {t("correctMove", { move: result.correctMove })}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-sm leading-relaxed">
@@ -230,7 +232,7 @@ export function DailyBlunderTrainer({
                 </p>
               ) : null}
               <Badge variant={result.success ? "success" : "warning"}>
-                {result.success ? "Streak credited" : "No streak credit"}
+                {result.success ? t("streakCredited") : t("noStreakCredit")}
               </Badge>
             </CardContent>
           </Card>

@@ -143,7 +143,7 @@ export function AppShell({ children, user }: AppShellProps) {
               onClick={() => setMobileOpen(false)}
               className="inline-flex"
             >
-              <BrandLogo variant="horizontal" className="h-7 w-auto" />
+              <BrandLogo variant="horizontal" className="h-10 w-auto" />
             </Link>
             <button
               type="button"
@@ -181,7 +181,7 @@ export function AppShell({ children, user }: AppShellProps) {
           >
             {collapsed ? (
               <Link href="/" aria-label="BlunderLab">
-                <BrandLogo variant="icon" className="size-9" />
+                <BrandLogo variant="icon" className="size-11" />
               </Link>
             ) : (
               <Link
@@ -189,7 +189,7 @@ export function AppShell({ children, user }: AppShellProps) {
                 aria-label="BlunderLab"
                 className="inline-flex items-center"
               >
-                <BrandLogo variant="horizontal" className="ml-1 h-7 w-auto" />
+                <BrandLogo variant="horizontal" className="ml-1 h-10 w-auto" />
               </Link>
             )}
           </div>

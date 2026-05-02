@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Daily Blunder",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DailyBlunderPage() {
+  const t = await getTranslations("dailyPage");
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -26,10 +28,10 @@ export default async function DailyBlunderPage() {
     <main className="container py-6 md:py-8">
       <header className="mb-6">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-          Daily Blunder
+          {t("eyebrow")}
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
-          One old mistake. One better move.
+          {t("title")}
         </h1>
       </header>
 
@@ -38,18 +40,15 @@ export default async function DailyBlunderPage() {
       ) : (
         <Card className="max-w-2xl">
           <CardHeader>
-            <CardTitle>No Daily Blunder yet</CardTitle>
+            <CardTitle>{t("emptyTitle")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-fg-muted">
-            <p>
-              Daily Blunder unlocks after you have at least one reviewed mistake
-              or blunder. Play a game, run review, then come back here.
-            </p>
+            <p>{t("emptyText")}</p>
             <Link
               href="/play"
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-bg transition hover:opacity-90"
             >
-              Play a game
+              {t("playGame")}
             </Link>
           </CardContent>
         </Card>

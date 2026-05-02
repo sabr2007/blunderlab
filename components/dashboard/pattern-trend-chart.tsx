@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -18,8 +19,10 @@ export type PatternTrendPoint = {
 };
 
 export function PatternTrendChart({ data }: { data: PatternTrendPoint[] }) {
+  const t = useTranslations("dashboard");
+
   return (
-    <div className="h-64 w-full">
+    <div className="h-72 w-full md:h-80">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
@@ -75,6 +78,7 @@ export function PatternTrendChart({ data }: { data: PatternTrendPoint[] }) {
           <Area
             type="monotone"
             dataKey="blunders"
+            name={t("chartBlunders")}
             stroke="var(--color-danger)"
             fill="url(#blunders)"
             strokeWidth={2}
@@ -82,6 +86,7 @@ export function PatternTrendChart({ data }: { data: PatternTrendPoint[] }) {
           <Area
             type="monotone"
             dataKey="mistakes"
+            name={t("chartMistakes")}
             stroke="var(--color-warning)"
             fill="url(#mistakes)"
             strokeWidth={2}
@@ -89,6 +94,7 @@ export function PatternTrendChart({ data }: { data: PatternTrendPoint[] }) {
           <Area
             type="monotone"
             dataKey="inaccuracies"
+            name={t("chartInaccuracies")}
             stroke="var(--color-accent)"
             fill="transparent"
             strokeWidth={2}

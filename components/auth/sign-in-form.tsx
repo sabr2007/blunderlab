@@ -25,13 +25,13 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>(
     error
-      ? { kind: "error", message: authErrorMessage(error) }
+      ? { kind: "error", message: authErrorMessage(error, t) }
       : { kind: "idle" },
   );
   const isLoading = status.kind === "loading";
 
   async function continueWithGoogle() {
-    setStatus({ kind: "loading", label: "Opening Google..." });
+    setStatus({ kind: "loading", label: t("openingGoogle") });
 
     try {
       const supabase = getSupabaseBrowserClient();
@@ -66,7 +66,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
     } catch (err) {
       setStatus({
         kind: "error",
-        message: err instanceof Error ? err.message : "Google sign-in failed.",
+        message: err instanceof Error ? err.message : t("googleFailed"),
       });
     }
   }
@@ -76,12 +76,12 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
     const parsed = emailSchema.safeParse(email);
 
     if (!parsed.success) {
-      setStatus({ kind: "error", message: "Enter a valid email address." });
+      setStatus({ kind: "error", message: t("emailInvalid") });
       return;
     }
 
     const cleanEmail = parsed.data;
-    setStatus({ kind: "loading", label: "Sending magic link..." });
+    setStatus({ kind: "loading", label: t("sendingMagicLink") });
 
     try {
       const supabase = getSupabaseBrowserClient();
@@ -117,7 +117,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
     } catch (err) {
       setStatus({
         kind: "error",
-        message: err instanceof Error ? err.message : "Email sign-in failed.",
+        message: err instanceof Error ? err.message : t("emailFailed"),
       });
     }
   }
@@ -145,7 +145,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
         >
           {isLoading &&
           status.kind === "loading" &&
-          status.label === "Opening Google..." ? (
+          status.label === t("openingGoogle") ? (
             <Loader2 className="size-4 animate-spin" />
           ) : null}
           {t("google")}
@@ -178,7 +178,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
           >
             {isLoading &&
             status.kind === "loading" &&
-            status.label === "Sending magic link..." ? (
+            status.label === t("sendingMagicLink") ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
               <Mail className="size-4" />
@@ -196,8 +196,7 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
               color: "var(--color-success)",
             }}
           >
-            Magic link sent to {status.email}. Open it on this device to finish
-            sign-in.
+            {t("magicLinkSent", { email: status.email })}
           </p>
         ) : null}
 
@@ -239,14 +238,17 @@ function getRedirectTo(nextPath: string): string {
   return url.toString();
 }
 
-function authErrorMessage(error: string): string {
+function authErrorMessage(
+  error: string,
+  t: ReturnType<typeof useTranslations<"auth">>,
+): string {
   if (error === "auth_callback_failed") {
-    return "The sign-in link could not be verified. Try again.";
+    return t("authCallbackFailed");
   }
 
   if (error === "auth_required") {
-    return "Sign in with Google or email to open this area.";
+    return t("authRequired");
   }
 
-  return "Sign-in failed. Try again.";
+  return t("signInFailed");
 }

@@ -11,50 +11,64 @@ export const metadata: Metadata = {
   description: "BlunderLab Pro tiers and waitlist.",
 };
 
-const TIERS = [
-  {
-    name: "Free",
-    price: "$0",
-    suffix: "Forever",
-    description: "For the first insight loop.",
-    features: ["3 reviews/day", "Classic Game", "Daily Blunder"],
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "$4.99",
-    suffix: "per month",
-    description: "For players who want focused training modes.",
-    features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
-    highlighted: true,
-  },
-  {
-    name: "School",
-    price: "Custom",
-    suffix: "Per cohort",
-    description: "For clubs, classes, and mentors.",
-    features: ["Student dashboard", "Class leaderboard", "Coach view"],
-    highlighted: false,
-  },
-] as const;
-
-const FEATURES = [
-  ["Play vs Stockfish", true, true, true],
-  ["Game Reviews / day", "3", "Unlimited", "Unlimited"],
-  ["AI Coach explanations", "Basic", "Deep", "Deep"],
-  ["Pattern history", "7 days", "Full", "Full"],
-  ["Daily Blunder", true, true, true],
-  ["Goal Focus mode", true, true, true],
-  ["Pattern Drill mode", false, true, true],
-  ["Builder Sprint mode", false, true, true],
-  ["Weekly training plan", false, true, true],
-  ["Coach dashboard", false, false, true],
-] as const;
-
 export default async function ProPage() {
   const t = await getTranslations("pro");
+  const proT = await getTranslations("proPage");
   const common = await getTranslations("common");
   const footer = await getTranslations("footer");
+  const tiers = [
+    {
+      name: proT("free.name"),
+      price: proT("free.price"),
+      suffix: proT("free.suffix"),
+      description: proT("free.description"),
+      features: proT.raw("free.features") as string[],
+      highlighted: false,
+    },
+    {
+      name: proT("pro.name"),
+      price: proT("pro.price"),
+      suffix: proT("pro.suffix"),
+      description: proT("pro.description"),
+      features: proT.raw("pro.features") as string[],
+      highlighted: true,
+    },
+    {
+      name: proT("school.name"),
+      price: proT("school.price"),
+      suffix: proT("school.suffix"),
+      description: proT("school.description"),
+      features: proT.raw("school.features") as string[],
+      highlighted: false,
+    },
+  ];
+  const features = [
+    [proT("features.play"), true, true, true],
+    [
+      proT("features.reviewsPerDay"),
+      "3",
+      proT("features.unlimited"),
+      proT("features.unlimited"),
+    ],
+    [
+      proT("features.coach"),
+      proT("features.basic"),
+      proT("features.deep"),
+      proT("features.deep"),
+    ],
+    [
+      proT("features.history"),
+      proT("features.days7"),
+      proT("features.full"),
+      proT("features.full"),
+    ],
+    [proT("features.daily"), true, true, true],
+    [proT("features.goal"), true, true, true],
+    [proT("features.pattern"), false, true, true],
+    [proT("features.builder"), false, true, true],
+    [proT("features.weekly"), false, true, true],
+    [proT("features.coachDashboard"), false, false, true],
+  ] as const;
 
   const footerCols = {
     product: [
@@ -121,7 +135,7 @@ export default async function ProPage() {
             </Reveal>
 
             <div className="mx-auto mt-14 grid max-w-5xl gap-3 lg:grid-cols-3">
-              {TIERS.map((tier, index) => (
+              {tiers.map((tier, index) => (
                 <Reveal key={tier.name} delay={index * 80}>
                   <article
                     className={`surface-card surface-grain relative h-full overflow-hidden p-7 transition ${
@@ -143,7 +157,7 @@ export default async function ProPage() {
                     {tier.highlighted ? (
                       <span className="absolute right-5 top-5 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-accent">
                         <Sparkles className="size-3" />
-                        Most popular
+                        {proT("mostPopular")}
                       </span>
                     ) : null}
                     <h3 className="text-lg font-semibold tracking-tight">
@@ -190,8 +204,7 @@ export default async function ProPage() {
                   {t("join")}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-                  Payments are not live in the submission prototype. This
-                  records upgrade intent for deeper training modes.
+                  {proT("paymentsNote")}
                 </p>
                 <div className="mt-6">
                   <WaitlistForm />
@@ -205,12 +218,12 @@ export default async function ProPage() {
         <section className="border-t border-border/70 bg-bg-elevated/40 py-24 md:py-28">
           <div className="container">
             <Reveal className="mx-auto mb-10 max-w-2xl text-center">
-              <p className="text-eyebrow">Comparison</p>
+              <p className="text-eyebrow">{proT("comparisonEyebrow")}</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
                 {t("comparison")}
               </h2>
               <p className="mt-3 text-sm text-fg-muted">
-                Pro is framed around learning depth, not cosmetic board changes.
+                {proT("comparisonText")}
               </p>
             </Reveal>
 
@@ -220,7 +233,7 @@ export default async function ProPage() {
                   <thead>
                     <tr className="border-b border-border text-left">
                       <th className="px-6 py-4 font-medium text-fg-subtle">
-                        Feature
+                        {proT("feature")}
                       </th>
                       <th className="px-4 py-4 font-medium">Free</th>
                       <th className="px-4 py-4 font-medium text-accent">Pro</th>
@@ -228,7 +241,7 @@ export default async function ProPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {FEATURES.map(([feature, free, pro, school], i) => (
+                    {features.map(([feature, free, pro, school], i) => (
                       <tr
                         key={String(feature)}
                         className={`border-b border-border/60 transition hover:bg-bg-elevated/40 ${

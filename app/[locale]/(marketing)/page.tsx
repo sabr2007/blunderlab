@@ -29,32 +29,33 @@ const PATTERN_KEYS = [
   "Endgame Technique",
 ] as const;
 
-const TIERS = [
-  {
-    name: "Free",
-    price: "$0",
-    features: ["3 reviews/day", "Daily Blunder", "City leaderboard"],
-    highlight: false,
-  },
-  {
-    name: "Pro",
-    price: "$4.99",
-    features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
-    highlight: true,
-  },
-  {
-    name: "School",
-    price: "Custom",
-    features: ["Class dashboard", "Coach view", "Team ranking"],
-    highlight: false,
-  },
-] as const;
-
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const common = await getTranslations("common");
   const patterns = await getTranslations("patterns");
+  const patternLabels = await getTranslations("patternLabels");
+  const proT = await getTranslations("proPage");
   const footer = await getTranslations("footer");
+  const tiers = [
+    {
+      name: proT("free.name"),
+      price: proT("free.price"),
+      features: proT.raw("free.features") as string[],
+      highlight: false,
+    },
+    {
+      name: proT("pro.name"),
+      price: proT("pro.price"),
+      features: proT.raw("pro.features") as string[],
+      highlight: true,
+    },
+    {
+      name: proT("school.name"),
+      price: proT("school.price"),
+      features: proT.raw("school.features") as string[],
+      highlight: false,
+    },
+  ];
 
   const footerCols = {
     product: [
@@ -165,7 +166,9 @@ export default async function LandingPage() {
               </blockquote>
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="surface-card p-5">
-                  <p className="text-eyebrow text-fg-subtle">Engine</p>
+                  <p className="text-eyebrow text-fg-subtle">
+                    {t("engineLabel")}
+                  </p>
                   <p className="mt-3 text-sm text-fg-muted">
                     {t("problemEngine")}
                   </p>
@@ -275,7 +278,9 @@ export default async function LandingPage() {
                 <Reveal key={name} delay={(index % 4) * 60}>
                   <article className="surface-card surface-card-hover surface-grain group h-full p-5">
                     <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="font-medium tracking-tight">{name}</h3>
+                      <h3 className="font-medium tracking-tight">
+                        {patternLabels(name)}
+                      </h3>
                       <span className="font-mono text-xs text-fg-subtle">
                         {String(index + 1).padStart(2, "0")}
                       </span>
@@ -309,20 +314,24 @@ export default async function LandingPage() {
                 <div className="mt-8 grid gap-3 sm:grid-cols-2">
                   <MiniMetric
                     icon={<ChartNoAxesCombined />}
-                    label="Top weakness"
-                    value="Tunnel Vision"
+                    label={t("miniTopWeakness")}
+                    value={patternLabels("Tunnel Vision")}
                   />
                   <MiniMetric
                     icon={<Sparkles />}
-                    label="Streak"
+                    label={t("miniStreak")}
                     value="4d"
                     accent
                   />
-                  <MiniMetric icon={<Trophy />} label="City rank" value="#12" />
+                  <MiniMetric
+                    icon={<Trophy />}
+                    label={t("miniCityRank")}
+                    value="#12"
+                  />
                   <MiniMetric
                     icon={<Target />}
-                    label="Daily Blunder"
-                    value="Ready"
+                    label={t("miniDaily")}
+                    value={t("miniReady")}
                     accent
                   />
                 </div>
@@ -335,7 +344,7 @@ export default async function LandingPage() {
                   aria-hidden
                   className="hero-orb pointer-events-none absolute -right-20 -top-20 h-80 w-80 opacity-60"
                 />
-                <span className="text-eyebrow">Daily Blunder</span>
+                <span className="text-eyebrow">{t("miniDaily")}</span>
                 <h3 className="mt-3 text-2xl font-semibold tracking-tight">
                   {t("dailyTitle")}
                 </h3>
@@ -375,7 +384,7 @@ export default async function LandingPage() {
             </div>
 
             <div className="mt-12 grid gap-3 md:grid-cols-3">
-              {TIERS.map((tier, index) => (
+              {tiers.map((tier, index) => (
                 <Reveal key={tier.name} delay={index * 80}>
                   <article
                     className={`surface-card surface-grain group relative h-full overflow-hidden p-6 transition ${
@@ -396,7 +405,7 @@ export default async function LandingPage() {
                   >
                     {tier.highlight ? (
                       <span className="absolute right-5 top-5 rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-accent">
-                        Most popular
+                        {proT("mostPopular")}
                       </span>
                     ) : null}
                     <div className="flex items-baseline gap-2">

@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import type { BlunderCategory } from "@/lib/supabase/database.types";
+import { useTranslations } from "next-intl";
 
 const CATEGORY_VARIANT: Record<
   BlunderCategory,
@@ -20,5 +21,7 @@ export function BlunderPatternBadge({
 }: {
   category: BlunderCategory;
 }) {
-  return <Badge variant={CATEGORY_VARIANT[category]}>{category}</Badge>;
+  const t = useTranslations("patternLabels");
+
+  return <Badge variant={CATEGORY_VARIANT[category]}>{t(category)}</Badge>;
 }

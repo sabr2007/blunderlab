@@ -10,8 +10,9 @@ test("anonymous player can reach review after a completed game", async ({
 }) => {
   await page.goto("/en/play");
   await expect(
-    page.getByRole("heading", { name: /play against stockfish/i }),
+    page.getByRole("heading", { name: /choose the mode/i }),
   ).toBeVisible();
+  await page.getByRole("button", { name: /start game/i }).click();
 
   // Full board automation is intentionally gated behind the real Supabase E2E
   // run because react-chessboard does not expose stable square test ids yet.

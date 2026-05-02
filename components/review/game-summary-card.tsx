@@ -8,34 +8,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { ReviewBundle } from "@/lib/review/types";
-
-const RESULT_LABEL = {
-  checkmate: "Checkmate",
-  stalemate: "Stalemate",
-  draw: "Draw",
-  resigned: "Resigned",
-  abandoned: "Abandoned",
-  active: "Unfinished",
-} as const;
+import { useTranslations } from "next-intl";
 
 export function GameSummaryCard({ bundle }: { bundle: ReviewBundle }) {
+  const t = useTranslations("review");
   const { game, review, criticalMoments } = bundle;
   const totalCritical = criticalMoments.length;
   const userColor = game.player_color === "white" ? "white" : "black";
   const userResult = (() => {
     if (game.status === "checkmate" && game.winner) {
-      return game.winner === userColor ? "Win" : "Loss";
+      return game.winner === userColor ? t("win") : t("loss");
     }
-    if (game.status === "resigned") return "Loss";
-    if (game.status === "stalemate" || game.status === "draw") return "Draw";
-    return "Unfinished";
+    if (game.status === "resigned") return t("loss");
+    if (game.status === "stalemate" || game.status === "draw")
+      return t("resultDraw");
+    return t("unfinished");
   })();
 
   return (
     <Card>
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle>Game review</CardTitle>
+          <CardTitle>{t("summaryTitle")}</CardTitle>
           <Badge
             variant={
               userResult === "Win"
@@ -49,20 +43,21 @@ export function GameSummaryCard({ bundle }: { bundle: ReviewBundle }) {
           </Badge>
         </div>
         <CardDescription>
-          {RESULT_LABEL[game.status]} · {game.move_count} moves · vs Stockfish (
-          {game.ai_difficulty})
+          {t(`result${capitalize(game.status)}`)} ·{" "}
+          {t("moves", { count: game.move_count })} ·{" "}
+          {t("vsStockfish", { difficulty: game.ai_difficulty })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-3 gap-3 text-sm">
-          <Stat label="Critical moments" value={String(totalCritical)} />
+          <Stat label={t("criticalMoments")} value={String(totalCritical)} />
           <Stat
-            label="Blunders"
+            label={t("blunders")}
             value={String(review.blunderCount)}
             tone="danger"
           />
           <Stat
-            label="Mistakes"
+            label={t("mistakes")}
             value={String(review.mistakeCount)}
             tone="warning"
           />
@@ -74,13 +69,17 @@ export function GameSummaryCard({ bundle }: { bundle: ReviewBundle }) {
         ) : null}
         {review.mainCategory ? (
           <div className="flex items-center gap-2 text-sm text-fg-muted">
-            <span>Main pattern</span>
+            <span>{t("mainPattern")}</span>
             <BlunderPatternBadge category={review.mainCategory} />
           </div>
         ) : null}
       </CardContent>
     </Card>
   );
+}
+
+function capitalize(value: string) {
+  return `${value.slice(0, 1).toUpperCase()}${value.slice(1)}`;
 }
 
 function Stat({

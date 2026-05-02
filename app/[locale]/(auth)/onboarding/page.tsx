@@ -15,23 +15,7 @@ export const metadata: Metadata = {
   description: "Choose your BlunderLab skill level and city.",
 };
 
-const SKILLS = [
-  {
-    value: "beginner",
-    label: "Beginner",
-    description: "I know the rules and play casually.",
-  },
-  {
-    value: "intermediate",
-    label: "Intermediate",
-    description: "I spot tactics and know basic openings.",
-  },
-  {
-    value: "advanced",
-    label: "Advanced",
-    description: "I play seriously and want sharper diagnostics.",
-  },
-] as const;
+const SKILLS = ["beginner", "intermediate", "advanced"] as const;
 
 const CITIES = ["Almaty", "Astana", "Shymkent", "Other"] as const;
 
@@ -104,7 +88,7 @@ export default async function OnboardingPage({
 
           {query?.error ? (
             <p className="mt-5 rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
-              Check your display name, level, and city before continuing.
+              {t("onboardingError")}
             </p>
           ) : null}
 
@@ -126,19 +110,21 @@ export default async function OnboardingPage({
               <div className="mt-3 grid gap-3 md:grid-cols-3">
                 {SKILLS.map((skill) => (
                   <label
-                    key={skill.value}
+                    key={skill}
                     className="cursor-pointer rounded-md border border-border bg-bg/40 p-4 transition has-[:checked]:border-accent has-[:checked]:bg-accent/10"
                   >
                     <input
                       type="radio"
                       name="skill"
-                      value={skill.value}
-                      defaultChecked={skill.value === "beginner"}
+                      value={skill}
+                      defaultChecked={skill === "beginner"}
                       className="sr-only"
                     />
-                    <span className="block font-medium">{skill.label}</span>
+                    <span className="block font-medium">
+                      {t(`skills.${skill}.label`)}
+                    </span>
                     <span className="mt-2 block text-sm text-fg-muted">
-                      {skill.description}
+                      {t(`skills.${skill}.description`)}
                     </span>
                   </label>
                 ))}
@@ -162,7 +148,7 @@ export default async function OnboardingPage({
                       defaultChecked={city === "Almaty"}
                       className="sr-only"
                     />
-                    {city}
+                    {city === "Other" ? t("cityOther") : city}
                   </label>
                 ))}
               </div>
@@ -170,9 +156,7 @@ export default async function OnboardingPage({
           </div>
 
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-fg-muted">
-              You can change these later in Settings.
-            </p>
+            <p className="text-xs text-fg-muted">{t("settingsHint")}</p>
             <button
               type="submit"
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-5 text-sm font-medium text-bg transition hover:opacity-90"

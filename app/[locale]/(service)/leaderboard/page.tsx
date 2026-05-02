@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import type { City, Json } from "@/lib/supabase/database.types";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Leaderboard",
@@ -33,6 +34,7 @@ type LeaderboardEntry = {
 };
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
+  const t = await getTranslations("leaderboardPage");
   const params = await searchParams;
   const supabase = await getSupabaseServerClient();
   const {
@@ -70,10 +72,10 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
     <main className="container py-6 md:py-8">
       <header className="mb-6">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-          City leaderboard
+          {t("eyebrow")}
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
-          Top improvers, not top ratings.
+          {t("title")}
         </h1>
       </header>
 
@@ -88,30 +90,30 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                 : "border-border bg-surface text-fg-muted hover:text-fg"
             }`}
           >
-            {city}
+            {city === "Other" ? t("cityOther") : city}
           </Link>
         ))}
       </div>
 
       {isStale ? (
         <p className="mb-5 rounded-md border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
-          Leaderboard is updating. The latest snapshot is older than 25 hours.
+          {t("updating")}
         </p>
       ) : null}
 
       {!ownEntry ? (
         <p className="mb-5 rounded-md border border-accent/30 bg-accent/10 p-3 text-sm text-accent">
-          Review 5 games this week to enter the {requestedCity} leaderboard.
+          {t("enter", { city: requestedCity })}
         </p>
       ) : null}
 
       <Card>
         <CardHeader>
-          <CardTitle>{requestedCity} improvers</CardTitle>
+          <CardTitle>{t("improvers", { city: requestedCity })}</CardTitle>
           <CardDescription>
             {latest.data
               ? `${latest.data.period_start} → ${latest.data.period_end}`
-              : "No snapshot yet. Run the cron job to seed the board."}
+              : t("noSnapshot")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -129,11 +131,13 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                   <div className="font-mono text-2xl">#{entry.rank}</div>
                   <div>
                     <p className="font-medium">
-                      {entry.display_name ?? "BlunderLab player"}
+                      {entry.display_name ?? t("player")}
                     </p>
                     <p className="mt-1 text-sm text-fg-muted">
-                      {entry.blunders_prior_7} → {entry.blunders_last_7}{" "}
-                      blunders across comparison windows
+                      {t("blundersAcross", {
+                        prior: entry.blunders_prior_7,
+                        last: entry.blunders_last_7,
+                      })}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 md:justify-end">
@@ -142,7 +146,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                       {entry.score.toFixed(2)}
                     </Badge>
                     <Badge variant="default">
-                      {entry.reviewed_games} reviews
+                      {t("reviews", { count: entry.reviewed_games })}
                     </Badge>
                   </div>
                 </div>
@@ -150,8 +154,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             </div>
           ) : (
             <p className="rounded-md border border-dashed border-border p-4 text-sm text-fg-muted">
-              No eligible players yet. The board needs users with at least 5
-              reviewed games in the last 7 days.
+              {t("empty")}
             </p>
           )}
         </CardContent>

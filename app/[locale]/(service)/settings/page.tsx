@@ -12,6 +12,7 @@ import {
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LogOut } from "lucide-react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -26,6 +27,8 @@ type PageProps = {
 };
 
 export default async function SettingsPage({ searchParams }: PageProps) {
+  const t = await getTranslations("settingsPage");
+  const authT = await getTranslations("auth");
   const params = await searchParams;
   const supabase = await getSupabaseServerClient();
   const {
@@ -44,38 +47,36 @@ export default async function SettingsPage({ searchParams }: PageProps) {
     <main className="container max-w-4xl py-6 md:py-8">
       <header className="mb-6">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-          Settings
+          {t("eyebrow")}
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
-          Profile and defaults.
+          {t("title")}
         </h1>
       </header>
 
       <div className="grid gap-5">
         {params?.saved ? (
           <p className="rounded-md border border-success/30 bg-success/10 p-3 text-sm text-success">
-            Profile updated.
+            {t("updated")}
           </p>
         ) : null}
         {params?.error ? (
           <p className="rounded-md border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
             {params.error === "confirm-delete"
-              ? "Confirm account deletion before continuing."
-              : "Check the form values and try again."}
+              ? t("confirmDeleteError")
+              : t("formError")}
           </p>
         ) : null}
 
         <Card>
           <CardHeader>
-            <CardTitle>Training profile</CardTitle>
-            <CardDescription>
-              City changes affect the default leaderboard filter.
-            </CardDescription>
+            <CardTitle>{t("trainingProfile")}</CardTitle>
+            <CardDescription>{t("trainingProfileDescription")}</CardDescription>
           </CardHeader>
           <CardContent>
             <form action={updateProfileAction} className="grid gap-5">
               <label className="grid gap-2 text-sm">
-                <span className="font-medium">Display name</span>
+                <span className="font-medium">{t("displayName")}</span>
                 <input
                   name="displayName"
                   defaultValue={profile.data?.display_name ?? ""}
@@ -86,7 +87,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="grid gap-2 text-sm">
-                  <span className="font-medium">City</span>
+                  <span className="font-medium">{t("city")}</span>
                   <select
                     name="city"
                     defaultValue={profile.data?.city ?? "Other"}
@@ -94,14 +95,14 @@ export default async function SettingsPage({ searchParams }: PageProps) {
                   >
                     {CITIES.map((city) => (
                       <option key={city} value={city}>
-                        {city}
+                        {city === "Other" ? t("cityOther") : city}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <label className="grid gap-2 text-sm">
-                  <span className="font-medium">Default difficulty</span>
+                  <span className="font-medium">{t("defaultDifficulty")}</span>
                   <select
                     name="defaultDifficulty"
                     defaultValue={
@@ -111,7 +112,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
                   >
                     {DIFFICULTIES.map((difficulty) => (
                       <option key={difficulty} value={difficulty}>
-                        {difficulty}
+                        {authT(`skills.${difficulty}.label`)}
                       </option>
                     ))}
                   </select>
@@ -119,7 +120,7 @@ export default async function SettingsPage({ searchParams }: PageProps) {
               </div>
 
               <Button type="submit" className="w-full sm:w-fit">
-                Save profile
+                {t("save")}
               </Button>
             </form>
           </CardContent>
@@ -127,17 +128,14 @@ export default async function SettingsPage({ searchParams }: PageProps) {
 
         <Card className="border-warning/30">
           <CardHeader>
-            <CardTitle>Account</CardTitle>
-            <CardDescription>
-              Sign out keeps your saved games. Delete marks the profile as
-              inactive for this prototype.
-            </CardDescription>
+            <CardTitle>{t("account")}</CardTitle>
+            <CardDescription>{t("accountDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 sm:flex-row">
             <form action={signOutAction}>
               <Button type="submit" variant="secondary">
                 <LogOut className="size-4" />
-                Sign out
+                {t("signOut")}
               </Button>
             </form>
             <DeleteAccountForm />

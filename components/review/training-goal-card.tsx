@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, Target } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type TrainingGoalCardProps = {
   trainingGoal: string;
@@ -18,22 +19,22 @@ export function TrainingGoalCard({
   trainingGoal,
   reviewId,
 }: TrainingGoalCardProps) {
+  const t = useTranslations("review");
+
   return (
     <Card className="border-success/40 bg-success/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Target className="size-4 text-success" />
-          Next game goal
+          {t("nextGoal")}
         </CardTitle>
-        <CardDescription>
-          One concrete focus for your next match.
-        </CardDescription>
+        <CardDescription>{t("nextGoalDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm leading-relaxed text-fg">{trainingGoal}</p>
         <Button asChild className="w-full">
           <Link href={`/play?goal=${reviewId}`}>
-            Play again with this goal <ArrowRight className="size-4" />
+            {t("playAgainGoal")} <ArrowRight className="size-4" />
           </Link>
         </Button>
       </CardContent>

@@ -174,6 +174,25 @@
     }
   }
 
+  .container-wide {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-wide {
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-wide {
+      padding-inline: 2.5rem;
+    }
+  }
+
   .text-display {
     font-size: var(--text-display);
     line-height: 1.02;

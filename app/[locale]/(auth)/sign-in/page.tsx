@@ -75,14 +75,15 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
               <BrandLogo variant="horizontal" className="h-16 w-auto" />
             </Link>
             <div className="max-w-lg">
-              <p className="text-eyebrow">Welcome back</p>
+              <p className="text-eyebrow">{t("welcomeBack")}</p>
               <h2 className="mt-3 text-display font-semibold text-balance">
-                Your blunders.{" "}
-                <span className="text-amber-emphasis">A clearer plan.</span>
+                {t("signInHeroTitleA")}{" "}
+                <span className="text-amber-emphasis">
+                  {t("signInHeroTitleB")}
+                </span>
               </h2>
               <p className="mt-5 text-pretty text-fg-muted">
-                Sign in to keep your reviews, dashboards, and Daily Blunder
-                history. The coach picks up where you left off.
+                {t("signInHeroText")}
               </p>
             </div>
             <ul className="grid gap-3 text-sm text-fg-muted">

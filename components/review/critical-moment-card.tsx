@@ -14,6 +14,7 @@ import {
 import type { ReviewCriticalMoment } from "@/lib/review/types";
 import type { Square } from "chess.js";
 import { Crosshair } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Props = {
   moment: ReviewCriticalMoment;
@@ -28,6 +29,7 @@ export function CriticalMomentCard({
   total,
   orientation,
 }: Props) {
+  const t = useTranslations("review");
   const userMoveSquares = parseUci(moment.userMove);
   const bestMoveSquares = parseUci(moment.bestMove);
 
@@ -37,14 +39,17 @@ export function CriticalMomentCard({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
             <Crosshair className="size-4 text-accent" />
-            Critical moment {index + 1} of {total}
+            {t("criticalMoment", { index: index + 1, total })}
           </CardTitle>
           <Badge variant={severityVariant(moment.severity)}>
             {moment.severity}
           </Badge>
         </div>
         <CardDescription>
-          Move {moment.moveNumber} · {dropLabel(moment.evalDropCp)}
+          {t("move", {
+            move: moment.moveNumber,
+            drop: dropLabel(moment.evalDropCp, t),
+          })}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -65,12 +70,20 @@ export function CriticalMomentCard({
           blunderSquare={userMoveSquares?.to ?? null}
         />
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-fg-muted">Pattern</span>
+          <span className="text-sm text-fg-muted">{t("pattern")}</span>
           <BlunderPatternBadge category={moment.category} />
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <MoveBlock label="You played" value={moment.userMove} tone="danger" />
-          <MoveBlock label="Best move" value={moment.bestMove} tone="success" />
+          <MoveBlock
+            label={t("youPlayed")}
+            value={moment.userMove}
+            tone="danger"
+          />
+          <MoveBlock
+            label={t("bestMove")}
+            value={moment.bestMove}
+            tone="success"
+          />
         </div>
         <AICoachCard explanation={moment.explanation} />
         {moment.trainingHint ? (
@@ -111,9 +124,12 @@ function severityVariant(severity: ReviewCriticalMoment["severity"]) {
   return "default" as const;
 }
 
-function dropLabel(dropCp: number | null) {
-  if (dropCp === null) return "evaluation drop unknown";
-  return `eval drop ${(dropCp / 100).toFixed(1)} pawns`;
+function dropLabel(
+  dropCp: number | null,
+  t: ReturnType<typeof useTranslations<"review">>,
+) {
+  if (dropCp === null) return t("evalUnknown");
+  return t("evalDrop", { pawns: (dropCp / 100).toFixed(1) });
 }
 
 function parseUci(

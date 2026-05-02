@@ -11,6 +11,7 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type React from "react";
 
 type TrainingModesProps = {
@@ -28,60 +29,58 @@ type TrainingMode = {
   state: "available" | "locked" | "preview";
 };
 
-const baseModes = [
-  {
-    title: "Classic Game",
-    eyebrow: "Available",
-    description: "Play a clean Stockfish game and review it after the result.",
-    href: "/play",
-    icon: Gauge,
-    state: "available",
-  },
-  {
-    title: "Daily Blunder",
-    eyebrow: "Available",
-    description: "Solve one position from your own past mistakes.",
-    href: "/daily-blunder",
-    icon: CalendarCheck,
-    state: "available",
-  },
-  {
-    title: "Pattern Drill",
-    eyebrow: "Pro preview",
-    description: "Practice short drills generated from repeated mistake types.",
-    href: "/pro",
-    icon: Sparkles,
-    state: "locked",
-  },
-  {
-    title: "Deep Review",
-    eyebrow: "Pro preview",
-    description: "Unlock deeper coach explanations and longer mistake history.",
-    href: "/pro",
-    icon: BrainCircuit,
-    state: "locked",
-  },
-  {
-    title: "Builder Sprint",
-    eyebrow: "Audience mode",
-    description: "Train pattern recognition and decisions under pressure.",
-    href: "/builders",
-    icon: Crown,
-    state: "preview",
-  },
-] satisfies TrainingMode[];
-
 export function TrainingModes({
   activeGoalId,
   activeGoalText,
   compact = false,
 }: TrainingModesProps) {
+  const t = useTranslations("trainingModes");
+  const baseModes = [
+    {
+      title: t("classicTitle"),
+      eyebrow: t("available"),
+      description: t("classicDescription"),
+      href: "/play",
+      icon: Gauge,
+      state: "available",
+    },
+    {
+      title: t("dailyTitle"),
+      eyebrow: t("available"),
+      description: t("dailyDescription"),
+      href: "/daily-blunder",
+      icon: CalendarCheck,
+      state: "available",
+    },
+    {
+      title: t("patternTitle"),
+      eyebrow: t("proPreview"),
+      description: t("patternDescription"),
+      href: "/pro",
+      icon: Sparkles,
+      state: "locked",
+    },
+    {
+      title: t("deepTitle"),
+      eyebrow: t("proPreview"),
+      description: t("deepDescription"),
+      href: "/pro",
+      icon: BrainCircuit,
+      state: "locked",
+    },
+    {
+      title: t("builderTitle"),
+      eyebrow: t("audienceMode"),
+      description: t("builderDescription"),
+      href: "/builders",
+      icon: Crown,
+      state: "preview",
+    },
+  ] satisfies TrainingMode[];
   const goalMode = {
-    title: "Goal Focus",
-    eyebrow: activeGoalText ? "Active" : "Locked",
-    description: activeGoalText
-      ? activeGoalText
-      : "Finish a review to carry one concrete goal into the next game.",
+    title: t("goalTitle"),
+    eyebrow: activeGoalText ? t("active") : t("locked"),
+    description: activeGoalText ? activeGoalText : t("goalLockedDescription"),
     href: activeGoalId ? `/play?goal=${activeGoalId}` : null,
     icon: Goal,
     state: activeGoalText ? "available" : "locked",
@@ -92,10 +91,10 @@ export function TrainingModes({
     <section className={compact ? "grid gap-3" : "grid gap-4"}>
       <div>
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-          Training modes
+          {t("eyebrow")}
         </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-normal">
-          Pick the kind of thinking you want to train.
+          {t("title")}
         </h2>
       </div>
       <div

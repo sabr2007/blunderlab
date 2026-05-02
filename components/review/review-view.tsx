@@ -27,7 +27,7 @@ import type {
 } from "@/lib/review/types";
 import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
 import { AlertTriangle, Loader2, RotateCcw } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReviewViewProps = {
@@ -51,13 +51,13 @@ const INITIAL_PROGRESS: PipelineProgress = {
 
 export function ReviewView({ gameId, initialBundle, game }: ReviewViewProps) {
   const locale = useLocale() === "ru" ? "ru" : "en";
+  const t = useTranslations("review");
   const initialPhase: Phase = initialBundle
     ? { kind: "ready", bundle: initialBundle }
     : !game.pgn
       ? {
           kind: "error",
-          message:
-            "This game has no recorded moves yet. Finish a game in the play screen first.",
+          message: t("noMoves"),
         }
       : { kind: "loading", progress: INITIAL_PROGRESS };
 
@@ -185,7 +185,11 @@ async function runPipeline({
     setPhase({ kind: "error", message: result.message });
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Review pipeline failed.";
+      error instanceof Error
+        ? error.message
+        : locale === "ru"
+          ? "Пайплайн ревью сломался."
+          : "Review pipeline failed.";
     setPhase({ kind: "error", message });
   } finally {
     analyzer.destroy();
@@ -193,6 +197,7 @@ async function runPipeline({
 }
 
 function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
+  const t = useTranslations("review");
   const orientation = bundle.game.player_color === "white" ? "white" : "black";
 
   return (
@@ -202,17 +207,17 @@ function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
         <header className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              Game Review
+              {t("eyebrow")}
             </p>
             <h1 className="mt-2 text-3xl font-semibold md:text-4xl">
-              Three moments that changed your game
+              {t("title")}
             </h1>
           </div>
           <Link
             href="/play"
             className="text-sm text-fg-muted underline-offset-4 hover:text-fg hover:underline"
           >
-            ← Back to play
+            {"<"} {t("backToPlay")}
           </Link>
         </header>
 
@@ -243,8 +248,7 @@ function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
             ) : null}
             {bundle.review.reviewModel === "fallback" ? (
               <p className="rounded-md border border-warning/40 bg-warning/5 p-3 text-xs text-warning">
-                AI Coach was offline — explanations rendered from local
-                templates.
+                {t("fallback")}
               </p>
             ) : null}
           </div>
@@ -255,36 +259,34 @@ function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
 }
 
 function CleanGamePanel({ summary }: { summary: string | null }) {
+  const t = useTranslations("review");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Clean game</CardTitle>
-        <CardDescription>
-          The engine did not find any move that dropped your evaluation by 1.0
-          pawn or more.
-        </CardDescription>
+        <CardTitle>{t("cleanTitle")}</CardTitle>
+        <CardDescription>{t("cleanDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="text-sm text-fg-muted">
-        {summary ??
-          "Stay sharp — the next game still has critical moments waiting."}
+        {summary ?? t("cleanFallback")}
       </CardContent>
     </Card>
   );
 }
 
 function ProgressPanel({ progress }: { progress: PipelineProgress }) {
+  const t = useTranslations("review");
   const percent =
     progress.total > 0 ? Math.round((progress.done / progress.total) * 100) : 0;
 
   const message = useMemo(() => {
-    if (progress.phase === "parsing") return "Parsing your game…";
+    if (progress.phase === "parsing") return t("parsing");
     if (progress.phase === "analyzing")
-      return `Stockfish analysing positions ${progress.done} / ${progress.total}`;
-    if (progress.phase === "scoring") return "Selecting critical moments…";
-    if (progress.phase === "submitting")
-      return "Generating coach explanations…";
-    return "Finishing review…";
-  }, [progress]);
+      return t("analyzing", { done: progress.done, total: progress.total });
+    if (progress.phase === "scoring") return t("scoring");
+    if (progress.phase === "submitting") return t("submitting");
+    return t("finishing");
+  }, [progress, t]);
 
   return (
     <main className="min-h-screen bg-bg">
@@ -293,7 +295,7 @@ function ProgressPanel({ progress }: { progress: PipelineProgress }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Loader2 className="size-5 animate-spin text-accent" />
-              Building your review
+              {t("building")}
             </CardTitle>
             <CardDescription>{message}</CardDescription>
           </CardHeader>
@@ -315,6 +317,7 @@ function ProgressPanel({ progress }: { progress: PipelineProgress }) {
 }
 
 function RateLimitNotice({ resetAt }: { resetAt: string }) {
+  const t = useTranslations("review");
   const reset = new Date(resetAt);
 
   return (
@@ -324,19 +327,16 @@ function RateLimitNotice({ resetAt }: { resetAt: string }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-warning">
               <AlertTriangle className="size-5" />
-              Daily review limit reached
+              {t("limitTitle")}
             </CardTitle>
             <CardDescription>
-              Free tier allows a fixed number of reviews per day. Resets at{" "}
-              {reset.toUTCString()}.
+              {t("limitText", { time: reset.toUTCString() })}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-fg-muted">
-              Pro membership will lift this cap.
-            </p>
+            <p className="text-sm text-fg-muted">{t("proLift")}</p>
             <Button asChild variant="secondary" className="mt-4 w-full">
-              <Link href="/pro">View Pro options</Link>
+              <Link href="/pro">{t("viewPro")}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -346,6 +346,8 @@ function RateLimitNotice({ resetAt }: { resetAt: string }) {
 }
 
 function ReviewErrorPanel({ message }: { message: string }) {
+  const t = useTranslations("review");
+
   return (
     <main className="min-h-screen bg-bg">
       <div className="container flex min-h-screen items-center justify-center py-10">
@@ -353,7 +355,7 @@ function ReviewErrorPanel({ message }: { message: string }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-danger">
               <AlertTriangle className="size-5" />
-              Review unavailable
+              {t("unavailable")}
             </CardTitle>
             <CardDescription>{message}</CardDescription>
           </CardHeader>
@@ -361,7 +363,7 @@ function ReviewErrorPanel({ message }: { message: string }) {
             <Button asChild variant="secondary" className="w-full">
               <Link href="/play">
                 <RotateCcw className="size-4" />
-                Play another game
+                {t("playAnother")}
               </Link>
             </Button>
           </CardContent>
