@@ -1,5 +1,8 @@
-import { LocaleSwitcher } from "@/components/common/locale-switcher";
-import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/common/reveal";
+import { AnimatedBoard } from "@/components/marketing/animated-board";
+import { LaptopMockup } from "@/components/marketing/laptop-mockup";
+import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { MarketingNav } from "@/components/marketing/marketing-nav";
 import { Link } from "@/i18n/navigation";
 import {
   ArrowRight,
@@ -15,7 +18,7 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-const PATTERNS = [
+const PATTERN_KEYS = [
   "Hanging Piece",
   "Missed Tactic",
   "King Safety",
@@ -31,451 +34,516 @@ const TIERS = [
     name: "Free",
     price: "$0",
     features: ["3 reviews/day", "Daily Blunder", "City leaderboard"],
+    highlight: false,
   },
   {
     name: "Pro",
     price: "$4.99",
     features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
+    highlight: true,
   },
   {
     name: "School",
     price: "Custom",
     features: ["Class dashboard", "Coach view", "Team ranking"],
+    highlight: false,
   },
 ] as const;
-
-const BOARD_SQUARES = Array.from({ length: 64 }, (_, index) => ({
-  id: `square-${index}`,
-  isLight: (Math.floor(index / 8) + index) % 2 === 0,
-}));
 
 export default async function LandingPage() {
   const t = await getTranslations("landing");
   const common = await getTranslations("common");
   const patterns = await getTranslations("patterns");
+  const footer = await getTranslations("footer");
+
+  const footerCols = {
+    product: [
+      { label: footer("linkPlay"), href: "/play" },
+      { label: footer("linkDashboard"), href: "/dashboard" },
+      { label: footer("linkPro"), href: "/pro" },
+      { label: footer("linkBuilders"), href: "/builders" },
+    ],
+    resources: [
+      {
+        label: footer("linkDocs"),
+        href: "https://github.com/sabr2007/blunderlab/blob/main/docs/decisions.md",
+        external: true,
+      },
+      {
+        label: footer("linkChangelog"),
+        href: "https://github.com/sabr2007/blunderlab/commits/main",
+        external: true,
+      },
+      {
+        label: footer("linkRoadmap"),
+        href: "https://github.com/sabr2007/blunderlab/blob/main/docs/PRD.md",
+        external: true,
+      },
+    ],
+    company: [
+      { label: footer("linkAbout"), href: "/builders" },
+      {
+        label: footer("linkContact"),
+        href: "https://github.com/sabr2007/blunderlab",
+        external: true,
+      },
+      { label: footer("linkPrivacy"), href: "/" },
+    ],
+  };
 
   return (
-    <main className="relative overflow-hidden">
-      <div className="lab-grid pointer-events-none absolute inset-0 -z-10 opacity-25" />
+    <div className="relative">
+      <MarketingNav
+        signInLabel={common("signIn")}
+        ctaLabel={common("startTraining")}
+      />
 
-      <header className="container flex items-center justify-between py-5">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg font-semibold tracking-normal"
+      <main>
+        {/* HERO ------------------------------------------------------- */}
+        <section
+          aria-labelledby="hero-heading"
+          className="relative isolate overflow-hidden pb-12 pt-12 md:pb-20 md:pt-20"
         >
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-accent/15 text-accent">
-            ◇
-          </span>
-          {common("brand")}
-        </Link>
-        <nav className="hidden items-center gap-6 text-sm text-fg-muted md:flex">
-          <a href="#how-it-works" className="hover:text-fg">
-            {t("navHow")}
-          </a>
-          <a href="#patterns" className="hover:text-fg">
-            {t("navPatterns")}
-          </a>
-          <Link href="/pro" className="hover:text-fg">
-            {t("navPricing")}
-          </Link>
-          <Link href="/builders" className="hover:text-fg">
-            {t("navBuilders")}
-          </Link>
-        </nav>
-        <div className="flex items-center gap-2">
-          <LocaleSwitcher compact />
-          <Link
-            href="/sign-in"
-            className="hidden text-sm text-fg-muted hover:text-fg sm:inline"
-          >
-            {common("signIn")}
-          </Link>
-          <Link
-            href="/play"
-            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3.5 py-2 text-sm font-medium text-bg transition hover:opacity-90"
-          >
-            {common("startTraining")} <ArrowRight className="size-3.5" />
-          </Link>
-        </div>
-      </header>
-
-      <section className="container grid gap-10 pb-20 pt-10 md:grid-cols-[minmax(0,0.92fr)_minmax(360px,1fr)] md:items-center md:pt-16">
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1 text-xs text-fg-muted">
-            <span className="size-1.5 rounded-full bg-success" />
-            {t("prototype")}
-          </span>
-          <h1 className="text-display mt-6 text-balance">{t("heroTitle")}</h1>
-          <p className="mt-6 max-w-2xl text-balance text-lg leading-relaxed text-fg-muted">
-            {t("heroText")}
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/play"
-              className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-bg transition hover:opacity-90"
-            >
-              {common("startTraining")} <ArrowRight className="size-4" />
-            </Link>
-            <a
-              href="#demo"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-surface/50 px-5 py-2.5 text-sm font-medium text-fg transition hover:bg-surface"
-            >
-              <CirclePlay className="size-4" />
-              {t("watchDemo")}
-            </a>
-          </div>
-        </div>
-
-        <HeroComposition
-          coachText={t("previewCoach")}
-          goalTitle={t("previewGoal")}
-          goalText={t("previewGoalText")}
-        />
-      </section>
-
-      <section className="container grid gap-4 pb-16 md:grid-cols-3">
-        <Stat label={t("statReviews")} value="3" hint={t("statReviewsHint")} />
-        <Stat
-          label={t("statPatterns")}
-          value="8"
-          hint={t("statPatternsHint")}
-        />
-        <Stat label={t("statLoop")} value="4" hint={t("statLoopHint")} />
-      </section>
-
-      <section className="border-y border-border bg-surface/35 py-16">
-        <div className="container grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-center">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              {t("problemEyebrow")}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-              {t("problemTitle")}
-            </h2>
-          </div>
-          <div className="grid gap-3">
-            <blockquote className="rounded-md border border-accent/35 bg-accent/10 p-5 text-lg leading-relaxed">
-              “{t("problemQuote")}”
-            </blockquote>
-            <div className="grid gap-3 md:grid-cols-2">
-              <p className="rounded-md border border-border bg-bg/45 p-4 text-sm text-fg-muted">
-                {t("problemEngine")}
-              </p>
-              <p className="rounded-md border border-success/30 bg-success/10 p-4 text-sm text-success">
-                {t("problemBlunderLab")}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="how-it-works" className="container py-20">
-        <div className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            {t("howEyebrow")}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-            {t("howTitle")}
-          </h2>
-        </div>
-        <div className="mt-10 grid gap-3 md:grid-cols-4">
-          <Step
-            icon={<Swords className="size-5" />}
-            number="01"
-            title={t("stepPlayTitle")}
-            text={t("stepPlayText")}
-          />
-          <Step
-            icon={<Crosshair className="size-5" />}
-            number="02"
-            title={t("stepReviewTitle")}
-            text={t("stepReviewText")}
-          />
-          <Step
-            icon={<BrainCircuit className="size-5" />}
-            number="03"
-            title={t("stepPatternTitle")}
-            text={t("stepPatternText")}
-          />
-          <Step
-            icon={<Goal className="size-5" />}
-            number="04"
-            title={t("stepTrainTitle")}
-            text={t("stepTrainText")}
-          />
-        </div>
-      </section>
-
-      <section className="container grid gap-10 pb-20 lg:grid-cols-[1fr_0.9fr] lg:items-center">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            {t("previewEyebrow")}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-            {t("previewTitle")}
-          </h2>
-        </div>
-        <div className="grid gap-3">
-          <PreviewRow icon={<Target className="size-4" />} label="Pattern">
-            Tunnel Vision
-          </PreviewRow>
-          <PreviewRow icon={<Sparkles className="size-4" />} label="Coach">
-            {t("previewCoach")}
-          </PreviewRow>
-          <PreviewRow
-            icon={<Goal className="size-4" />}
-            label={t("previewGoal")}
-          >
-            {t("previewGoalText")}
-          </PreviewRow>
-        </div>
-      </section>
-
-      <section
-        id="patterns"
-        className="border-y border-border bg-surface/35 py-20"
-      >
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              {t("taxonomyEyebrow")}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-              {t("taxonomyTitle")}
-            </h2>
-            <p className="mt-4 text-fg-muted">{t("taxonomyText")}</p>
-          </div>
-          <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {PATTERNS.map((name, index) => (
-              <article
-                key={name}
-                className="surface-card p-5 transition hover:border-accent/40"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-medium tracking-normal">{name}</h3>
-                  <span className="font-mono text-xs text-fg-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-fg-muted">{patterns(name)}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="container grid gap-5 py-20 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="surface-card p-6 md:p-7">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            {t("dashboardEyebrow")}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-            {t("dashboardTitle")}
-          </h2>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            <MiniMetric
-              icon={<ChartNoAxesCombined />}
-              label="Top weakness"
-              value="Tunnel Vision"
-            />
-            <MiniMetric icon={<Sparkles />} label="Streak" value="4d" />
-            <MiniMetric icon={<Trophy />} label="City rank" value="#12" />
-            <MiniMetric icon={<Target />} label="Daily Blunder" value="Ready" />
-          </div>
-        </div>
-        <div className="surface-card p-6 md:p-7">
-          <Badge variant="success">Daily Blunder</Badge>
-          <h3 className="mt-5 text-2xl font-semibold tracking-normal">
-            {t("dailyTitle")}
-          </h3>
-          <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-            {t("dailyText")}
-          </p>
-          <div className="mt-6 aspect-square rounded-md border border-border bg-bg/60 p-4">
-            <div className="grid h-full grid-cols-8 grid-rows-8 overflow-hidden rounded-md border border-border">
-              {BOARD_SQUARES.map((square) => (
-                <span
-                  key={square.id}
-                  className={
-                    square.isLight ? "bg-board-light" : "bg-board-dark"
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="container pb-20">
-        <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-              {t("pricingEyebrow")}
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-              {t("pricingTitle")}
-            </h2>
-          </div>
-          <Link
-            href="/pro"
-            className="inline-flex items-center gap-2 text-sm text-accent hover:underline"
-          >
-            {t("pricingLink")} <ArrowRight className="size-4" />
-          </Link>
-        </div>
-        <div className="grid gap-3 md:grid-cols-3">
-          {TIERS.map((tier) => (
-            <article
-              key={tier.name}
-              className={`surface-card p-5 ${
-                tier.name === "Pro" ? "border-accent bg-accent/5" : ""
-              }`}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg font-semibold">{tier.name}</h3>
-                <p className="font-mono text-xl">{tier.price}</p>
-              </div>
-              <ul className="mt-5 grid gap-2 text-sm text-fg-muted">
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2">
-                    <span className="size-1.5 rounded-full bg-success" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="demo" className="border-y border-border bg-surface/35 py-20">
-        <div className="container">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            {t("demoEyebrow")}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-normal md:text-4xl">
-            {t("demoTitle")}
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-fg-muted">
-            {t("demoText")}
-          </p>
+          <div className="hero-grid pointer-events-none absolute inset-0 -z-10 opacity-40" />
           <div
-            aria-label={t("demoPlaceholderLabel")}
-            className="mt-8 aspect-video w-full rounded-md border border-dashed border-border bg-bg/35"
+            aria-hidden
+            className="hero-orb pointer-events-none absolute left-1/2 top-[-12%] -z-10 h-[640px] w-[860px] -translate-x-1/2"
           />
-        </div>
-      </section>
 
-      <section className="container py-20 text-center">
-        <h2 className="text-3xl font-semibold tracking-normal md:text-5xl">
-          {t("finalTitle")}
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-fg-muted">{t("finalText")}</p>
-        <Link
-          href="/play"
-          className="mt-8 inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-bg transition hover:opacity-90"
-        >
-          {common("startTraining")} <ArrowRight className="size-4" />
-        </Link>
-      </section>
+          <div className="container">
+            <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+              <Reveal>
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-bg-elevated/80 px-3.5 py-1.5 text-xs text-fg-muted backdrop-blur">
+                  <span className="relative inline-flex">
+                    <span className="size-1.5 rounded-full bg-accent" />
+                    <span className="absolute inset-0 size-1.5 rounded-full bg-accent pulse-dot" />
+                  </span>
+                  {t("heroPill")}
+                </span>
+              </Reveal>
 
-      <footer className="border-t border-border">
-        <div className="container flex flex-col items-center justify-between gap-3 py-8 text-sm text-fg-muted md:flex-row">
-          <p>© 2026 BlunderLab · nFactorial Incubator</p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="https://github.com/sabr2007/blunderlab"
-              className="hover:text-fg"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://github.com/sabr2007/blunderlab/blob/main/docs/decisions.md"
-              className="hover:text-fg"
-            >
-              {t("footerDocs")}
-            </a>
-            <Link href="/builders" className="hover:text-fg">
-              {t("navBuilders")}
-            </Link>
+              <Reveal delay={80}>
+                <h1
+                  id="hero-heading"
+                  className="text-mega mt-6 text-balance font-semibold"
+                >
+                  Turn every{" "}
+                  <span className="text-amber-emphasis">blunder</span> into your
+                  next training plan.
+                </h1>
+              </Reveal>
+
+              <Reveal delay={140}>
+                <p className="text-pretty mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted">
+                  {t("heroText")}
+                </p>
+              </Reveal>
+
+              <Reveal delay={200}>
+                <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                  <Link
+                    href="/play"
+                    className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
+                  >
+                    {common("startTraining")}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                  <a
+                    href="#demo"
+                    className="btn-secondary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
+                  >
+                    <CirclePlay className="size-4" />
+                    {t("watchDemo")}
+                  </a>
+                </div>
+              </Reveal>
+
+              <Reveal delay={260}>
+                <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-fg-subtle">
+                  <li className="inline-flex items-center gap-1.5">
+                    <Sparkles className="size-3.5 text-accent" />
+                    {t("heroSignalA")}
+                  </li>
+                  <li className="inline-flex items-center gap-1.5">
+                    <Target className="size-3.5 text-accent" />
+                    {t("heroSignalB")}
+                  </li>
+                  <li className="inline-flex items-center gap-1.5">
+                    <Goal className="size-3.5 text-accent" />
+                    {t("heroSignalC")}
+                  </li>
+                </ul>
+              </Reveal>
+            </div>
+
+            <Reveal delay={340} className="mt-14 md:mt-20">
+              <div className="mx-auto w-full max-w-[640px]">
+                <AnimatedBoard />
+              </div>
+            </Reveal>
           </div>
-        </div>
-      </footer>
-    </main>
-  );
-}
+        </section>
 
-function HeroComposition({
-  coachText,
-  goalTitle,
-  goalText,
-}: {
-  coachText: string;
-  goalTitle: string;
-  goalText: string;
-}) {
-  return (
-    <div className="relative mx-auto w-full max-w-2xl">
-      <div className="surface-card p-4 shadow-2xl shadow-black/30 md:p-5">
-        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="aspect-square overflow-hidden rounded-md border border-border bg-bg/50 p-3">
-            <div className="grid h-full grid-cols-8 grid-rows-8 overflow-hidden rounded-md">
-              {BOARD_SQUARES.map((square) => (
-                <span
-                  key={square.id}
-                  className={
-                    square.isLight ? "bg-board-light" : "bg-board-dark"
-                  }
+        {/* DEMO LAPTOP ----------------------------------------------- */}
+        <section
+          id="demo"
+          aria-labelledby="demo-heading"
+          className="relative scroll-mt-20 py-20 md:py-24"
+        >
+          <div className="container">
+            <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+              <p className="text-eyebrow">{t("demoEyebrow")}</p>
+              <h2
+                id="demo-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-4xl"
+              >
+                {t("demoTitle")}
+              </h2>
+              <p className="mt-4 text-fg-muted">{t("demoText")}</p>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <LaptopMockup label={t("demoLabel")} caption={t("demoComing")} />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* PROBLEM --------------------------------------------------- */}
+        <section
+          aria-labelledby="problem-heading"
+          className="relative border-y border-border/70 bg-bg-elevated/40 py-20 md:py-24"
+        >
+          <div className="container grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+            <Reveal>
+              <p className="text-eyebrow">{t("problemEyebrow")}</p>
+              <h2
+                id="problem-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-4xl"
+              >
+                {t("problemTitle")}
+              </h2>
+            </Reveal>
+            <Reveal delay={120} className="grid gap-4">
+              <blockquote className="surface-card surface-grain p-6 text-lg italic leading-relaxed text-fg">
+                <span className="select-none text-3xl leading-none text-accent">
+                  “
+                </span>
+                {t("problemQuote")}
+                <span className="select-none text-3xl leading-none text-accent">
+                  ”
+                </span>
+              </blockquote>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="surface-card p-5">
+                  <p className="text-eyebrow text-fg-subtle">Engine</p>
+                  <p className="mt-3 text-sm text-fg-muted">
+                    {t("problemEngine")}
+                  </p>
+                </div>
+                <div
+                  className="surface-card p-5"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, oklch(74% 0.15 145 / 0.10), transparent)",
+                    borderColor: "oklch(74% 0.15 145 / 0.30)",
+                  }}
+                >
+                  <p
+                    className="text-eyebrow"
+                    style={{ color: "var(--color-success)" }}
+                  >
+                    BlunderLab
+                  </p>
+                  <p className="mt-3 text-sm text-fg-muted">
+                    {t("problemBlunderLab")}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* HOW IT WORKS --------------------------------------------- */}
+        <section
+          id="how-it-works"
+          aria-labelledby="how-heading"
+          className="scroll-mt-20 py-24 md:py-32"
+        >
+          <div className="container">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <p className="text-eyebrow">{t("howEyebrow")}</p>
+              <h2
+                id="how-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-5xl"
+              >
+                {t("howTitle")}
+              </h2>
+            </Reveal>
+
+            <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {/* connector line on desktop */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-12 hidden h-px bg-gradient-to-r from-transparent via-border-strong to-transparent lg:block"
+              />
+              <Reveal delay={0}>
+                <Step
+                  icon={<Swords className="size-5" />}
+                  number="01"
+                  title={t("stepPlayTitle")}
+                  text={t("stepPlayText")}
                 />
+              </Reveal>
+              <Reveal delay={80}>
+                <Step
+                  icon={<Crosshair className="size-5" />}
+                  number="02"
+                  title={t("stepReviewTitle")}
+                  text={t("stepReviewText")}
+                />
+              </Reveal>
+              <Reveal delay={160}>
+                <Step
+                  icon={<BrainCircuit className="size-5" />}
+                  number="03"
+                  title={t("stepPatternTitle")}
+                  text={t("stepPatternText")}
+                />
+              </Reveal>
+              <Reveal delay={240}>
+                <Step
+                  icon={<Goal className="size-5" />}
+                  number="04"
+                  title={t("stepTrainTitle")}
+                  text={t("stepTrainText")}
+                />
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* PATTERN TAXONOMY ----------------------------------------- */}
+        <section
+          id="patterns"
+          aria-labelledby="patterns-heading"
+          className="relative scroll-mt-20 border-y border-border/70 bg-bg-elevated/40 py-24 md:py-32"
+        >
+          <div className="container">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <p className="text-eyebrow">{t("taxonomyEyebrow")}</p>
+              <h2
+                id="patterns-heading"
+                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-5xl"
+              >
+                {t("taxonomyTitle")}
+              </h2>
+              <p className="mt-4 text-fg-muted">{t("taxonomyText")}</p>
+            </Reveal>
+
+            <div className="mx-auto mt-14 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {PATTERN_KEYS.map((name, index) => (
+                <Reveal key={name} delay={(index % 4) * 60}>
+                  <article className="surface-card surface-card-hover surface-grain group h-full p-5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="font-medium tracking-tight">{name}</h3>
+                      <span className="font-mono text-xs text-fg-subtle">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+                      {patterns(name)}
+                    </p>
+                    <div
+                      aria-hidden
+                      className="mt-5 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent/0 via-accent/60 to-accent/0 transition-transform duration-500 group-hover:scale-x-100"
+                    />
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+            <p className="mt-10 text-center text-xs text-fg-subtle">
+              {t("patternsHelper")}
+            </p>
+          </div>
+        </section>
+
+        {/* DASHBOARD + DAILY ----------------------------------------- */}
+        <section className="py-24 md:py-32">
+          <div className="container grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
+              <article className="surface-card surface-grain h-full p-7 md:p-9">
+                <p className="text-eyebrow">{t("dashboardEyebrow")}</p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                  {t("dashboardTitle")}
+                </h2>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  <MiniMetric
+                    icon={<ChartNoAxesCombined />}
+                    label="Top weakness"
+                    value="Tunnel Vision"
+                  />
+                  <MiniMetric
+                    icon={<Sparkles />}
+                    label="Streak"
+                    value="4d"
+                    accent
+                  />
+                  <MiniMetric icon={<Trophy />} label="City rank" value="#12" />
+                  <MiniMetric
+                    icon={<Target />}
+                    label="Daily Blunder"
+                    value="Ready"
+                    accent
+                  />
+                </div>
+              </article>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <article className="surface-card surface-grain relative h-full overflow-hidden p-7 md:p-9">
+                <div
+                  aria-hidden
+                  className="hero-orb pointer-events-none absolute -right-20 -top-20 h-80 w-80 opacity-60"
+                />
+                <span className="text-eyebrow">Daily Blunder</span>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight">
+                  {t("dailyTitle")}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+                  {t("dailyText")}
+                </p>
+                <div className="mt-7">
+                  <MiniBoard />
+                </div>
+              </article>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* PRICING -------------------------------------------------- */}
+        <section
+          aria-labelledby="pricing-heading"
+          className="border-t border-border/70 bg-bg-elevated/40 py-24 md:py-32"
+        >
+          <div className="container">
+            <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
+              <Reveal>
+                <p className="text-eyebrow">{t("pricingEyebrow")}</p>
+                <h2
+                  id="pricing-heading"
+                  className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl"
+                >
+                  {t("pricingTitle")}
+                </h2>
+              </Reveal>
+              <Link
+                href="/pro"
+                className="btn-ghost inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm text-accent"
+              >
+                {t("pricingLink")} <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-3 md:grid-cols-3">
+              {TIERS.map((tier, index) => (
+                <Reveal key={tier.name} delay={index * 80}>
+                  <article
+                    className={`surface-card surface-grain group relative h-full overflow-hidden p-6 transition ${
+                      tier.highlight
+                        ? "border-accent/55"
+                        : "hover:border-border-strong"
+                    }`}
+                    style={
+                      tier.highlight
+                        ? {
+                            background:
+                              "linear-gradient(165deg, oklch(78% 0.16 72 / 0.10) 0%, transparent 60%)",
+                            boxShadow:
+                              "0 1px 0 oklch(100% 0 0 / 0.04) inset, 0 30px 60px oklch(0% 0 0 / 0.45)",
+                          }
+                        : undefined
+                    }
+                  >
+                    {tier.highlight ? (
+                      <span className="absolute right-5 top-5 rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-accent">
+                        Most popular
+                      </span>
+                    ) : null}
+                    <div className="flex items-baseline gap-2">
+                      <h3 className="text-lg font-semibold tracking-tight">
+                        {tier.name}
+                      </h3>
+                    </div>
+                    <p className="mt-4 font-mono text-3xl tracking-tight">
+                      {tier.price}
+                      {tier.name === "Pro" ? (
+                        <span className="text-sm text-fg-subtle">/mo</span>
+                      ) : null}
+                    </p>
+                    <ul className="mt-6 grid gap-2 text-sm text-fg-muted">
+                      {tier.features.map((feature) => (
+                        <li key={feature} className="flex items-center gap-2.5">
+                          <span className="grid size-4 place-items-center rounded-full border border-accent/40 bg-accent/10">
+                            <span className="size-1.5 rounded-full bg-accent" />
+                          </span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </Reveal>
               ))}
             </div>
           </div>
-          <div className="grid gap-3">
-            <div className="rounded-md border border-danger/35 bg-danger/10 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs uppercase tracking-[0.16em] text-danger">
-                  Critical moment
-                </span>
-                <Badge variant="danger">Blunder</Badge>
-              </div>
-              <p className="mt-3 font-mono text-2xl">17. Qh5?</p>
-            </div>
-            <div className="rounded-md border border-accent/35 bg-accent/10 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <BrainCircuit className="size-4 text-accent" />
-                BlunderLab Coach
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-                {coachText}
-              </p>
-            </div>
-            <div className="rounded-md border border-success/35 bg-success/10 p-4">
-              <p className="text-sm font-medium text-success">{goalTitle}</p>
-              <p className="mt-2 text-sm text-fg-muted">{goalText}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+        </section>
 
-function Stat({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint: string;
-}) {
-  return (
-    <div className="surface-card flex flex-col gap-1 p-5">
-      <span className="text-xs uppercase tracking-[0.16em] text-fg-muted">
-        {label}
-      </span>
-      <span className="font-mono text-3xl tracking-normal">{value}</span>
-      <span className="text-xs text-fg-muted">{hint}</span>
+        {/* FINAL CTA ------------------------------------------------ */}
+        <section className="relative overflow-hidden py-28 md:py-36">
+          <div
+            aria-hidden
+            className="hero-orb pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[520px] w-[820px] -translate-x-1/2 -translate-y-1/2"
+          />
+          <div className="container text-center">
+            <Reveal>
+              <h2 className="text-display mx-auto max-w-3xl font-semibold text-balance">
+                {t("finalTitle")}
+              </h2>
+            </Reveal>
+            <Reveal delay={100}>
+              <p className="mx-auto mt-5 max-w-2xl text-fg-muted">
+                {t("finalText")}
+              </p>
+            </Reveal>
+            <Reveal delay={180}>
+              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  href="/play"
+                  className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
+                >
+                  {common("startTraining")} <ArrowRight className="size-4" />
+                </Link>
+                <Link
+                  href="/pro"
+                  className="btn-secondary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
+                >
+                  {common("pro")}
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      </main>
+
+      <MarketingFooter
+        productHeading={footer("productHeading")}
+        resourcesHeading={footer("resourcesHeading")}
+        companyHeading={footer("companyHeading")}
+        tagline={footer("tagline")}
+        rights={footer("rights")}
+        product={footerCols.product}
+        resources={footerCols.resources}
+        company={footerCols.company}
+      />
     </div>
   );
 }
@@ -492,36 +560,16 @@ function Step({
   text: string;
 }) {
   return (
-    <article className="surface-card p-5">
-      <div className="flex items-center justify-between gap-3">
-        <span className="grid size-9 place-items-center rounded-md bg-accent/10 text-accent">
+    <article className="surface-card surface-card-hover surface-grain relative h-full p-6">
+      <div className="flex items-center justify-between">
+        <span className="grid size-10 place-items-center rounded-full border border-accent/35 bg-accent/10 text-accent">
           {icon}
         </span>
-        <span className="font-mono text-xs text-fg-muted">{number}</span>
+        <span className="font-mono text-xs text-fg-subtle">{number}</span>
       </div>
-      <h3 className="mt-5 font-semibold">{title}</h3>
+      <h3 className="mt-6 font-semibold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-fg-muted">{text}</p>
     </article>
-  );
-}
-
-function PreviewRow({
-  icon,
-  label,
-  children,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="surface-card p-4">
-      <div className="flex items-center gap-2 text-sm font-medium text-accent">
-        {icon}
-        {label}
-      </div>
-      <p className="mt-3 text-sm leading-relaxed text-fg-muted">{children}</p>
-    </div>
   );
 }
 
@@ -529,18 +577,57 @@ function MiniMetric({
   icon,
   label,
   value,
+  accent = false,
 }: {
   icon: React.ReactElement<{ className?: string }>;
   label: string;
   value: string;
+  accent?: boolean;
 }) {
   return (
-    <div className="rounded-md border border-border bg-bg/45 p-4">
+    <div className="rounded-lg border border-border bg-bg/40 p-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-fg-muted">{label}</p>
-        {icon}
+        <p className="text-xs uppercase tracking-[0.16em] text-fg-subtle">
+          {label}
+        </p>
+        <span className={accent ? "text-accent" : "text-fg-muted"}>{icon}</span>
       </div>
-      <p className="mt-3 font-mono text-2xl">{value}</p>
+      <p
+        className={`mt-3 font-mono text-2xl tracking-tight ${
+          accent ? "text-accent" : ""
+        }`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function MiniBoard() {
+  const cells = Array.from({ length: 64 }, (_, i) => i);
+  return (
+    <div className="aspect-square w-full overflow-hidden rounded-lg border border-border-strong/70 bg-[oklch(20%_0.01_60)] p-2">
+      <div className="grid h-full grid-cols-8 grid-rows-8 overflow-hidden rounded-md">
+        {cells.map((i) => {
+          const fx = i % 8;
+          const ry = Math.floor(i / 8);
+          const isLight = (fx + ry) % 2 === 0;
+          const isHi = i === 35 || i === 28; // d4, e5 highlight
+          return (
+            <span
+              key={i}
+              className={isLight ? "bg-board-light" : "bg-board-dark"}
+              style={
+                isHi
+                  ? {
+                      boxShadow: "inset 0 0 0 9999px oklch(78% 0.16 72 / 0.4)",
+                    }
+                  : undefined
+              }
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

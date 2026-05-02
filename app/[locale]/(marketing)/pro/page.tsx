@@ -1,15 +1,8 @@
-import { LocaleSwitcher } from "@/components/common/locale-switcher";
+import { Reveal } from "@/components/common/reveal";
+import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { MarketingNav } from "@/components/marketing/marketing-nav";
 import { WaitlistForm } from "@/components/pro/waitlist-form";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Link } from "@/i18n/navigation";
-import { Check, Minus } from "lucide-react";
+import { Check, Crown, Minus, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -22,6 +15,7 @@ const TIERS = [
   {
     name: "Free",
     price: "$0",
+    suffix: "Forever",
     description: "For the first insight loop.",
     features: ["3 reviews/day", "Classic Game", "Daily Blunder"],
     highlighted: false,
@@ -29,6 +23,7 @@ const TIERS = [
   {
     name: "Pro",
     price: "$4.99",
+    suffix: "per month",
     description: "For players who want focused training modes.",
     features: ["Unlimited reviews", "Pattern Drill", "Deep Review"],
     highlighted: true,
@@ -36,6 +31,7 @@ const TIERS = [
   {
     name: "School",
     price: "Custom",
+    suffix: "Per cohort",
     description: "For clubs, classes, and mentors.",
     features: ["Student dashboard", "Class leaderboard", "Coach view"],
     highlighted: false,
@@ -58,152 +54,245 @@ const FEATURES = [
 export default async function ProPage() {
   const t = await getTranslations("pro");
   const common = await getTranslations("common");
+  const footer = await getTranslations("footer");
+
+  const footerCols = {
+    product: [
+      { label: footer("linkPlay"), href: "/play" },
+      { label: footer("linkDashboard"), href: "/dashboard" },
+      { label: footer("linkPro"), href: "/pro" },
+      { label: footer("linkBuilders"), href: "/builders" },
+    ],
+    resources: [
+      {
+        label: footer("linkDocs"),
+        href: "https://github.com/sabr2007/blunderlab/blob/main/docs/decisions.md",
+        external: true,
+      },
+      {
+        label: footer("linkChangelog"),
+        href: "https://github.com/sabr2007/blunderlab/commits/main",
+        external: true,
+      },
+      {
+        label: footer("linkRoadmap"),
+        href: "https://github.com/sabr2007/blunderlab/blob/main/docs/PRD.md",
+        external: true,
+      },
+    ],
+    company: [
+      { label: footer("linkAbout"), href: "/builders" },
+      {
+        label: footer("linkContact"),
+        href: "https://github.com/sabr2007/blunderlab",
+        external: true,
+      },
+      { label: footer("linkPrivacy"), href: "/" },
+    ],
+  };
 
   return (
-    <main className="min-h-screen bg-bg">
-      <div className="lab-grid pointer-events-none fixed inset-0 -z-10 opacity-20" />
-      <header className="container flex items-center justify-between py-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-accent/15 text-accent">
-            ◇
-          </span>
-          BlunderLab
-        </Link>
-        <nav className="flex items-center gap-3 text-sm">
-          <LocaleSwitcher compact />
-          <Link href="/sign-in" className="text-fg-muted hover:text-fg">
-            {common("signIn")}
-          </Link>
-          <Link
-            href="/play"
-            className="rounded-md bg-accent px-3.5 py-2 font-medium text-bg transition hover:opacity-90"
-          >
-            {common("startTraining")}
-          </Link>
-        </nav>
-      </header>
+    <div className="relative">
+      <MarketingNav
+        signInLabel={common("signIn")}
+        ctaLabel={common("startTraining")}
+      />
 
-      <section className="container py-12 md:py-16">
-        <div className="max-w-3xl">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
-            {t("eyebrow")}
-          </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-normal md:text-6xl">
-            {t("title")}
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-fg-muted">
-            {t("text")}
-          </p>
-        </div>
+      <main>
+        {/* HERO ---------------------------------------------- */}
+        <section className="relative isolate overflow-hidden pb-12 pt-16 md:pb-16 md:pt-24">
+          <div
+            aria-hidden
+            className="hero-orb pointer-events-none absolute left-1/2 top-[-12%] -z-10 h-[560px] w-[820px] -translate-x-1/2"
+          />
+          <div className="hero-grid pointer-events-none absolute inset-0 -z-10 opacity-25" />
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          {TIERS.map((tier) => (
-            <Card
-              key={tier.name}
-              className={
-                tier.highlighted ? "border-accent bg-accent/5" : undefined
-              }
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between gap-3">
-                  <CardTitle>{tier.name}</CardTitle>
-                  {tier.highlighted ? (
-                    <Badge variant="accent">Most popular</Badge>
-                  ) : null}
-                </div>
-                <CardDescription>{tier.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                <p className="font-mono text-4xl">
-                  {tier.price}
-                  {tier.name === "Pro" ? (
-                    <span className="text-sm text-fg-muted">/mo</span>
-                  ) : null}
+          <div className="container">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-bg-elevated/80 px-3.5 py-1.5 text-xs text-fg-muted backdrop-blur">
+                <Crown className="size-3.5 text-accent" /> {t("eyebrow")}
+              </span>
+              <h1 className="text-display mt-6 font-semibold text-balance">
+                {t("title")}
+              </h1>
+              <p className="mt-5 text-pretty text-lg leading-relaxed text-fg-muted">
+                {t("text")}
+              </p>
+            </Reveal>
+
+            <div className="mx-auto mt-14 grid max-w-5xl gap-3 lg:grid-cols-3">
+              {TIERS.map((tier, index) => (
+                <Reveal key={tier.name} delay={index * 80}>
+                  <article
+                    className={`surface-card surface-grain relative h-full overflow-hidden p-7 transition ${
+                      tier.highlighted
+                        ? "border-accent/55"
+                        : "hover:border-border-strong"
+                    }`}
+                    style={
+                      tier.highlighted
+                        ? {
+                            background:
+                              "linear-gradient(170deg, oklch(78% 0.16 72 / 0.10) 0%, transparent 60%)",
+                            boxShadow:
+                              "0 1px 0 oklch(100% 0 0 / 0.05) inset, 0 30px 60px oklch(0% 0 0 / 0.45)",
+                          }
+                        : undefined
+                    }
+                  >
+                    {tier.highlighted ? (
+                      <span className="absolute right-5 top-5 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-accent">
+                        <Sparkles className="size-3" />
+                        Most popular
+                      </span>
+                    ) : null}
+                    <h3 className="text-lg font-semibold tracking-tight">
+                      {tier.name}
+                    </h3>
+                    <p className="mt-1 text-sm text-fg-muted">
+                      {tier.description}
+                    </p>
+                    <p className="mt-6 font-mono text-4xl tracking-tight">
+                      {tier.price}
+                    </p>
+                    <p className="text-xs text-fg-subtle">{tier.suffix}</p>
+                    <ul className="mt-6 grid gap-2.5 text-sm text-fg-muted">
+                      {tier.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2.5">
+                          <span className="mt-1 grid size-4 shrink-0 place-items-center rounded-full border border-accent/40 bg-accent/10">
+                            <Check className="size-2.5 text-accent" />
+                          </span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* WAITLIST ----------------------------------------- */}
+        <section className="py-16 md:py-20">
+          <div className="container max-w-3xl">
+            <Reveal>
+              <article
+                className="surface-card surface-grain p-7 md:p-9"
+                style={{
+                  borderColor: "oklch(78% 0.16 72 / 0.4)",
+                  background:
+                    "linear-gradient(180deg, oklch(78% 0.16 72 / 0.06), transparent)",
+                }}
+              >
+                <p className="text-eyebrow">{t("eyebrow")}</p>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
+                  {t("join")}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+                  Payments are not live in the submission prototype. This
+                  records upgrade intent for deeper training modes.
                 </p>
-                <ul className="grid gap-2 text-sm text-fg-muted">
-                  {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2">
-                      <Check className="size-4 text-success" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <div className="mt-6">
+                  <WaitlistForm />
+                </div>
+              </article>
+            </Reveal>
+          </div>
+        </section>
 
-        <Card className="mt-6 border-accent/30 bg-accent/5">
-          <CardHeader>
-            <CardTitle>{t("join")}</CardTitle>
-            <CardDescription>
-              Payments are not live in the submission prototype. This records
-              upgrade intent for deeper training modes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <WaitlistForm />
-          </CardContent>
-        </Card>
+        {/* COMPARISON --------------------------------------- */}
+        <section className="border-t border-border/70 bg-bg-elevated/40 py-24 md:py-28">
+          <div className="container">
+            <Reveal className="mx-auto mb-10 max-w-2xl text-center">
+              <p className="text-eyebrow">Comparison</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+                {t("comparison")}
+              </h2>
+              <p className="mt-3 text-sm text-fg-muted">
+                Pro is framed around learning depth, not cosmetic board changes.
+              </p>
+            </Reveal>
 
-        <Card className="mt-6 overflow-hidden">
-          <CardHeader>
-            <CardTitle>{t("comparison")}</CardTitle>
-            <CardDescription>
-              Pro is framed around learning depth, not cosmetic board changes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse text-sm">
-              <thead className="sticky top-0 bg-surface">
-                <tr className="border-b border-border text-left">
-                  <th className="py-3 pr-4 font-medium text-fg-muted">
-                    Feature
-                  </th>
-                  <th className="px-4 py-3 font-medium">Free</th>
-                  <th className="px-4 py-3 font-medium text-accent">Pro</th>
-                  <th className="px-4 py-3 font-medium">School</th>
-                </tr>
-              </thead>
-              <tbody>
-                {FEATURES.map(([feature, free, pro, school]) => (
-                  <tr key={feature} className="border-b border-border/70">
-                    <td className="py-3 pr-4 text-fg-muted">{feature}</td>
-                    <Cell value={free} />
-                    <Cell value={pro} accent />
-                    <Cell value={school} />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      </section>
-    </main>
+            <Reveal delay={120}>
+              <div className="surface-card surface-grain overflow-x-auto">
+                <table className="w-full min-w-[720px] border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left">
+                      <th className="px-6 py-4 font-medium text-fg-subtle">
+                        Feature
+                      </th>
+                      <th className="px-4 py-4 font-medium">Free</th>
+                      <th className="px-4 py-4 font-medium text-accent">Pro</th>
+                      <th className="px-4 py-4 font-medium">School</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {FEATURES.map(([feature, free, pro, school], i) => (
+                      <tr
+                        key={String(feature)}
+                        className={`border-b border-border/60 transition hover:bg-bg-elevated/40 ${
+                          i % 2 === 0 ? "" : "bg-bg/30"
+                        }`}
+                      >
+                        <td className="px-6 py-4 text-fg-muted">{feature}</td>
+                        <Cell value={free} />
+                        <Cell value={pro} accent />
+                        <Cell value={school} />
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      </main>
+
+      <MarketingFooter
+        productHeading={footer("productHeading")}
+        resourcesHeading={footer("resourcesHeading")}
+        companyHeading={footer("companyHeading")}
+        tagline={footer("tagline")}
+        rights={footer("rights")}
+        product={footerCols.product}
+        resources={footerCols.resources}
+        company={footerCols.company}
+      />
+    </div>
   );
 }
 
 function Cell({
   value,
   accent,
-}: { value: boolean | string; accent?: boolean }) {
+}: {
+  value: boolean | string;
+  accent?: boolean;
+}) {
   if (value === true) {
     return (
-      <td className="px-4 py-3">
-        <Check
-          className={`size-4 ${accent ? "text-accent" : "text-success"}`}
-        />
+      <td className="px-4 py-4">
+        <span
+          className={`grid size-5 place-items-center rounded-full border ${
+            accent
+              ? "border-accent/40 bg-accent/15 text-accent"
+              : "border-success/30 bg-success/10 text-success"
+          }`}
+        >
+          <Check className="size-3" />
+        </span>
       </td>
     );
   }
 
   if (value === false) {
     return (
-      <td className="px-4 py-3">
-        <Minus className="size-4 text-fg-muted" />
+      <td className="px-4 py-4">
+        <Minus className="size-4 text-fg-subtle" />
       </td>
     );
   }
 
-  return <td className="px-4 py-3">{value}</td>;
+  return <td className="px-4 py-4 text-fg">{value}</td>;
 }

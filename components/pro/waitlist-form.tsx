@@ -30,7 +30,7 @@ export function WaitlistForm({
           type="email"
           name="email"
           placeholder="you@example.com"
-          className="h-10 min-w-0 flex-1 rounded-md border border-border bg-bg px-3 text-sm text-fg outline-none transition focus:border-accent"
+          className="h-11 min-w-0 flex-1 rounded-md border border-border bg-bg px-3 text-sm text-fg outline-none transition focus:border-accent"
         />
         <Button type="submit" disabled={pending}>
           {pending ? (
