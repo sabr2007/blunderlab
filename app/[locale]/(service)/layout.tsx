@@ -19,11 +19,21 @@ export default async function ServiceLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Null user only reaches this layout on guest-eligible paths (/play, /review).
+  // Middleware already redirects protected paths to /sign-in. For guest-eligible
+  // paths we render the shell with a guest placeholder; PlayView/ReviewView will
+  // create an anonymous Supabase session on the client.
   if (!user) {
-    redirect(
-      `${withLocalePrefix("/sign-in", locale)}?next=${encodeURIComponent(
-        withLocalePrefix("/dashboard", locale),
-      )}`,
+    return (
+      <AppShell
+        user={{
+          email: null,
+          displayName: "Guest",
+          city: "Other",
+        }}
+      >
+        {children}
+      </AppShell>
     );
   }
 

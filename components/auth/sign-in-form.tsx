@@ -17,7 +17,6 @@ const emailSchema = z.string().trim().email();
 
 type SignInFormProps = {
   nextPath: string;
-  guestPath: string;
   error?: string | null;
 };
 
@@ -27,7 +26,7 @@ type Status =
   | { kind: "sent"; email: string }
   | { kind: "error"; message: string };
 
-export function SignInForm({ nextPath, guestPath, error }: SignInFormProps) {
+export function SignInForm({ nextPath, error }: SignInFormProps) {
   const t = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>(
@@ -42,7 +41,7 @@ export function SignInForm({ nextPath, guestPath, error }: SignInFormProps) {
 
     try {
       await ensureAnonymousUser();
-      window.location.assign(guestPath);
+      window.location.assign(nextPath);
     } catch (err) {
       setStatus({
         kind: "error",
