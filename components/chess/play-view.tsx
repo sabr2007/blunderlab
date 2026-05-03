@@ -771,32 +771,57 @@ function ModeChoice({
   disabled?: boolean;
   onClick: () => void;
 }) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-      className={[
-        "group h-full rounded-md border p-5 text-left transition",
-        selected
-          ? "border-accent/60 bg-accent/10 shadow-[var(--shadow-glow)]"
-          : "border-border bg-card hover:border-accent/40 hover:bg-surface-elevated/60",
-        disabled ? "cursor-not-allowed opacity-65" : "",
-      ].join(" ")}
-      aria-pressed={selected}
-    >
+  const baseClasses =
+    "group relative h-full rounded-md border p-5 text-left transition";
+  const stateClasses = disabled
+    ? "cursor-default border-dashed border-border bg-bg-elevated/20 text-fg-muted"
+    : selected
+      ? "border-accent/60 bg-accent/10 shadow-[var(--shadow-glow)]"
+      : "border-border bg-card hover:border-accent/40 hover:bg-surface-elevated/60";
+
+  const content = (
+    <>
       <div className="flex items-start justify-between gap-3">
-        <span className="grid size-10 place-items-center rounded-md bg-accent/10 text-accent">
+        <span
+          className={`grid size-10 place-items-center rounded-md ${
+            disabled ? "bg-bg/40 text-fg-subtle" : "bg-accent/10 text-accent"
+          }`}
+        >
           <Icon className="size-5" />
         </span>
         <Badge variant={disabled ? "warning" : selected ? "accent" : "success"}>
           {eyebrow}
         </Badge>
       </div>
-      <h2 className="mt-5 text-xl font-semibold tracking-normal">{title}</h2>
+      <h2
+        className={`mt-5 text-xl font-semibold tracking-normal ${
+          disabled ? "text-fg-muted" : ""
+        }`}
+      >
+        {title}
+      </h2>
       <p className="mt-2 text-sm leading-relaxed text-fg-muted">
         {description}
       </p>
+    </>
+  );
+
+  if (disabled) {
+    return (
+      <div className={[baseClasses, stateClasses].join(" ")} aria-disabled>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[baseClasses, stateClasses].join(" ")}
+      aria-pressed={selected}
+    >
+      {content}
     </button>
   );
 }

@@ -47,18 +47,24 @@ export default async function LandingPage() {
       price: proT("free.price"),
       features: proT.raw("free.features") as string[],
       highlight: false,
+      ctaLabel: proT("freeCta"),
+      ctaHref: "/sign-in",
     },
     {
       name: proT("pro.name"),
       price: proT("pro.price"),
       features: proT.raw("pro.features") as string[],
       highlight: true,
+      ctaLabel: proT("proCta"),
+      ctaHref: "/pro",
     },
     {
       name: proT("school.name"),
       price: proT("school.price"),
       features: proT.raw("school.features") as string[],
       highlight: false,
+      ctaLabel: proT("schoolCta"),
+      ctaHref: "/pro",
     },
   ];
 
@@ -487,6 +493,17 @@ export default async function LandingPage() {
                         </li>
                       ))}
                     </ul>
+                    <Link
+                      href={tier.ctaHref}
+                      className={`mt-7 inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-md text-sm font-medium transition ${
+                        tier.highlight
+                          ? "bg-accent text-bg hover:opacity-90"
+                          : "border border-border text-fg-muted hover:border-border-strong hover:text-fg"
+                      }`}
+                    >
+                      {tier.ctaLabel}
+                      <ArrowRight className="size-3.5" />
+                    </Link>
                   </article>
                 </Reveal>
               ))}

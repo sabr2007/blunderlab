@@ -530,6 +530,9 @@
     "comparisonEyebrow": "Comparison",
     "comparisonText": "Pro is framed around learning depth, not cosmetic board changes.",
     "feature": "Feature",
+    "freeCta": "Start free",
+    "proCta": "Join Pro waitlist",
+    "schoolCta": "Talk to us",
     "free": {
       "name": "Free",
       "price": "$0",
