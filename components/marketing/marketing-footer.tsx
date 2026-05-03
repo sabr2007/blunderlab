@@ -1,5 +1,4 @@
 import { BrandLogo } from "@/components/common/brand-logo";
-import { LocaleSwitcher } from "@/components/common/locale-switcher";
 import { Link } from "@/i18n/navigation";
 import { Github } from "lucide-react";
 
@@ -48,7 +47,6 @@ export function MarketingFooter({
           <p className="max-w-sm text-sm leading-relaxed text-fg-muted">
             {tagline}
           </p>
-          <LocaleSwitcher />
         </div>
 
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-10">
