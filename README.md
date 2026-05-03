@@ -23,10 +23,7 @@ BlunderLab — это AI-шахматный коуч для начинающих
 ![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat&logo=openai&logoColor=white)
 
-## Дэшборд
-
-> Плейсхолдер под финальный скриншот дэшборда.
-> Да, изображение можно вставить прямо в README через Markdown. Когда финальный кадр будет готов, замените этот блок на `![Дэшборд](./path/to/dashboard-screenshot.png)`.
+<img width="1439" height="781" alt="image" src="https://github.com/user-attachments/assets/f60b153c-a4d5-4510-bf1d-211007f09f42" />
 
 ## Почему это важно
 
