@@ -66,17 +66,35 @@ export function SignInForm({ nextPath, guestPath, error }: SignInFormProps) {
         return;
       }
 
+      const startGoogleOAuth = () =>
+        supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo },
+        });
+
       const result = user?.is_anonymous
         ? await supabase.auth.linkIdentity({
             provider: "google",
             options: { redirectTo },
           })
-        : await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { redirectTo },
-          });
+        : await startGoogleOAuth();
 
       if (result.error) {
+        if (user?.is_anonymous && isManualLinkingDisabledError(result.error)) {
+          const fallback = await startGoogleOAuth();
+
+          if (fallback.error) {
+            setStatus({ kind: "error", message: fallback.error.message });
+            return;
+          }
+
+          if (fallback.data.url) {
+            window.location.assign(fallback.data.url);
+          }
+
+          return;
+        }
+
         setStatus({ kind: "error", message: result.error.message });
         return;
       }
@@ -288,4 +306,11 @@ function authErrorMessage(
   }
 
   return t("signInFailed");
+}
+
+function isManualLinkingDisabledError(error: { message?: string } | null) {
+  return (
+    typeof error?.message === "string" &&
+    error.message.toLowerCase().includes("manual linking is disabled")
+  );
 }
