@@ -536,7 +536,7 @@ export default async function LandingPage() {
             <Reveal delay={180}>
               <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
-                  href="/play"
+                  href="/sign-in?next=/play"
                   className="btn-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
                   {common("startTraining")} <ArrowRight className="size-4" />

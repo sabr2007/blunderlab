@@ -16,3 +16,10 @@ test("Russian landing renders localized primary copy", async ({ page }) => {
     page.getByRole("link", { name: /Начать тренировку/i }).first(),
   ).toBeVisible();
 });
+
+test("Russian landing final CTA routes to sign-in", async ({ page }) => {
+  await page.goto("/ru");
+  await expect(
+    page.getByRole("link", { name: /Начать тренировку/i }).last(),
+  ).toHaveAttribute("href", "/ru/sign-in?next=/play");
+});
