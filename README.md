@@ -1,4 +1,12 @@
 # BlunderLab
+![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs&logoColor=white)
+![TypeScript strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?style=flat&logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2F%20Postgres%20%2F%20RLS-3ECF8E?style=flat&logo=supabase&logoColor=white)
+![next-intl](https://img.shields.io/badge/next--intl-EN%20%2F%20RU-111827?style=flat)
+![Stockfish WASM](https://img.shields.io/badge/Stockfish-WASM-0F766E?style=flat)
+![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat&logo=openai&logoColor=white)
 
 > AI-шахматный коуч, который превращает blunder'ы в персональный план тренировки.
 
@@ -11,17 +19,6 @@ BlunderLab — это AI-шахматный коуч для начинающих
 Главная петля продукта проста и понятна комиссии:
 
 **Play → Review → Pattern → Train → Improve → Return**
-
-## Бейджи стека
-
-![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs&logoColor=white)
-![TypeScript strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat&logo=typescript&logoColor=white)
-![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?style=flat&logo=tailwindcss&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2F%20Postgres%20%2F%20RLS-3ECF8E?style=flat&logo=supabase&logoColor=white)
-![next-intl](https://img.shields.io/badge/next--intl-EN%20%2F%20RU-111827?style=flat)
-![Stockfish WASM](https://img.shields.io/badge/Stockfish-WASM-0F766E?style=flat)
-![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat&logo=openai&logoColor=white)
 
 <img width="1439" height="781" alt="image" src="https://github.com/user-attachments/assets/f60b153c-a4d5-4510-bf1d-211007f09f42" />
 
