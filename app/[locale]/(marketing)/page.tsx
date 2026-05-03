@@ -18,11 +18,11 @@ import {
 } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 
-const PATTERN_KEYS = [
+const FEATURED_PATTERN = "Tunnel Vision" as const;
+const SECONDARY_PATTERN_KEYS = [
   "Hanging Piece",
   "Missed Tactic",
   "King Safety",
-  "Tunnel Vision",
   "Greedy Move",
   "Time Panic",
   "Opening Drift",
@@ -279,28 +279,80 @@ export default async function LandingPage() {
               <p className="mt-4 text-fg-muted">{t("taxonomyText")}</p>
             </Reveal>
 
-            <div className="mx-auto mt-14 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {PATTERN_KEYS.map((name, index) => (
-                <Reveal key={name} delay={(index % 4) * 60}>
-                  <article className="surface-card surface-card-hover surface-grain group h-full p-5">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="font-medium tracking-tight">
-                        {patternLabels(name)}
-                      </h3>
-                      <span className="font-mono text-xs text-fg-subtle">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                    <p className="mt-3 text-sm leading-relaxed text-fg-muted">
-                      {patterns(name)}
+            <div className="mx-auto mt-14 grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.55fr)] lg:gap-10">
+              <Reveal>
+                <article
+                  className="surface-card surface-grain relative h-full overflow-hidden p-7 md:p-9"
+                  style={{
+                    background:
+                      "linear-gradient(170deg, oklch(78% 0.16 72 / 0.10) 0%, transparent 65%)",
+                    borderColor: "oklch(78% 0.16 72 / 0.40)",
+                  }}
+                >
+                  <div
+                    aria-hidden
+                    className="hero-orb pointer-events-none absolute -right-24 -top-24 h-72 w-72 opacity-50"
+                  />
+                  <div className="relative">
+                    <p className="text-eyebrow">
+                      {t("taxonomyFeaturedEyebrow")}
                     </p>
-                    <div
-                      aria-hidden
-                      className="mt-5 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-accent/0 via-accent/60 to-accent/0 transition-transform duration-500 group-hover:scale-x-100"
-                    />
-                  </article>
-                </Reveal>
-              ))}
+                    <h3 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+                      {patternLabels(FEATURED_PATTERN)}
+                    </h3>
+                    <p className="mt-3 text-sm leading-relaxed text-fg">
+                      {t("taxonomyFeaturedTagline")}
+                    </p>
+                    <p className="mt-5 text-sm leading-relaxed text-fg-muted">
+                      {t("taxonomyFeaturedDeeper")}
+                    </p>
+                    <dl className="mt-7 grid gap-4 border-t border-border/60 pt-5 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="text-eyebrow text-fg-subtle">
+                          {t("taxonomyFeaturedTrigger")}
+                        </dt>
+                        <dd className="mt-2 leading-relaxed text-fg-muted">
+                          {t("taxonomyFeaturedTriggerText")}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-eyebrow text-fg-subtle">
+                          {t("taxonomyFeaturedFix")}
+                        </dt>
+                        <dd className="mt-2 leading-relaxed text-fg-muted">
+                          {t("taxonomyFeaturedFixText")}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </article>
+              </Reveal>
+
+              <Reveal delay={120}>
+                <div className="flex h-full flex-col">
+                  <p className="text-eyebrow text-fg-subtle">
+                    {t("taxonomyMoreEyebrow")}
+                  </p>
+                  <ol className="mt-4 grid divide-y divide-border/70 border-y border-border/70">
+                    {SECONDARY_PATTERN_KEYS.map((name, index) => (
+                      <li
+                        key={name}
+                        className="group grid grid-cols-[auto_1fr] items-baseline gap-x-5 gap-y-1 py-4 transition hover:bg-bg-elevated/30 sm:grid-cols-[auto_minmax(0,11rem)_minmax(0,1fr)] sm:gap-x-6"
+                      >
+                        <span className="font-mono text-xs text-fg-subtle">
+                          {String(index + 2).padStart(2, "0")}
+                        </span>
+                        <h3 className="text-sm font-medium tracking-tight transition group-hover:text-accent sm:text-base">
+                          {patternLabels(name)}
+                        </h3>
+                        <p className="col-start-2 text-sm leading-relaxed text-fg-muted sm:col-start-3">
+                          {patterns(name)}
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </Reveal>
             </div>
             <p className="mt-10 text-center text-xs text-fg-subtle">
               {t("patternsHelper")}
