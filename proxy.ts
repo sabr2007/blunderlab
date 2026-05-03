@@ -3,11 +3,7 @@ import {
   splitLocalePathname,
   withLocalePrefix,
 } from "@/i18n/routing";
-import {
-  getSafeNextPath,
-  isProtectedAppPath,
-  isRealUser,
-} from "@/lib/auth/session";
+import { getSafeNextPath, isProtectedAppPath } from "@/lib/auth/session";
 import type { Database } from "@/lib/supabase/database.generated";
 import { createServerClient } from "@supabase/ssr";
 import createIntlMiddleware from "next-intl/middleware";
@@ -57,7 +53,7 @@ export async function proxy(request: NextRequest) {
   );
   const activeLocale = locale ?? defaultLocale;
 
-  if (isProtectedAppPath(pathnameWithoutLocale) && !isRealUser(user)) {
+  if (isProtectedAppPath(pathnameWithoutLocale) && !user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = withLocalePrefix("/sign-in", activeLocale);
     redirectUrl.search = "";

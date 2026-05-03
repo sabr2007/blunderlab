@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 
 type Props = {
   signInLabel: string;
-  ctaLabel: string;
 };
 
 const NAV_LINKS = [
@@ -20,7 +19,7 @@ const NAV_LINKS = [
   { href: "/builders", labelKey: "navBuilders" },
 ] as const;
 
-export function MarketingNav({ signInLabel, ctaLabel }: Props) {
+export function MarketingNav({ signInLabel }: Props) {
   const t = useTranslations("landing");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -73,15 +72,9 @@ export function MarketingNav({ signInLabel, ctaLabel }: Props) {
           <LocaleSwitcher compact className="hidden sm:inline-flex" />
           <Link
             href="/sign-in"
-            className="hidden text-sm text-fg-muted transition hover:text-fg sm:inline"
-          >
-            {signInLabel}
-          </Link>
-          <Link
-            href="/play"
             className="btn-primary inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium"
           >
-            {ctaLabel}
+            {signInLabel}
             <ArrowRight className="size-3.5" />
           </Link>
           <button

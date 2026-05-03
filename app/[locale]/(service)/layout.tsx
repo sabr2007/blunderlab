@@ -19,7 +19,7 @@ export default async function ServiceLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!isRealUser(user)) {
+  if (!user) {
     redirect(
       `${withLocalePrefix("/sign-in", locale)}?next=${encodeURIComponent(
         withLocalePrefix("/dashboard", locale),
@@ -33,7 +33,10 @@ export default async function ServiceLayout({
     .eq("id", user.id)
     .maybeSingle();
 
-  if (!profile.data?.display_name || profile.data.deleted_at) {
+  if (
+    isRealUser(user) &&
+    (!profile.data?.display_name || profile.data.deleted_at)
+  ) {
     redirect(
       `${withLocalePrefix("/onboarding", locale)}?next=${encodeURIComponent(
         withLocalePrefix("/dashboard", locale),
@@ -47,8 +50,8 @@ export default async function ServiceLayout({
     <AppShell
       user={{
         email: user.email ?? null,
-        displayName: profile.data.display_name ?? getDisplayName(user),
-        city: profile.data.city,
+        displayName: profile.data?.display_name ?? getDisplayName(user),
+        city: profile.data?.city ?? "Other",
         identityLabel: identity.label,
       }}
     >

@@ -2,7 +2,7 @@ import { Reveal } from "@/components/common/reveal";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingNav } from "@/components/marketing/marketing-nav";
 import { WaitlistForm } from "@/components/pro/waitlist-form";
-import { Check, Crown, Minus, Sparkles } from "lucide-react";
+import { Check, Minus, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -107,10 +107,7 @@ export default async function ProPage() {
 
   return (
     <div className="relative">
-      <MarketingNav
-        signInLabel={common("signIn")}
-        ctaLabel={common("startTraining")}
-      />
+      <MarketingNav signInLabel={common("signIn")} />
 
       <main>
         {/* HERO ---------------------------------------------- */}
@@ -123,10 +120,7 @@ export default async function ProPage() {
 
           <div className="container">
             <Reveal className="mx-auto max-w-3xl text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-bg-elevated/80 px-3.5 py-1.5 text-xs text-fg-muted backdrop-blur">
-                <Crown className="size-3.5 text-accent" /> {t("eyebrow")}
-              </span>
-              <h1 className="text-display mt-6 font-semibold text-balance">
+              <h1 className="text-display font-semibold text-balance">
                 {t("title")}
               </h1>
               <p className="mt-5 text-pretty text-lg leading-relaxed text-fg-muted">

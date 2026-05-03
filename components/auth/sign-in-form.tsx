@@ -1,8 +1,14 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
+import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { ArrowRight, Loader2, Mail, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Loader2,
+  Mail,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { z } from "zod";
@@ -11,6 +17,7 @@ const emailSchema = z.string().trim().email();
 
 type SignInFormProps = {
   nextPath: string;
+  guestPath: string;
   error?: string | null;
 };
 
@@ -20,7 +27,7 @@ type Status =
   | { kind: "sent"; email: string }
   | { kind: "error"; message: string };
 
-export function SignInForm({ nextPath, error }: SignInFormProps) {
+export function SignInForm({ nextPath, guestPath, error }: SignInFormProps) {
   const t = useTranslations("auth");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>(
@@ -29,6 +36,20 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
       : { kind: "idle" },
   );
   const isLoading = status.kind === "loading";
+
+  async function continueAsGuest() {
+    setStatus({ kind: "loading", label: t("guestStarting") });
+
+    try {
+      await ensureAnonymousUser();
+      window.location.assign(guestPath);
+    } catch (err) {
+      setStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : t("guestFailed"),
+      });
+    }
+  }
 
   async function continueWithGoogle() {
     setStatus({ kind: "loading", label: t("openingGoogle") });
@@ -213,13 +234,22 @@ export function SignInForm({ nextPath, error }: SignInFormProps) {
           </p>
         ) : null}
 
-        <div className="flex items-center justify-between border-t border-border pt-4 text-sm">
-          <Link
-            href="/play"
-            className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 text-fg-muted transition hover:bg-surface hover:text-fg md:min-h-6"
+        <div className="flex flex-col gap-3 border-t border-border pt-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={continueAsGuest}
+            disabled={isLoading}
+            className="-mx-2 inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-fg-muted transition hover:bg-surface hover:text-fg disabled:cursor-not-allowed disabled:opacity-60 md:min-h-6"
           >
+            {isLoading &&
+            status.kind === "loading" &&
+            status.label === t("guestStarting") ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <UserRound className="size-4" />
+            )}
             {t("tryWithoutAccount")}
-          </Link>
+          </button>
           <a
             href={nextPath}
             className="-mx-2 inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-accent transition hover:bg-accent/10 md:min-h-6"

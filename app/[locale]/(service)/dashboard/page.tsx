@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
-import { getDisplayName, isRealUser } from "@/lib/auth/session";
+import { getDisplayName } from "@/lib/auth/session";
 import {
   type DailyStatus,
   type TodayAction,
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!isRealUser(user)) {
+  if (!user) {
     return null;
   }
 
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
     .from("profiles")
     .select("display_name,city,default_difficulty")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
   const city = profile.data?.city ?? "Other";
   const displayName = profile.data?.display_name ?? getDisplayName(user);
   const [

@@ -33,6 +33,7 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
     getSafeNextPath(query?.next, withLocalePrefix("/dashboard", locale)),
     locale,
   );
+  const guestPath = withLocalePrefix("/dashboard", locale);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-bg">
@@ -59,12 +60,6 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
           </Link>
           <div className="flex items-center gap-3">
             <LocaleSwitcher compact />
-            <Link
-              href="/play"
-              className="inline-flex min-h-11 items-center rounded-md px-2 text-sm text-fg-muted transition hover:text-fg sm:min-h-0 sm:px-0"
-            >
-              {t("playFirst")}
-            </Link>
           </div>
         </header>
 
@@ -106,7 +101,11 @@ export default async function SignInPage({ params, searchParams }: PageProps) {
                 <BrandLogo variant="horizontal" className="h-12 w-auto" />
               </div>
               <div className="mt-4 lg:mt-0">
-                <SignInForm nextPath={nextPath} error={query?.error ?? null} />
+                <SignInForm
+                  nextPath={nextPath}
+                  guestPath={guestPath}
+                  error={query?.error ?? null}
+                />
               </div>
             </div>
           </section>

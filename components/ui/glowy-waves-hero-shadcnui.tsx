@@ -287,7 +287,7 @@ export function GlowyWavesHero({ copy }: { copy: HeroCopy }) {
             className="mt-9 flex flex-wrap items-center justify-center gap-3"
           >
             <Button asChild size="lg" className="rounded-full px-5">
-              <Link href="/play">
+              <Link href="/sign-in">
                 {copy.primaryCta}
                 <ArrowRight className="size-4" />
               </Link>

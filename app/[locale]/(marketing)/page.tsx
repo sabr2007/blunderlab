@@ -94,10 +94,7 @@ export default async function LandingPage() {
 
   return (
     <div className="relative">
-      <MarketingNav
-        signInLabel={common("signIn")}
-        ctaLabel={common("startTraining")}
-      />
+      <MarketingNav signInLabel={common("signIn")} />
 
       <main>
         {/* HERO ------------------------------------------------------- */}
@@ -109,7 +106,7 @@ export default async function LandingPage() {
               ? "blunder"
               : "ошибку",
             text: t("heroText"),
-            primaryCta: common("startTraining"),
+            primaryCta: common("signIn"),
             secondaryCta: t("watchDemo"),
             signals: [t("heroSignalA"), t("heroSignalB"), t("heroSignalC")],
           }}
@@ -456,10 +453,10 @@ export default async function LandingPage() {
             <Reveal delay={180}>
               <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
                 <Link
-                  href="/play"
+                  href="/sign-in"
                   className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
-                  {common("startTraining")} <ArrowRight className="size-4" />
+                  {common("signIn")} <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   href="/pro"

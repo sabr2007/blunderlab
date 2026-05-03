@@ -587,9 +587,7 @@ export function PlayView({
 
                     {persistence.kind === "disabled" ? (
                       <p className="rounded-md border border-warning/30 bg-warning/10 p-3 text-xs text-warning">
-                        {t("persistenceOffline", {
-                          reason: persistence.reason,
-                        })}
+                        {t("persistenceOffline")}
                       </p>
                     ) : null}
                   </CardContent>

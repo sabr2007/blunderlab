@@ -68,10 +68,7 @@ export default async function BuildersPage() {
 
   return (
     <div className="relative">
-      <MarketingNav
-        signInLabel={common("signIn")}
-        ctaLabel={common("startTraining")}
-      />
+      <MarketingNav signInLabel={common("signIn")} />
 
       <main>
         {/* HERO -------------------------------------------------- */}
@@ -105,10 +102,10 @@ export default async function BuildersPage() {
               <Reveal delay={220}>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link
-                    href="/play"
+                    href="/sign-in"
                     className="btn-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium"
                   >
-                    {common("startTraining")}
+                    {common("signIn")}
                     <ArrowRight className="size-4" />
                   </Link>
                   <Link
@@ -222,10 +219,10 @@ export default async function BuildersPage() {
                 {t("ctaText")}
               </p>
               <Link
-                href="/play"
+                href="/sign-in"
                 className="btn-primary mt-9 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
               >
-                {common("startTraining")} <ArrowRight className="size-4" />
+                {common("signIn")} <ArrowRight className="size-4" />
               </Link>
             </Reveal>
           </div>
