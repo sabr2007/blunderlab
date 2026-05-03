@@ -107,12 +107,9 @@ pnpm dev
 ## Материалы для комиссии
 
 - [Submission one-pager](docs/submission.md)
-- [Demo script](docs/demo-script.md)
 - [PRD](docs/PRD.md)
 - [Customer Journey Map](docs/CJM.md)
 - [Design document](docs/design-document.md)
-- [Decisions log](docs/decisions.md)
-- [Final submission scope](docs/plans/submission-final-scope.md)
 
 ## Статус проекта
 
@@ -123,5 +120,4 @@ pnpm dev
 - Фаза 5: фиксированный final scope для submission sprint.
 
 ## Roadmap
-
-KZ locale, Remotion demo video, multiplayer-by-link, еженедельные отчёты на почту, shareable review cards, fully generated pattern drills, real checkout и dashboard для школы или команды.
+Еженедельные отчёты на почту, shareable review cards, fully generated pattern drills, real checkout и dashboard для школы или команды.
