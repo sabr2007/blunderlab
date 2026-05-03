@@ -2,7 +2,6 @@
 
 import { finalizeGameAction, startGameAction } from "@/app/play/actions";
 import { ChessBoardWrapper } from "@/components/chess/chess-board-wrapper";
-import { BrandLogo } from "@/components/common/brand-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +35,6 @@ import {
   Brain,
   CalendarCheck,
   CheckCircle2,
-  Crown,
   Gauge,
   Goal,
   Loader2,
@@ -423,11 +421,8 @@ export function PlayView({
   }, [gameStatus, fen, snapshot.turn, ensureGameStarted]);
 
   return (
-    <main className="min-h-screen bg-bg">
-      <div className="lab-grid pointer-events-none fixed inset-0 -z-10 opacity-20" />
-      <div className="container px-4 py-5 md:py-7">
-        <PlayTopBar />
-
+    <main className="min-h-full bg-bg">
+      <div className="container-wide px-4 py-6 md:py-8">
         {phase === "setup" ? (
           <SetupView
             activeGoal={activeGoal}
@@ -447,26 +442,20 @@ export function PlayView({
                   </p>
                   <Badge>{ENGINE_PRESETS[difficulty].label}</Badge>
                 </div>
-                <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
+                <h1 className="mt-2 text-2xl font-semibold tracking-normal md:text-3xl">
                   {t("playReviewTitle")}
                 </h1>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {moves.length === 0 && engineState !== "thinking" ? (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setPhase("setup")}
-                  >
-                    <ArrowLeft /> {t("changeMode")}
-                  </Button>
-                ) : null}
-                <Button asChild variant="secondary">
-                  <Link href="/dashboard">
-                    <BarChart3 /> {t("dashboard")}
-                  </Link>
+              {moves.length === 0 && engineState !== "thinking" ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setPhase("setup")}
+                  className="self-start md:self-auto"
+                >
+                  <ArrowLeft /> {t("changeMode")}
                 </Button>
-              </div>
+              ) : null}
             </header>
 
             {selectedMode === "goal" && activeGoal && !goalDismissed ? (
@@ -653,35 +642,6 @@ export function PlayView({
   );
 }
 
-function PlayTopBar() {
-  const t = useTranslations("play");
-
-  return (
-    <nav className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-bg-elevated/70 px-3 py-3 backdrop-blur-xl">
-      <Link href="/" aria-label="BlunderLab" className="inline-flex">
-        <BrandLogo variant="horizontal" className="h-8 w-auto" />
-      </Link>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/dashboard">
-            <BarChart3 /> {t("dashboard")}
-          </Link>
-        </Button>
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/daily-blunder">
-            <CalendarCheck /> {t("daily")}
-          </Link>
-        </Button>
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/pro">
-            <Crown /> Pro
-          </Link>
-        </Button>
-      </div>
-    </nav>
-  );
-}
-
 function SetupView({
   activeGoal,
   difficulty,
@@ -706,7 +666,7 @@ function SetupView({
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
           {t("setupEyebrow")}
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-5xl">
+        <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
           {t("setupTitle")}
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-fg-muted md:text-base">

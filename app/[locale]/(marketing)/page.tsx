@@ -389,7 +389,7 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <div className="mt-12 grid gap-3 md:grid-cols-3">
+            <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {tiers.map((tier, index) => (
                 <Reveal key={tier.name} delay={index * 80}>
                   <article

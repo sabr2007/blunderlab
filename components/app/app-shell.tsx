@@ -394,14 +394,6 @@ function SidebarBody({
                 {user.identityLabel}
               </span>
             ) : null}
-            <Link
-              href="/pro"
-              onClick={onNavigate}
-              className="btn-secondary mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md py-2 text-xs"
-            >
-              <Crown className="size-3.5 text-accent" />
-              {t("proWaitlist")}
-            </Link>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 py-2">

@@ -97,7 +97,7 @@ export function MarketingNav({ signInLabel }: Props) {
                 key={link.href}
                 href={link.href.replace("/#", "#")}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2 text-fg-muted transition hover:bg-surface hover:text-fg"
+                className="inline-flex min-h-11 items-center rounded-md px-3 text-fg-muted transition hover:bg-surface hover:text-fg active:bg-surface"
               >
                 {t(link.labelKey)}
               </a>
