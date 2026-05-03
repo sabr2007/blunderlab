@@ -325,7 +325,7 @@ function aggregateReview(items: EnrichedMoment[]): AggregateResult {
       mistakeCount: 0,
       trainingGoal:
         "Keep your discipline: at every move, scan checks, captures, and threats.",
-      reviewModel: "fallback",
+      reviewModel: "clean",
     };
   }
 

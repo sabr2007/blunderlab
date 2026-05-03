@@ -246,7 +246,8 @@ function ReviewLayout({ bundle }: { bundle: ReviewBundle }) {
                 trainingGoal={bundle.review.trainingGoal}
               />
             ) : null}
-            {bundle.review.reviewModel === "fallback" ? (
+            {bundle.review.reviewModel === "fallback" &&
+            bundle.criticalMoments.length > 0 ? (
               <p className="rounded-md border border-warning/40 bg-warning/5 p-3 text-xs text-warning">
                 {t("fallback")}
               </p>
