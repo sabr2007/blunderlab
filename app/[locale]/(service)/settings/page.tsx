@@ -1,5 +1,6 @@
 import { signOutAction } from "@/app/(service)/actions";
 import { updateProfileAction } from "@/app/(service)/settings/actions";
+import { LocaleSwitcher } from "@/components/common/locale-switcher";
 import { DeleteAccountForm } from "@/components/settings/delete-account-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,7 @@ type PageProps = {
 export default async function SettingsPage({ searchParams }: PageProps) {
   const t = await getTranslations("settingsPage");
   const authT = await getTranslations("auth");
+  const common = await getTranslations("common");
   const params = await searchParams;
   const supabase = await getSupabaseServerClient();
   const {
@@ -123,6 +125,16 @@ export default async function SettingsPage({ searchParams }: PageProps) {
                 {t("save")}
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{common("language")}</CardTitle>
+            <CardDescription>{t("languageDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LocaleSwitcher compact />
           </CardContent>
         </Card>
 

@@ -44,6 +44,7 @@ type AppShellProps = {
 export function AppShell({ children, user }: AppShellProps) {
   const pathname = usePathname();
   const t = useTranslations("common");
+  const showLocaleSwitcher = !pathname.endsWith("/settings");
 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -233,7 +234,7 @@ export function AppShell({ children, user }: AppShellProps) {
         <div className="flex min-w-0 flex-col">
           <header className="sticky top-0 z-20 border-b border-border/70 bg-bg/75 backdrop-blur-xl">
             <div className="flex h-16 items-center justify-end gap-3 px-6">
-              <LocaleSwitcher compact />
+              {showLocaleSwitcher ? <LocaleSwitcher compact /> : null}
               <Link
                 href="/pro"
                 className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent transition hover:bg-accent/15"

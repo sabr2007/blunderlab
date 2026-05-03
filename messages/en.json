@@ -353,6 +353,7 @@
     "cityOther": "Other",
     "defaultDifficulty": "Default difficulty",
     "save": "Save profile",
+    "languageDescription": "Switch the app between English and Russian.",
     "account": "Account",
     "accountDescription": "Sign out keeps your saved games. Delete marks the profile as inactive for this prototype.",
     "signOut": "Sign out",
