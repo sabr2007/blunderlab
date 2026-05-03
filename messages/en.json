@@ -94,7 +94,6 @@
     "Endgame Technique": "A more precise endgame method existed."
   },
   "pro": {
-    "eyebrow": "Business model",
     "title": "Upgrade when you want deeper training modes.",
     "text": "Free proves the learning loop, Pro expands it with Pattern Drill, Deep Review, Goal Focus, and full mistake history. School opens the mentor use case.",
     "join": "Join the Pro waitlist",
@@ -141,7 +140,9 @@
     "or": "or",
     "emailLabel": "Email magic link",
     "emailButton": "Send magic link",
-    "tryWithoutAccount": "Play without account",
+    "tryWithoutAccount": "Continue as guest",
+    "guestStarting": "Setting up your guest session...",
+    "guestFailed": "Could not start guest session. Try again.",
     "continue": "Already signed in? Continue",
     "onboardingEyebrow": "Setup",
     "onboardingTitle": "Tune BlunderLab to your games.",
@@ -423,7 +424,7 @@
     "restart": "Restart",
     "newSetup": "New setup",
     "resign": "Resign",
-    "persistenceOffline": "Persistence offline: {reason}",
+    "persistenceOffline": "Saving is paused — your moves stay on this device only.",
     "gameFinished": "Game finished",
     "reviewDescription": "Engine analysis runs on the review screen. The AI Coach waits there.",
     "moveHistory": "Move history",
