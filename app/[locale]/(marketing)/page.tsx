@@ -117,7 +117,8 @@ export default async function LandingPage() {
               ? "blunder"
               : "ошибку",
             text: t("heroText"),
-            primaryCta: common("signIn"),
+            primaryCta: common("startTraining"),
+            primaryCtaHref: "/play",
             secondaryCta: t("watchDemo"),
             signals: [t("heroSignalA"), t("heroSignalB"), t("heroSignalC")],
           }}
