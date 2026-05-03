@@ -16,7 +16,7 @@ import {
   Target,
   Trophy,
 } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const PATTERN_KEYS = [
   "Hanging Piece",
@@ -36,6 +36,11 @@ export default async function LandingPage() {
   const patternLabels = await getTranslations("patternLabels");
   const proT = await getTranslations("proPage");
   const footer = await getTranslations("footer");
+  const locale = await getLocale();
+  const demoVideoSrc =
+    locale === "ru"
+      ? "/videos/blunderlab-demo-ru.mp4"
+      : "/videos/blunderlab-demo-en.mp4";
   const tiers = [
     {
       name: proT("free.name"),
@@ -131,7 +136,11 @@ export default async function LandingPage() {
             </Reveal>
 
             <Reveal delay={120}>
-              <LaptopMockup label={t("demoLabel")} caption={t("demoComing")} />
+              <LaptopMockup
+                label={t("demoLabel")}
+                caption={t("demoComing")}
+                videoSrc={demoVideoSrc}
+              />
             </Reveal>
           </div>
         </section>
