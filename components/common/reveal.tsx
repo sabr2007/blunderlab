@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type RevealProps = {
   children: React.ReactNode;
@@ -10,6 +10,9 @@ type RevealProps = {
   as?: "div" | "section" | "article" | "li" | "header" | "footer";
 };
 
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export function Reveal({
   children,
   className,
@@ -17,27 +20,35 @@ export function Reveal({
   as: Tag = "div",
 }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState(true);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || typeof window === "undefined") return;
 
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setShown(true);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
+
+    if (typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const rect = el.getBoundingClientRect();
+    const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    if (inViewport) {
+      return;
+    }
+
+    setShown(false);
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            const id = window.setTimeout(() => setShown(true), delay);
+            window.setTimeout(() => setShown(true), delay);
             observer.disconnect();
-            return () => window.clearTimeout(id);
+            return;
           }
         }
       },

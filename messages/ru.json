@@ -14,7 +14,9 @@
     "tryAgain": "Попробовать снова",
     "language": "Язык",
     "english": "Английский",
-    "russian": "Русский"
+    "russian": "Русский",
+    "chessIdentity": "Шахматный профиль",
+    "chessIdentityTooltip": "Ваш шахматный профиль, выведенный из стиля игры"
   },
   "landing": {
     "prototype": "Готовый к подаче прототип · nFactorial Incubator 2026",

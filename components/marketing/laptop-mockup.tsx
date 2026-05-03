@@ -26,7 +26,9 @@ export function LaptopMockup({
             <video
               key={videoSrc}
               className="absolute inset-0 size-full object-cover"
-              controls
+              autoPlay
+              muted
+              loop
               playsInline
               preload="metadata"
               poster={poster}

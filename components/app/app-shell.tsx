@@ -16,6 +16,7 @@ import {
   Swords,
   Trophy,
   User as UserIcon,
+  Wand2,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -390,7 +391,12 @@ function SidebarBody({
               </form>
             </div>
             {user.identityLabel ? (
-              <span className="mt-3 inline-flex w-full items-center justify-center rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-accent">
+              <span
+                title={t("chessIdentityTooltip")}
+                aria-label={`${t("chessIdentity")}: ${user.identityLabel}`}
+                className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-accent"
+              >
+                <Wand2 className="size-3" aria-hidden />
                 {user.identityLabel}
               </span>
             ) : null}

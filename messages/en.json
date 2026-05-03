@@ -14,7 +14,9 @@
     "tryAgain": "Try again",
     "language": "Language",
     "english": "English",
-    "russian": "Russian"
+    "russian": "Russian",
+    "chessIdentity": "Chess identity",
+    "chessIdentityTooltip": "Your chess identity, derived from how you play"
   },
   "landing": {
     "prototype": "Submission-ready prototype · nFactorial Incubator 2026",
