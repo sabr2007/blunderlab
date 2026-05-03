@@ -57,6 +57,12 @@ export default async function ProPage() {
       proT("features.deep"),
     ],
     [
+      proT("features.coachChat"),
+      proT("features.coachChat3"),
+      proT("features.coachChat20"),
+      proT("features.unlimited"),
+    ],
+    [
       proT("features.history"),
       proT("features.days7"),
       proT("features.full"),

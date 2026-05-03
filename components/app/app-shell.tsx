@@ -25,7 +25,12 @@ import { useEffect, useState } from "react";
 const NAV_ITEMS = [
   { href: "/play", labelKey: "play", icon: Swords },
   { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/daily-blunder", labelKey: "daily", icon: Sparkles },
+  {
+    href: "/daily-blunder",
+    labelKey: "daily",
+    mobileLabelKey: "dailyNav",
+    icon: Sparkles,
+  },
   { href: "/leaderboard", labelKey: "leaderboard", icon: Trophy },
 ] as const;
 
@@ -253,7 +258,7 @@ export function AppShell({ children, user }: AppShellProps) {
       <div className="min-w-0 pb-24 lg:hidden">{children}</div>
 
       {/* MOBILE BOTTOM NAV ---------------------------------- */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-border bg-bg-elevated/95 backdrop-blur-xl lg:hidden">
+      <nav className="fixed bottom-0 left-0 z-30 grid w-[100dvw] grid-cols-4 border-t border-border bg-bg-elevated/95 backdrop-blur-xl lg:hidden">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const active =
@@ -263,14 +268,19 @@ export function AppShell({ children, user }: AppShellProps) {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={t(item.labelKey)}
               className={cn(
-                "grid h-16 place-items-center text-[11px] transition",
+                "flex h-16 w-full flex-col items-center justify-center gap-1 px-1 text-[11px] transition",
                 active ? "text-accent" : "text-fg-muted hover:text-fg",
               )}
             >
-              <span className="grid place-items-center gap-1">
-                <Icon className="size-4" />
-                {t(item.labelKey)}
+              <Icon className="size-4 shrink-0" />
+              <span className="block w-full truncate text-center leading-none">
+                {t(
+                  "mobileLabelKey" in item
+                    ? item.mobileLabelKey
+                    : item.labelKey,
+                )}
               </span>
             </Link>
           );

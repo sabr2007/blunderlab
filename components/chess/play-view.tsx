@@ -23,7 +23,12 @@ import {
   tryMove,
   tryUciMove,
 } from "@/lib/chess/rules";
-import type { AiDifficulty, GameStatus, MoveRecord } from "@/lib/chess/types";
+import type {
+  AiDifficulty,
+  GameStatus,
+  GameWinner,
+  MoveRecord,
+} from "@/lib/chess/types";
 import { ensureAnonymousUser } from "@/lib/supabase/anonymous";
 import { getSupabasePublicConfig } from "@/lib/supabase/env";
 import type { ActiveTrainingGoal } from "@/lib/training/progress";
@@ -35,12 +40,19 @@ import {
   Brain,
   CalendarCheck,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Clock,
   Gauge,
   Goal,
+  Infinity as InfinityIcon,
   Loader2,
   RotateCcw,
   Sparkles,
   Swords,
+  Timer,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -48,6 +60,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const DIFFICULTIES: AiDifficulty[] = ["beginner", "intermediate", "advanced"];
 type PlayMode = "classic" | "goal";
+
+type TimeControl = "untimed" | "5+0" | "10+0";
+
+const TIME_CONTROLS: TimeControl[] = ["untimed", "5+0", "10+0"];
+
+const TIME_CONTROL_MS: Record<TimeControl, number | null> = {
+  untimed: null,
+  "5+0": 5 * 60 * 1000,
+  "10+0": 10 * 60 * 1000,
+};
+
+function getInitialClockMs(timeControl: TimeControl): number {
+  return TIME_CONTROL_MS[timeControl] ?? 0;
+}
+
+function formatClock(ms: number): string {
+  const safe = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(safe / 60);
+  const seconds = safe % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
 
 // tryMove builds each MoveRecord from a freshly-instantiated chess.js position
 // (no prior history), so its `ply` and `moveNumber` always come back as 1.
@@ -78,6 +111,7 @@ export function PlayView({
     activeGoal ? "goal" : "classic",
   );
   const [difficulty, setDifficulty] = useState<AiDifficulty>("beginner");
+  const [timeControl, setTimeControl] = useState<TimeControl>("untimed");
   const [moves, setMoves] = useState<MoveRecord[]>([]);
   const [goalDismissed, setGoalDismissed] = useState(false);
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
@@ -86,6 +120,10 @@ export function PlayView({
     "idle" | "thinking" | "fallback"
   >("idle");
   const [forcedStatus, setForcedStatus] = useState<GameStatus | null>(null);
+  const [forcedWinner, setForcedWinner] = useState<GameWinner>(null);
+  const [historyIndex, setHistoryIndex] = useState<number | null>(null);
+  const [whiteTimeMs, setWhiteTimeMs] = useState<number>(0);
+  const [blackTimeMs, setBlackTimeMs] = useState<number>(0);
   const [persistence, setPersistence] = useState<PersistenceState>(() =>
     getSupabasePublicConfig().isConfigured
       ? { kind: "idle" }
@@ -108,14 +146,40 @@ export function PlayView({
 
   const snapshot = useMemo(() => getSnapshotFromFen(fen), [fen]);
   const gameStatus = forcedStatus ?? snapshot.status;
+  const isReviewingHistory = historyIndex !== null;
   const isUserTurn =
     phase === "playing" &&
     snapshot.turn === "w" &&
     gameStatus === "active" &&
-    engineState !== "thinking";
+    engineState !== "thinking" &&
+    !isReviewingHistory;
   const lastMove = moves.at(-1) ?? null;
   const selectedModeLabel =
     selectedMode === "goal" && activeGoal ? t("goalFocus") : t("classicGame");
+
+  const displayedFen = useMemo(() => {
+    if (historyIndex === null) {
+      return fen;
+    }
+    if (historyIndex < 0) {
+      return STARTING_FEN;
+    }
+    const move = moves[historyIndex];
+    return move?.fenAfter ?? fen;
+  }, [historyIndex, moves, fen]);
+
+  const displayedLastMove = useMemo(() => {
+    if (historyIndex === null) {
+      return lastMove ? { from: lastMove.from, to: lastMove.to } : null;
+    }
+    if (historyIndex < 0) {
+      return null;
+    }
+    const move = moves[historyIndex];
+    return move ? { from: move.from, to: move.to } : null;
+  }, [historyIndex, moves, lastMove]);
+
+  const isClockEnabled = timeControl !== "untimed";
 
   useEffect(() => {
     engineRef.current = new StockfishEngine();
@@ -211,7 +275,12 @@ export function PlayView({
     setSelectedSquare(null);
     setLegalTargets([]);
     setForcedStatus(null);
+    setForcedWinner(null);
     setEngineState("idle");
+    setHistoryIndex(null);
+    const initialMs = getInitialClockMs(timeControl);
+    setWhiteTimeMs(initialMs);
+    setBlackTimeMs(initialMs);
 
     if (persistenceRef.current.kind !== "disabled") {
       setPersistence({ kind: "idle" });
@@ -232,9 +301,133 @@ export function PlayView({
   function resign() {
     requestIdRef.current += 1;
     setForcedStatus("resigned");
+    setForcedWinner("black");
     setSelectedSquare(null);
     setLegalTargets([]);
     setEngineState("idle");
+  }
+
+  // Tick the active player's clock every 200ms while the game is live.
+  // We pause the clock if the user is reviewing past moves so they don't
+  // lose on time while looking at history.
+  useEffect(() => {
+    if (
+      phase !== "playing" ||
+      !isClockEnabled ||
+      gameStatus !== "active" ||
+      isReviewingHistory
+    ) {
+      return;
+    }
+
+    const tickMs = 200;
+    let last = Date.now();
+    const interval = window.setInterval(() => {
+      const now = Date.now();
+      const delta = now - last;
+      last = now;
+
+      if (snapshot.turn === "w") {
+        setWhiteTimeMs((current) => Math.max(0, current - delta));
+      } else {
+        setBlackTimeMs((current) => Math.max(0, current - delta));
+      }
+    }, tickMs);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [phase, isClockEnabled, gameStatus, snapshot.turn, isReviewingHistory]);
+
+  // Time-out detection: whichever clock hits zero loses the game.
+  useEffect(() => {
+    if (!isClockEnabled || phase !== "playing" || gameStatus !== "active") {
+      return;
+    }
+
+    if (whiteTimeMs <= 0) {
+      setForcedStatus("resigned");
+      setForcedWinner("black");
+      requestIdRef.current += 1;
+      setSelectedSquare(null);
+      setLegalTargets([]);
+      setEngineState("idle");
+      return;
+    }
+
+    if (blackTimeMs <= 0) {
+      setForcedStatus("resigned");
+      setForcedWinner("white");
+      requestIdRef.current += 1;
+      setSelectedSquare(null);
+      setLegalTargets([]);
+      setEngineState("idle");
+    }
+  }, [whiteTimeMs, blackTimeMs, isClockEnabled, phase, gameStatus]);
+
+  function navigateHistory(target: number | null) {
+    if (target === null) {
+      setHistoryIndex(null);
+      setSelectedSquare(null);
+      setLegalTargets([]);
+      return;
+    }
+
+    if (moves.length === 0) {
+      return;
+    }
+
+    const lastIndex = moves.length - 1;
+    const clamped = Math.max(-1, Math.min(target, lastIndex));
+    if (clamped === lastIndex && historyIndex === lastIndex) {
+      // already at the latest move — jump to live
+      setHistoryIndex(null);
+      return;
+    }
+    setHistoryIndex(clamped);
+    setSelectedSquare(null);
+    setLegalTargets([]);
+  }
+
+  function navigateBack() {
+    if (moves.length === 0) {
+      return;
+    }
+    if (historyIndex === null) {
+      // jump from live to "previous" move = second to last (so user can see what was just played)
+      navigateHistory(moves.length - 2);
+      return;
+    }
+    if (historyIndex <= -1) {
+      return;
+    }
+    navigateHistory(historyIndex - 1);
+  }
+
+  function navigateForward() {
+    if (moves.length === 0) {
+      return;
+    }
+    if (historyIndex === null) {
+      return;
+    }
+    const next = historyIndex + 1;
+    if (next >= moves.length - 1) {
+      navigateHistory(null);
+      return;
+    }
+    navigateHistory(next);
+  }
+
+  function navigateToStart() {
+    if (moves.length === 0) {
+      return;
+    }
+    navigateHistory(-1);
+  }
+
+  function navigateToLive() {
+    navigateHistory(null);
   }
 
   function selectSquare(square: Square) {
@@ -381,14 +574,16 @@ export function PlayView({
       const built =
         replay.length > 0 ? buildPgn(replay) : { pgn: "", finalFen: fen };
 
-      const winner =
-        gameStatus === "checkmate"
-          ? snapshot.turn === "w"
-            ? "black"
-            : "white"
-          : gameStatus === "resigned"
-            ? "black"
-            : null;
+      const winner: GameWinner =
+        forcedWinner !== null
+          ? forcedWinner
+          : gameStatus === "checkmate"
+            ? snapshot.turn === "w"
+              ? "black"
+              : "white"
+            : gameStatus === "resigned"
+              ? "black"
+              : null;
 
       const result = await finalizeGameAction({
         gameId,
@@ -418,7 +613,7 @@ export function PlayView({
 
       setPersistence({ kind: "saved", gameId });
     })();
-  }, [gameStatus, fen, snapshot.turn, ensureGameStarted]);
+  }, [gameStatus, fen, snapshot.turn, ensureGameStarted, forcedWinner]);
 
   return (
     <main className="min-h-full bg-bg">
@@ -428,8 +623,10 @@ export function PlayView({
             activeGoal={activeGoal}
             difficulty={difficulty}
             selectedMode={selectedMode}
+            timeControl={timeControl}
             onDifficultyChange={setDifficulty}
             onModeChange={setSelectedMode}
+            onTimeControlChange={setTimeControl}
             onStart={startSelectedGame}
           />
         ) : (
@@ -497,37 +694,69 @@ export function PlayView({
             ) : null}
 
             <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-              <ChessBoardWrapper
-                fen={fen}
-                disabled={!isUserTurn}
-                selectedSquare={selectedSquare}
-                legalTargets={legalTargets}
-                lastMove={
-                  lastMove ? { from: lastMove.from, to: lastMove.to } : null
-                }
-                onDrop={({ sourceSquare, targetSquare }) => {
-                  if (!targetSquare) {
-                    return false;
-                  }
+              <div className="grid gap-3">
+                {isClockEnabled ? (
+                  <ClockBar
+                    activeColor={
+                      gameStatus === "active" && !isReviewingHistory
+                        ? snapshot.turn === "w"
+                          ? "white"
+                          : "black"
+                        : null
+                    }
+                    whiteTimeMs={whiteTimeMs}
+                    blackTimeMs={blackTimeMs}
+                    timeControl={timeControl}
+                    t={t}
+                  />
+                ) : null}
+                {isReviewingHistory ? (
+                  <div className="flex items-center justify-between gap-3 rounded-md border border-warning/35 bg-warning/10 px-3 py-2 text-xs text-warning">
+                    <span className="flex items-center gap-2">
+                      <Activity className="size-3.5" />
+                      {t("reviewingHistory")}
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      onClick={navigateToLive}
+                      className="h-7 px-2 text-xs"
+                    >
+                      {t("returnToLive")}
+                    </Button>
+                  </div>
+                ) : null}
+                <ChessBoardWrapper
+                  fen={displayedFen}
+                  disabled={!isUserTurn}
+                  selectedSquare={selectedSquare}
+                  legalTargets={legalTargets}
+                  lastMove={displayedLastMove}
+                  onDrop={({ sourceSquare, targetSquare }) => {
+                    if (!targetSquare) {
+                      return false;
+                    }
 
-                  return makeUserMove(sourceSquare, targetSquare);
-                }}
-                onSquareClick={({ square }) => {
-                  if (!isSquare(square)) {
-                    return;
-                  }
+                    return makeUserMove(sourceSquare, targetSquare);
+                  }}
+                  onSquareClick={({ square }) => {
+                    if (!isSquare(square)) {
+                      return;
+                    }
 
-                  if (selectedSquare && legalTargets.includes(square)) {
-                    makeUserMove(selectedSquare, square);
-                    return;
-                  }
+                    if (selectedSquare && legalTargets.includes(square)) {
+                      makeUserMove(selectedSquare, square);
+                      return;
+                    }
 
-                  selectSquare(square);
-                }}
-                canDragPiece={({ piece }) =>
-                  isUserTurn && piece.pieceType.startsWith("w")
-                }
-              />
+                    selectSquare(square);
+                  }}
+                  canDragPiece={({ piece }) =>
+                    isUserTurn && piece.pieceType.startsWith("w")
+                  }
+                />
+              </div>
 
               <aside className="grid gap-4">
                 <Card>
@@ -602,29 +831,60 @@ export function PlayView({
                 <Card>
                   <CardHeader>
                     <CardTitle>{t("moveHistory")}</CardTitle>
+                    <MoveNavigator
+                      moveCount={moves.length}
+                      historyIndex={historyIndex}
+                      onFirst={navigateToStart}
+                      onBack={navigateBack}
+                      onForward={navigateForward}
+                      onLive={navigateToLive}
+                      t={t}
+                    />
                   </CardHeader>
                   <CardContent>
                     {moves.length > 0 ? (
                       <ol className="max-h-72 space-y-2 overflow-auto pr-1 text-sm">
-                        {moves.map((move) => (
-                          <li
-                            key={`${move.ply}-${move.uci}`}
-                            className="flex items-center justify-between rounded-md border border-border bg-bg/40 px-3 py-2"
-                          >
-                            <span className="font-mono text-xs text-fg-muted">
-                              {move.moveNumber}.
-                              {move.color === "black" ? ".." : ""}
-                            </span>
-                            <span>{move.san}</span>
-                            <Badge
-                              variant={
-                                move.actor === "user" ? "accent" : "default"
-                              }
-                            >
-                              {move.actor === "user" ? t("user") : t("ai")}
-                            </Badge>
-                          </li>
-                        ))}
+                        {moves.map((move, index) => {
+                          const isViewing =
+                            historyIndex === null
+                              ? index === moves.length - 1
+                              : historyIndex === index;
+                          return (
+                            <li key={`${move.ply}-${move.uci}`}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (index === moves.length - 1) {
+                                    navigateToLive();
+                                  } else {
+                                    navigateHistory(index);
+                                  }
+                                }}
+                                aria-current={isViewing ? "step" : undefined}
+                                className={`flex w-full items-center justify-between gap-2 rounded-md border px-3 py-2 text-left transition ${
+                                  isViewing
+                                    ? "border-accent/60 bg-accent/10"
+                                    : "border-border bg-bg/40 hover:border-accent/40"
+                                }`}
+                              >
+                                <span className="font-mono text-xs text-fg-muted">
+                                  {move.moveNumber}.
+                                  {move.color === "black" ? ".." : ""}
+                                </span>
+                                <span className="flex-1 text-center font-mono">
+                                  {move.san}
+                                </span>
+                                <Badge
+                                  variant={
+                                    move.actor === "user" ? "accent" : "default"
+                                  }
+                                >
+                                  {move.actor === "user" ? t("user") : t("ai")}
+                                </Badge>
+                              </button>
+                            </li>
+                          );
+                        })}
                       </ol>
                     ) : (
                       <p className="rounded-md border border-dashed border-border p-4 text-sm text-fg-muted">
@@ -646,15 +906,19 @@ function SetupView({
   activeGoal,
   difficulty,
   selectedMode,
+  timeControl,
   onDifficultyChange,
   onModeChange,
+  onTimeControlChange,
   onStart,
 }: {
   activeGoal?: ActiveTrainingGoal | null;
   difficulty: AiDifficulty;
   selectedMode: PlayMode;
+  timeControl: TimeControl;
   onDifficultyChange: (difficulty: AiDifficulty) => void;
   onModeChange: (mode: PlayMode) => void;
+  onTimeControlChange: (timeControl: TimeControl) => void;
   onStart: () => void;
 }) {
   const t = useTranslations("play");
@@ -716,7 +980,47 @@ function SetupView({
                   </Button>
                 ))}
               </div>
-              <Button type="button" className="mt-4 w-full" onClick={onStart}>
+
+              <div className="mt-5">
+                <p className="mb-2 text-sm font-medium">{t("timeControl")}</p>
+                <p className="mb-3 text-xs text-fg-muted">
+                  {t("timeControlDescription")}
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {TIME_CONTROLS.map((control) => {
+                    const Icon =
+                      control === "untimed"
+                        ? InfinityIcon
+                        : control === "5+0"
+                          ? Timer
+                          : Clock;
+                    const labelKey =
+                      control === "untimed"
+                        ? "timeControlUntimed"
+                        : control === "5+0"
+                          ? "timeControl5"
+                          : "timeControl10";
+                    return (
+                      <Button
+                        key={control}
+                        type="button"
+                        size="sm"
+                        variant={
+                          timeControl === control ? "default" : "secondary"
+                        }
+                        onClick={() => onTimeControlChange(control)}
+                        className="text-xs sm:text-sm"
+                        aria-pressed={timeControl === control}
+                      >
+                        <Icon className="mr-1 size-3.5" />
+                        {t(labelKey)}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <Button type="button" className="mt-5 w-full" onClick={onStart}>
                 <Swords /> {t("startGame")}
               </Button>
             </CardContent>
@@ -936,6 +1240,170 @@ function Metric({ label, value }: { label: string; value: string }) {
         {label}
       </p>
       <p className="mt-1 font-mono text-lg">{value}</p>
+    </div>
+  );
+}
+
+function MoveNavigator({
+  moveCount,
+  historyIndex,
+  onFirst,
+  onBack,
+  onForward,
+  onLive,
+  t,
+}: {
+  moveCount: number;
+  historyIndex: number | null;
+  onFirst: () => void;
+  onBack: () => void;
+  onForward: () => void;
+  onLive: () => void;
+  t: PlayT;
+}) {
+  const disabled = moveCount === 0;
+  const atStart = historyIndex !== null && historyIndex <= -1;
+  const atLive = historyIndex === null;
+  const positionLabel = atLive
+    ? t("navLive")
+    : historyIndex !== null && historyIndex >= 0
+      ? t("navMoveOf", {
+          current: historyIndex + 1,
+          total: moveCount,
+        })
+      : t("navStart");
+
+  return (
+    <div
+      className="mt-2 flex items-center gap-1.5"
+      aria-label={t("moveNavigatorLabel")}
+    >
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="size-8"
+        onClick={onFirst}
+        disabled={disabled || atStart}
+        aria-label={t("navFirst")}
+      >
+        <ChevronsLeft className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="size-8"
+        onClick={onBack}
+        disabled={disabled || atStart}
+        aria-label={t("navBack")}
+      >
+        <ChevronLeft className="size-4" />
+      </Button>
+      <span
+        className="flex-1 text-center font-mono text-xs text-fg-muted"
+        aria-live="polite"
+      >
+        {positionLabel}
+      </span>
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="size-8"
+        onClick={onForward}
+        disabled={disabled || atLive}
+        aria-label={t("navForward")}
+      >
+        <ChevronRight className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="size-8"
+        onClick={onLive}
+        disabled={disabled || atLive}
+        aria-label={t("navLast")}
+      >
+        <ChevronsRight className="size-4" />
+      </Button>
+    </div>
+  );
+}
+
+function ClockBar({
+  activeColor,
+  whiteTimeMs,
+  blackTimeMs,
+  timeControl,
+  t,
+}: {
+  activeColor: "white" | "black" | null;
+  whiteTimeMs: number;
+  blackTimeMs: number;
+  timeControl: TimeControl;
+  t: PlayT;
+}) {
+  const lowWhite = whiteTimeMs > 0 && whiteTimeMs < 30 * 1000;
+  const lowBlack = blackTimeMs > 0 && blackTimeMs < 30 * 1000;
+
+  return (
+    <div className="grid grid-cols-2 gap-2" aria-label={t("clockBarLabel")}>
+      <ClockTile
+        label={t("white")}
+        ms={whiteTimeMs}
+        active={activeColor === "white"}
+        low={lowWhite}
+        timeControl={timeControl}
+      />
+      <ClockTile
+        label={t("black")}
+        ms={blackTimeMs}
+        active={activeColor === "black"}
+        low={lowBlack}
+        timeControl={timeControl}
+      />
+    </div>
+  );
+}
+
+function ClockTile({
+  label,
+  ms,
+  active,
+  low,
+  timeControl,
+}: {
+  label: string;
+  ms: number;
+  active: boolean;
+  low: boolean;
+  timeControl: TimeControl;
+}) {
+  const flatlined = ms <= 0;
+  return (
+    <div
+      className={`flex items-center justify-between rounded-md border px-3 py-2 transition ${
+        active
+          ? "border-accent/60 bg-accent/10 shadow-[var(--shadow-glow)]"
+          : "border-border bg-bg/40"
+      }`}
+      aria-current={active ? "true" : undefined}
+    >
+      <span className="flex items-center gap-2 text-xs uppercase tracking-[0.14em] text-fg-muted">
+        <Clock className="size-3.5" />
+        {label}
+      </span>
+      <span
+        className={`font-mono text-lg tabular-nums ${
+          flatlined ? "text-danger" : low ? "text-warning" : "text-fg"
+        }`}
+        data-testid={`clock-${label.toLowerCase()}`}
+        data-time-control={timeControl}
+      >
+        {formatClock(ms)}
+      </span>
     </div>
   );
 }

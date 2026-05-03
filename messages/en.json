@@ -6,6 +6,7 @@
     "play": "Play",
     "dashboard": "Progress",
     "daily": "Daily",
+    "dailyNav": "Daily",
     "leaderboard": "Leaderboard",
     "settings": "Settings",
     "pro": "Pro",
@@ -92,6 +93,31 @@
     "miniCityRank": "City rank",
     "miniDaily": "Daily Blunder",
     "miniReady": "Ready"
+  },
+  "coach": {
+    "widgetLabel": "AI Coach chat",
+    "openLabel": "Open AI Coach chat",
+    "launcher": "Talk to your AI Coach",
+    "eyebrow": "AI Coach",
+    "title": "Ask about your training",
+    "subtitle": "Grounded in your reviews, weakness, streak and goal.",
+    "close": "Close coach",
+    "planFree": "Free",
+    "planPro": "Pro",
+    "usage": "{used}/{limit} today",
+    "emptyIntro": "Pick a starter or ask anything about your training.",
+    "promptWeakness": "What is my biggest weakness this week and how do I fix it?",
+    "promptDrill": "Suggest one tactical drill based on my recent blunders.",
+    "promptHabit": "Turn my latest training goal into a 5-minute warmup routine.",
+    "thinking": "Coach is thinking...",
+    "send": "Send",
+    "inputPlaceholder": "Ask the coach...",
+    "inputLabel": "Coach question",
+    "signInPrompt": "Sign in with email to chat with the coach.",
+    "signInRequired": "Sign in with email first.",
+    "limitReached": "You've used your daily coach quota.",
+    "genericError": "Coach is unavailable right now. Try again shortly.",
+    "guestMessage": "The AI Coach reads your reviews and stats — sign in with email to unlock the chat."
   },
   "patterns": {
     "Hanging Piece": "You left a piece undefended.",
@@ -477,7 +503,23 @@
     "stalemate": "Stalemate",
     "draw": "Draw",
     "resigned": "Resigned",
-    "abandoned": "Abandoned"
+    "abandoned": "Abandoned",
+    "timeControl": "Time control",
+    "timeControlDescription": "Pick a clock for this match. Untimed runs without pressure.",
+    "timeControlUntimed": "Untimed",
+    "timeControl5": "5 min",
+    "timeControl10": "10 min",
+    "clockBarLabel": "Player clocks",
+    "moveNavigatorLabel": "Move history navigator",
+    "navFirst": "Jump to start",
+    "navBack": "Previous move",
+    "navForward": "Next move",
+    "navLast": "Jump to live position",
+    "navLive": "Live",
+    "navStart": "Start",
+    "navMoveOf": "Move {current} of {total}",
+    "reviewingHistory": "Reviewing previous moves — board is paused.",
+    "returnToLive": "Return to live"
   },
   "review": {
     "noMoves": "This game has no recorded moves yet. Finish a game in the play screen first.",
@@ -543,27 +585,45 @@
       "price": "$0",
       "suffix": "Forever",
       "description": "For the first insight loop.",
-      "features": ["3 reviews/day", "Classic Game", "Daily Blunder"]
+      "features": [
+        "3 reviews/day",
+        "AI Coach chat (3/day)",
+        "Classic Game",
+        "Daily Blunder"
+      ]
     },
     "pro": {
       "name": "Pro",
       "price": "$4.99",
       "suffix": "per month",
       "description": "For players who want focused training modes.",
-      "features": ["Unlimited reviews", "Pattern Drill", "Deep Review"]
+      "features": [
+        "Unlimited reviews",
+        "AI Coach chat (20/day)",
+        "Pattern Drill",
+        "Deep Review"
+      ]
     },
     "school": {
       "name": "School",
       "price": "Custom",
       "suffix": "Per cohort",
       "description": "For clubs, classes, and mentors.",
-      "features": ["Student dashboard", "Class leaderboard", "Coach view"]
+      "features": [
+        "Student dashboard",
+        "Unlimited AI Coach chat",
+        "Class leaderboard",
+        "Coach view"
+      ]
     },
     "features": {
       "play": "Play vs Stockfish",
       "reviewsPerDay": "Game Reviews / day",
       "unlimited": "Unlimited",
       "coach": "AI Coach explanations",
+      "coachChat": "AI Coach chat (dashboard)",
+      "coachChat3": "3 / day",
+      "coachChat20": "20 / day",
       "basic": "Basic",
       "deep": "Deep",
       "history": "Pattern history",

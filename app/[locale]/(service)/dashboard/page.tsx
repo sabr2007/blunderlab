@@ -1,3 +1,4 @@
+import { CoachWidget } from "@/components/coach/coach-widget";
 import {
   PatternTrendChart,
   type PatternTrendPoint,
@@ -123,6 +124,7 @@ export default async function DashboardPage() {
     return (
       <main className="container-wide py-6 sm:py-10 lg:py-16">
         <FirstRunDashboard displayName={displayName} />
+        <CoachWidget />
       </main>
     );
   }
@@ -163,6 +165,7 @@ export default async function DashboardPage() {
           className="lg:col-span-6"
         />
       </div>
+      <CoachWidget />
     </main>
   );
 }
