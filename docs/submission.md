@@ -15,17 +15,20 @@ BlunderLab analyzes a game with Stockfish, selects the critical moments, classif
 ## Current Demo Scope
 
 - EN/RU localized app routes.
-- Final landing page with product narrative and empty reserved demo-video slot.
-- Play vs Stockfish.
+- Landing page with product narrative and an in-laptop demo video (per locale).
+- Play vs Stockfish, accessible to fresh visitors as a guest with no sign-in detour.
 - Review pipeline with deterministic fallback if OpenAI is unavailable.
-- Dashboard, Daily Blunder, leaderboard, settings, training modes, and Pro waitlist.
+- Dashboard, Daily Blunder (real-auth gated), leaderboard, settings, training modes, and Pro waitlist.
 - Training Goal continuity from Review back into the next game.
 - Chess for Builders landing variant for the nFactorial audience.
 - Vercel Analytics, OG/Twitter preview, sitemap, robots, and localized error pages.
 
 ## Demo Video Status
 
-The landing keeps the demo-video area intentionally empty. The video will be produced later through Remotion; no Remotion project or generated video is included in this phase execution.
+A Remotion-produced demo video is embedded in the landing laptop mockup. The
+`public/videos/` folder ships `blunderlab-demo-en.mp4` and
+`blunderlab-demo-ru.mp4`; the landing picks the file matching the active
+locale.
 
 ## Links
 

@@ -806,20 +806,14 @@ function ModeChoice({
     </>
   );
 
-  if (disabled) {
-    return (
-      <div className={[baseClasses, stateClasses].join(" ")} aria-disabled>
-        {content}
-      </div>
-    );
-  }
-
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       className={[baseClasses, stateClasses].join(" ")}
       aria-pressed={selected}
+      aria-disabled={disabled || undefined}
     >
       {content}
     </button>
