@@ -369,30 +369,30 @@ export default async function LandingPage() {
                 <h2 className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">
                   {t("dashboardTitle")}
                 </h2>
-                <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  <MiniMetric
+                <dl className="mt-9 grid grid-cols-2 gap-y-7 sm:grid-cols-4 sm:gap-y-0 sm:divide-x sm:divide-border/60">
+                  <PreviewStat
                     icon={<ChartNoAxesCombined />}
                     label={t("miniTopWeakness")}
                     value={patternLabels("Tunnel Vision")}
                   />
-                  <MiniMetric
+                  <PreviewStat
                     icon={<Sparkles />}
                     label={t("miniStreak")}
                     value="4d"
                     accent
                   />
-                  <MiniMetric
+                  <PreviewStat
                     icon={<Trophy />}
                     label={t("miniCityRank")}
                     value="#12"
                   />
-                  <MiniMetric
+                  <PreviewStat
                     icon={<Target />}
                     label={t("miniDaily")}
                     value={t("miniReady")}
                     accent
                   />
-                </div>
+                </dl>
               </article>
             </Reveal>
 
@@ -570,7 +570,7 @@ function Step({
   );
 }
 
-function MiniMetric({
+function PreviewStat({
   icon,
   label,
   value,
@@ -582,20 +582,24 @@ function MiniMetric({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-bg/40 p-4">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs uppercase tracking-[0.16em] text-fg-subtle">
-          {label}
-        </p>
-        <span className={accent ? "text-accent" : "text-fg-muted"}>{icon}</span>
-      </div>
-      <p
-        className={`mt-3 font-mono text-2xl tracking-tight ${
+    <div className="flex flex-col gap-2 px-0 sm:px-5 sm:first:pl-0 sm:last:pr-0">
+      <span
+        className={`inline-flex size-8 items-center justify-center ${
+          accent ? "text-accent" : "text-fg-muted"
+        }`}
+      >
+        {icon}
+      </span>
+      <dd
+        className={`text-balance font-mono text-2xl tracking-tight ${
           accent ? "text-accent" : ""
         }`}
       >
         {value}
-      </p>
+      </dd>
+      <dt className="text-xs uppercase tracking-[0.16em] text-fg-subtle">
+        {label}
+      </dt>
     </div>
   );
 }
