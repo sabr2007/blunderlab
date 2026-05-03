@@ -249,7 +249,7 @@ export function AppShell({ children, user }: AppShellProps) {
       </div>
 
       {/* MOBILE CONTENT (single column) ---------------------- */}
-      <div className="min-w-0 pb-20 lg:hidden">{children}</div>
+      <div className="min-w-0 pb-24 lg:hidden">{children}</div>
 
       {/* MOBILE BOTTOM NAV ---------------------------------- */}
       <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-border bg-bg-elevated/95 backdrop-blur-xl lg:hidden">

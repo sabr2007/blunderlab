@@ -23,10 +23,10 @@ export default async function DailyBlunderPage() {
     return (
       <main className="container py-6 md:py-8">
         <header className="mb-6">
-          <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent sm:text-sm">
             {t("eyebrow")}
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
+          <h1 className="mt-2 text-2xl font-semibold tracking-normal sm:text-3xl md:text-4xl">
             {t("title")}
           </h1>
         </header>
@@ -62,10 +62,10 @@ export default async function DailyBlunderPage() {
   return (
     <main className="container py-6 md:py-8">
       <header className="mb-6">
-        <p className="text-sm font-medium uppercase tracking-[0.18em] text-accent">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent sm:text-sm">
           {t("eyebrow")}
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-normal md:text-4xl">
+        <h1 className="mt-2 text-2xl font-semibold tracking-normal sm:text-3xl md:text-4xl">
           {t("title")}
         </h1>
       </header>

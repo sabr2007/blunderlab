@@ -121,14 +121,14 @@ export default async function DashboardPage() {
 
   if (isFirstRun) {
     return (
-      <main className="container-wide py-10 lg:py-16">
+      <main className="container-wide py-6 sm:py-10 lg:py-16">
         <FirstRunDashboard displayName={displayName} />
       </main>
     );
   }
 
   return (
-    <main className="container-wide py-8 lg:py-12">
+    <main className="container-wide py-6 sm:py-8 lg:py-12">
       <DashboardHeader
         displayName={displayName}
         streak={streak}
@@ -137,7 +137,7 @@ export default async function DashboardPage() {
         city={city}
       />
 
-      <div className="mt-10 grid grid-cols-1 gap-6 lg:mt-12 lg:grid-cols-12 lg:gap-8">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-10 sm:gap-6 lg:mt-12 lg:grid-cols-12 lg:gap-8">
         <TodayCard
           action={todayAction}
           goal={activeGoal}
@@ -201,19 +201,19 @@ function FirstRunDashboard({ displayName }: { displayName: string }) {
   ];
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
       <section>
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("eyebrow")}
         </p>
-        <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+        <h1 className="mt-3 text-balance text-2xl font-semibold leading-tight tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
           {t("title", { name })}
         </h1>
-        <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-fg-muted md:text-lg">
+        <p className="mt-4 max-w-xl text-pretty text-sm leading-relaxed text-fg-muted sm:mt-5 sm:text-base md:text-lg">
           {t("intro")}
         </p>
 
-        <ol className="mt-8 grid gap-3">
+        <ol className="mt-6 grid gap-3 sm:mt-8">
           {steps.map((step, index) => (
             <li
               key={step.title}
@@ -239,10 +239,10 @@ function FirstRunDashboard({ displayName }: { displayName: string }) {
           ))}
         </ol>
 
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <Link
             href="/play"
-            className="inline-flex h-12 items-center gap-2 rounded-md bg-accent px-6 text-sm font-medium text-bg transition hover:opacity-90"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-md bg-accent px-6 text-sm font-medium text-bg transition hover:opacity-90 sm:w-auto"
           >
             {t("primaryCta")}
             <ArrowRight className="size-4" />
@@ -250,7 +250,7 @@ function FirstRunDashboard({ displayName }: { displayName: string }) {
         </div>
       </section>
 
-      <aside className="rounded-xl border border-border bg-bg-elevated/30 p-6 lg:p-8">
+      <aside className="rounded-xl border border-border bg-bg-elevated/30 p-5 sm:p-6 lg:p-8">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("secondaryCta")}
         </p>
@@ -291,16 +291,16 @@ function DashboardHeader({
   const t = useTranslations("dashboard");
 
   return (
-    <header className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <header className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-2xl">
-        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl md:text-5xl">
           {t("headerGreeting", { name: firstName(displayName) })}
         </h1>
-        <p className="mt-3 text-base text-fg-muted md:text-lg">
+        <p className="mt-2 text-sm text-fg-muted sm:mt-3 sm:text-base md:text-lg">
           {t("headerText")}
         </p>
       </div>
-      <dl className="flex flex-wrap items-center gap-x-7 gap-y-3 lg:justify-end">
+      <dl className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:gap-x-7 sm:gap-y-3 lg:justify-end">
         <KpiStat
           icon={<Flame className="size-4 text-warning" />}
           label={t("streak")}
@@ -373,22 +373,22 @@ function TodayCard({
         className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-accent/15 blur-3xl"
       />
       <div className="relative">
-        <CardHeader className="p-7 pb-4 md:p-8 md:pb-5">
+        <CardHeader className="p-5 pb-3 sm:p-7 sm:pb-4 md:p-8 md:pb-5">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
             {headline.eyebrow}
           </p>
-          <CardTitle className="mt-3 text-2xl leading-tight md:text-3xl">
+          <CardTitle className="mt-3 text-xl leading-tight sm:text-2xl md:text-3xl">
             {headline.title}
           </CardTitle>
           <CardDescription className="mt-2 max-w-xl text-sm leading-relaxed md:text-base">
             {headline.body}
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-7 pt-0 md:p-8 md:pt-0">
-          <div className="flex flex-wrap items-center gap-3">
+        <CardContent className="p-5 pt-0 sm:p-7 sm:pt-0 md:p-8 md:pt-0">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
               href={action.primary.href}
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-accent px-5 text-sm font-medium text-bg transition hover:opacity-90"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-accent px-5 text-sm font-medium text-bg transition hover:opacity-90"
             >
               {headline.cta}
               <ArrowRight className="size-4" />
@@ -396,7 +396,7 @@ function TodayCard({
             {action.secondary && secondaryLabel ? (
               <Link
                 href={action.secondary.href}
-                className="inline-flex h-11 items-center gap-2 rounded-md border border-border bg-bg/40 px-5 text-sm font-medium text-fg-muted transition hover:border-border-strong hover:text-fg"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-border bg-bg/40 px-5 text-sm font-medium text-fg-muted transition hover:border-border-strong hover:text-fg"
               >
                 {secondaryLabel}
               </Link>
@@ -469,7 +469,7 @@ function WeeklyWeaknessCard({
 
   return (
     <Card className={cn("flex flex-col", className)}>
-      <CardHeader className="p-6 pb-3 md:p-7 md:pb-4">
+      <CardHeader className="p-5 pb-3 sm:p-6 md:p-7 md:pb-4">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("weeklyWeakness")}
         </p>
@@ -486,7 +486,7 @@ function WeeklyWeaknessCard({
           {t("weeklyWeaknessDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col justify-between gap-5 p-6 pt-0 md:p-7 md:pt-0">
+      <CardContent className="flex flex-1 flex-col justify-between gap-5 p-5 pt-0 sm:p-6 md:p-7 md:pt-0">
         {weeklyWeakness.direction === "insufficient" ? (
           <p className="text-sm text-fg-muted">
             {t("needMoreGames", {
@@ -550,7 +550,7 @@ function PatternTrendCard({
 
   return (
     <Card className={className}>
-      <CardHeader className="p-6 pb-3 md:p-7 md:pb-4">
+      <CardHeader className="p-5 pb-3 sm:p-6 md:p-7 md:pb-4">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("patternTrend")}
         </p>
@@ -561,7 +561,7 @@ function PatternTrendCard({
           {t("trendDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-6 pt-0 md:p-7 md:pt-0">
+      <CardContent className="p-5 pt-0 sm:p-6 md:p-7 md:pt-0">
         {hasData ? (
           <PatternTrendChart data={trend} />
         ) : (
@@ -582,7 +582,7 @@ function RecentReviewsCard({
   const t = useTranslations("dashboard");
   return (
     <Card className={cn("flex flex-col", className)}>
-      <CardHeader className="p-6 pb-3 md:p-7 md:pb-4">
+      <CardHeader className="p-5 pb-3 sm:p-6 md:p-7 md:pb-4">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("recentReviews")}
         </p>
@@ -593,7 +593,7 @@ function RecentReviewsCard({
           {t("recentReviewsDescription")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col p-6 pt-0 md:p-7 md:pt-0">
+      <CardContent className="flex flex-1 flex-col p-5 pt-0 sm:p-6 md:p-7 md:pt-0">
         {reviews.length > 0 ? (
           <ul className="-mx-1 divide-y divide-border/70">
             {reviews.map((review) => (
@@ -650,7 +650,7 @@ function IdentityCard({
   const t = useTranslations("dashboard");
   return (
     <Card className={className}>
-      <CardHeader className="p-6 pb-3 md:p-7 md:pb-4">
+      <CardHeader className="p-5 pb-3 sm:p-6 md:p-7 md:pb-4">
         <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-accent">
           <Sparkles className="size-3.5" />
           {t("chessIdentity")}
@@ -659,7 +659,7 @@ function IdentityCard({
           {label}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 pt-0 md:p-7 md:pt-0">
+      <CardContent className="p-5 pt-0 sm:p-6 md:p-7 md:pt-0">
         <p className="text-sm leading-relaxed text-fg-muted">{description}</p>
       </CardContent>
     </Card>
@@ -678,7 +678,7 @@ function LeaderboardCard({
   const t = useTranslations("dashboard");
   return (
     <Card className={cn("flex flex-col", className)}>
-      <CardHeader className="p-6 pb-3 md:p-7 md:pb-4">
+      <CardHeader className="p-5 pb-3 sm:p-6 md:p-7 md:pb-4">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
           {t("leaderboardCity", { city })}
         </p>
@@ -689,7 +689,7 @@ function LeaderboardCard({
           {t("leaderboardDescription", { city })}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 flex-col justify-between gap-5 p-6 pt-0 md:p-7 md:pt-0">
+      <CardContent className="flex flex-1 flex-col justify-between gap-5 p-5 pt-0 sm:p-6 md:p-7 md:pt-0">
         {cityRank ? (
           <dl className="grid grid-cols-2 gap-4">
             <div>
