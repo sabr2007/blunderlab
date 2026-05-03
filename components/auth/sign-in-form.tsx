@@ -234,22 +234,29 @@ export function SignInForm({ nextPath, guestPath, error }: SignInFormProps) {
           </p>
         ) : null}
 
-        <div className="flex flex-col gap-3 border-t border-border pt-4 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <button
-            type="button"
-            onClick={continueAsGuest}
-            disabled={isLoading}
-            className="-mx-2 inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-fg-muted transition hover:bg-surface hover:text-fg disabled:cursor-not-allowed disabled:opacity-60 md:min-h-6"
-          >
-            {isLoading &&
-            status.kind === "loading" &&
-            status.label === t("guestStarting") ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <UserRound className="size-4" />
-            )}
-            {t("tryWithoutAccount")}
-          </button>
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.18em] text-fg-subtle">
+          <span className="h-px flex-1 bg-border" />
+          {t("or")}
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <button
+          type="button"
+          onClick={continueAsGuest}
+          disabled={isLoading}
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full border border-border bg-bg/40 text-sm font-medium text-fg transition hover:border-border-strong hover:bg-surface disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isLoading &&
+          status.kind === "loading" &&
+          status.label === t("guestStarting") ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <UserRound className="size-4" />
+          )}
+          {t("tryWithoutAccount")}
+        </button>
+
+        <div className="flex justify-center border-t border-border pt-4 text-sm">
           <a
             href={nextPath}
             className="-mx-2 inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-accent transition hover:bg-accent/10 md:min-h-6"

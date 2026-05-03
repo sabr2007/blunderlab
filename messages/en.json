@@ -297,7 +297,25 @@
     "reviewedThisWeek": "reviewed this week",
     "chartBlunders": "Blunders",
     "chartMistakes": "Mistakes",
-    "chartInaccuracies": "Inaccuracies"
+    "chartInaccuracies": "Inaccuracies",
+    "firstRun": {
+      "eyebrow": "Welcome",
+      "title": "Hi, {name}. The lab opens after your first game.",
+      "intro": "BlunderLab learns from games you play here. One game, one review, one habit to train next.",
+      "step1Title": "Play",
+      "step1Text": "Start a clean Stockfish game at your level.",
+      "step2Title": "Review",
+      "step2Text": "The AI Coach surfaces the few moments that mattered, in plain language.",
+      "step3Title": "Train",
+      "step3Text": "Carry one concrete habit into your next game. Repeat the loop.",
+      "primaryCta": "Play your first game",
+      "secondaryCta": "What I'll see here later",
+      "previewTitle": "After your first review, this dashboard fills with:",
+      "previewWeakness": "Your top weakness this week",
+      "previewStreak": "Streak of training days",
+      "previewIdentity": "Your chess identity, derived from how you play",
+      "previewLeaderboard": "Where you sit on your city's improvers leaderboard"
+    }
   },
   "leaderboardPage": {
     "eyebrow": "City leaderboard",

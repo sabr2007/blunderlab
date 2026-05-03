@@ -35,12 +35,16 @@ import {
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
+  BarChart3,
   CalendarCheck,
   Flame,
+  Goal,
   Sparkles,
+  Swords,
   TrendingDown,
   TrendingUp,
   Trophy,
+  UserRound,
 } from "lucide-react";
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
@@ -109,6 +113,19 @@ export default async function DashboardPage() {
   ]);
 
   const todayAction = pickPrimaryAction({ dailyStatus, activeGoal });
+  const isFirstRun =
+    reviewedCount === 0 &&
+    recentReviews.length === 0 &&
+    streak === 0 &&
+    weeklyWeakness.direction === "insufficient";
+
+  if (isFirstRun) {
+    return (
+      <main className="container-wide py-10 lg:py-16">
+        <FirstRunDashboard displayName={displayName} />
+      </main>
+    );
+  }
 
   return (
     <main className="container-wide py-8 lg:py-12">
@@ -147,6 +164,114 @@ export default async function DashboardPage() {
         />
       </div>
     </main>
+  );
+}
+
+function FirstRunDashboard({ displayName }: { displayName: string }) {
+  const t = useTranslations("dashboard.firstRun");
+  const name = firstName(displayName);
+
+  const steps: ReadonlyArray<{
+    icon: React.ReactNode;
+    title: string;
+    text: string;
+  }> = [
+    {
+      icon: <Swords className="size-4" />,
+      title: t("step1Title"),
+      text: t("step1Text"),
+    },
+    {
+      icon: <Sparkles className="size-4" />,
+      title: t("step2Title"),
+      text: t("step2Text"),
+    },
+    {
+      icon: <Goal className="size-4" />,
+      title: t("step3Title"),
+      text: t("step3Text"),
+    },
+  ];
+
+  const previews: ReadonlyArray<{ icon: React.ReactNode; text: string }> = [
+    { icon: <BarChart3 className="size-3.5" />, text: t("previewWeakness") },
+    { icon: <Flame className="size-3.5" />, text: t("previewStreak") },
+    { icon: <UserRound className="size-3.5" />, text: t("previewIdentity") },
+    { icon: <Trophy className="size-3.5" />, text: t("previewLeaderboard") },
+  ];
+
+  return (
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center lg:gap-16">
+      <section>
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+          {t("eyebrow")}
+        </p>
+        <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight md:text-4xl lg:text-5xl">
+          {t("title", { name })}
+        </h1>
+        <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-fg-muted md:text-lg">
+          {t("intro")}
+        </p>
+
+        <ol className="mt-8 grid gap-3">
+          {steps.map((step, index) => (
+            <li
+              key={step.title}
+              className="flex items-start gap-4 rounded-lg border border-border bg-bg-elevated/40 p-4"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-full border border-accent/35 bg-accent/10 text-accent">
+                {step.icon}
+              </span>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-xs text-fg-subtle">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2 className="text-base font-semibold tracking-tight">
+                    {step.title}
+                  </h2>
+                </div>
+                <p className="mt-1 text-sm leading-relaxed text-fg-muted">
+                  {step.text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-8">
+          <Link
+            href="/play"
+            className="inline-flex h-12 items-center gap-2 rounded-md bg-accent px-6 text-sm font-medium text-bg transition hover:opacity-90"
+          >
+            {t("primaryCta")}
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+      </section>
+
+      <aside className="rounded-xl border border-border bg-bg-elevated/30 p-6 lg:p-8">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
+          {t("secondaryCta")}
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+          {t("previewTitle")}
+        </p>
+        <ul className="mt-5 grid gap-3">
+          {previews.map((preview) => (
+            <li
+              key={preview.text}
+              className="flex items-center gap-3 text-sm text-fg"
+            >
+              <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border bg-bg/50 text-fg-muted">
+                {preview.icon}
+              </span>
+              <span className="text-pretty">{preview.text}</span>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
   );
 }
 
