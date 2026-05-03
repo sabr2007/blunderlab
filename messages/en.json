@@ -367,7 +367,11 @@
     "title": "One old mistake. One better move.",
     "emptyTitle": "No Daily Blunder yet",
     "emptyText": "Daily Blunder unlocks after you have at least one reviewed mistake or blunder. Play a game, run review, then come back here.",
-    "playGame": "Play a game"
+    "playGame": "Play a game",
+    "guestTitle": "Sign in to unlock Daily Blunder",
+    "guestText": "Daily Blunder turns your own past mistakes into a personal puzzle. Sign in to save your reviewed games and unlock daily training.",
+    "guestSignIn": "Sign in",
+    "guestPlay": "Play a guest game first"
   },
   "dailyTrainer": {
     "findMove": "Find the move you missed",
