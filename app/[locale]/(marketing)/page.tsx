@@ -128,18 +128,20 @@ export default async function LandingPage() {
         <section
           id="demo"
           aria-labelledby="demo-heading"
-          className="relative scroll-mt-20 py-20 md:py-24"
+          className="relative scroll-mt-20 py-14 sm:py-20 md:py-24"
         >
           <div className="container">
-            <Reveal className="mx-auto mb-12 max-w-2xl text-center">
+            <Reveal className="mx-auto mb-8 max-w-2xl text-center md:mb-12">
               <p className="text-eyebrow">{t("demoEyebrow")}</p>
               <h2
                 id="demo-heading"
-                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-4xl"
+                className="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-4xl"
               >
                 {t("demoTitle")}
               </h2>
-              <p className="mt-4 text-fg-muted">{t("demoText")}</p>
+              <p className="mt-4 text-sm text-fg-muted sm:text-base">
+                {t("demoText")}
+              </p>
             </Reveal>
 
             <Reveal delay={120}>
@@ -155,14 +157,14 @@ export default async function LandingPage() {
         {/* PROBLEM --------------------------------------------------- */}
         <section
           aria-labelledby="problem-heading"
-          className="relative border-y border-border/70 bg-bg-elevated/40 py-20 md:py-24"
+          className="relative border-y border-border/70 bg-bg-elevated/40 py-14 sm:py-20 md:py-24"
         >
-          <div className="container grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div className="container grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-12">
             <Reveal>
               <p className="text-eyebrow">{t("problemEyebrow")}</p>
               <h2
                 id="problem-heading"
-                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-4xl"
+                className="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-4xl"
               >
                 {t("problemTitle")}
               </h2>
@@ -213,20 +215,20 @@ export default async function LandingPage() {
         <section
           id="how-it-works"
           aria-labelledby="how-heading"
-          className="scroll-mt-20 py-24 md:py-32"
+          className="scroll-mt-20 py-16 sm:py-24 md:py-32"
         >
           <div className="container">
             <Reveal className="mx-auto max-w-2xl text-center">
               <p className="text-eyebrow">{t("howEyebrow")}</p>
               <h2
                 id="how-heading"
-                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-5xl"
+                className="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-5xl"
               >
                 {t("howTitle")}
               </h2>
             </Reveal>
 
-            <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="relative mt-10 grid gap-4 sm:mt-14 md:grid-cols-2 lg:grid-cols-4">
               {/* connector line on desktop */}
               <div
                 aria-hidden
@@ -272,21 +274,23 @@ export default async function LandingPage() {
         <section
           id="patterns"
           aria-labelledby="patterns-heading"
-          className="relative scroll-mt-20 border-y border-border/70 bg-bg-elevated/40 py-24 md:py-32"
+          className="relative scroll-mt-20 border-y border-border/70 bg-bg-elevated/40 py-16 sm:py-24 md:py-32"
         >
           <div className="container">
             <Reveal className="mx-auto max-w-2xl text-center">
               <p className="text-eyebrow">{t("taxonomyEyebrow")}</p>
               <h2
                 id="patterns-heading"
-                className="mt-3 text-3xl font-semibold tracking-tight text-balance md:text-5xl"
+                className="mt-3 text-2xl font-semibold tracking-tight text-balance sm:text-3xl md:text-5xl"
               >
                 {t("taxonomyTitle")}
               </h2>
-              <p className="mt-4 text-fg-muted">{t("taxonomyText")}</p>
+              <p className="mt-4 text-sm text-fg-muted sm:text-base">
+                {t("taxonomyText")}
+              </p>
             </Reveal>
 
-            <div className="mx-auto mt-14 grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.55fr)] lg:gap-10">
+            <div className="mx-auto mt-10 grid max-w-6xl gap-6 sm:mt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.55fr)] lg:gap-10">
               <Reveal>
                 <article
                   className="surface-card surface-grain relative h-full overflow-hidden p-7 md:p-9"
@@ -368,7 +372,7 @@ export default async function LandingPage() {
         </section>
 
         {/* DASHBOARD + DAILY ----------------------------------------- */}
-        <section className="py-24 md:py-32">
+        <section className="py-16 sm:py-24 md:py-32">
           <div className="container grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
             <Reveal>
               <article className="surface-card surface-grain h-full p-7 md:p-9">
@@ -427,15 +431,15 @@ export default async function LandingPage() {
         {/* PRICING -------------------------------------------------- */}
         <section
           aria-labelledby="pricing-heading"
-          className="border-t border-border/70 bg-bg-elevated/40 py-24 md:py-32"
+          className="border-t border-border/70 bg-bg-elevated/40 py-16 sm:py-24 md:py-32"
         >
           <div className="container">
-            <div className="flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col items-start gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
               <Reveal>
                 <p className="text-eyebrow">{t("pricingEyebrow")}</p>
                 <h2
                   id="pricing-heading"
-                  className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl"
+                  className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl md:text-5xl"
                 >
                   {t("pricingTitle")}
                 </h2>
@@ -448,7 +452,7 @@ export default async function LandingPage() {
               </Link>
             </div>
 
-            <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
               {tiers.map((tier, index) => (
                 <Reveal key={tier.name} delay={index * 80}>
                   <article
@@ -513,7 +517,7 @@ export default async function LandingPage() {
         </section>
 
         {/* FINAL CTA ------------------------------------------------ */}
-        <section className="relative overflow-hidden py-28 md:py-36">
+        <section className="relative overflow-hidden py-20 sm:py-28 md:py-36">
           <div
             aria-hidden
             className="hero-orb pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[520px] w-[820px] -translate-x-1/2 -translate-y-1/2"
@@ -525,21 +529,21 @@ export default async function LandingPage() {
               </h2>
             </Reveal>
             <Reveal delay={100}>
-              <p className="mx-auto mt-5 max-w-2xl text-fg-muted">
+              <p className="mx-auto mt-5 max-w-2xl text-sm text-fg-muted sm:text-base">
                 {t("finalText")}
               </p>
             </Reveal>
             <Reveal delay={180}>
-              <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
-                  href="/sign-in"
-                  className="btn-primary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
+                  href="/play"
+                  className="btn-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
-                  {common("signIn")} <ArrowRight className="size-4" />
+                  {common("startTraining")} <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   href="/pro"
-                  className="btn-secondary inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
+                  className="btn-secondary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium"
                 >
                   {common("pro")}
                 </Link>

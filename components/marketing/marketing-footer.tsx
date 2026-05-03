@@ -37,10 +37,13 @@ export function MarketingFooter({
     <footer className="relative mt-24 border-t border-border bg-bg/60">
       <div className="absolute inset-x-0 top-0 -z-10 h-[1px] bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
 
-      <div className="container grid gap-12 py-16 lg:grid-cols-[1.2fr_2fr]">
-        <div className="flex flex-col gap-5">
+      <div className="container grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.2fr_2fr] lg:gap-12">
+        <div className="flex flex-col gap-4 sm:gap-5">
           <Link href="/" aria-label="BlunderLab" className="inline-flex">
-            <BrandLogo variant="full" className="h-20 w-20 opacity-90" />
+            <BrandLogo
+              variant="horizontal"
+              className="h-9 w-auto opacity-90 sm:h-10"
+            />
           </Link>
           <p className="max-w-sm text-sm leading-relaxed text-fg-muted">
             {tagline}
@@ -48,7 +51,7 @@ export function MarketingFooter({
           <LocaleSwitcher />
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-10">
           <FooterColumn heading={productHeading} items={product} />
           <FooterColumn heading={resourcesHeading} items={resources} />
           <FooterColumn heading={companyHeading} items={company} />
@@ -81,7 +84,7 @@ function FooterColumn({ heading, items }: Column) {
   return (
     <div className="flex flex-col gap-3 text-sm">
       <p className="text-eyebrow text-fg-subtle">{heading}</p>
-      <ul className="grid gap-2.5 text-fg-muted">
+      <ul className="grid gap-1 text-fg-muted">
         {items.map((item) => (
           <li key={item.href}>
             {item.external ? (
@@ -89,14 +92,14 @@ function FooterColumn({ heading, items }: Column) {
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 transition hover:text-fg md:min-h-6"
+                className="-mx-2 inline-flex min-h-9 items-center rounded-md px-2 transition hover:text-fg md:min-h-6"
               >
                 {item.label}
               </a>
             ) : (
               <Link
                 href={item.href}
-                className="-mx-2 inline-flex min-h-11 items-center rounded-md px-2 transition hover:text-fg md:min-h-6"
+                className="-mx-2 inline-flex min-h-9 items-center rounded-md px-2 transition hover:text-fg md:min-h-6"
               >
                 {item.label}
               </Link>

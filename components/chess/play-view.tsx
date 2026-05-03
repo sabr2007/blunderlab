@@ -702,13 +702,15 @@ function SetupView({
               <CardDescription>{t("difficultyDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="grid grid-cols-3 gap-2">
                 {DIFFICULTIES.map((level) => (
                   <Button
                     key={level}
                     type="button"
+                    size="sm"
                     variant={difficulty === level ? "default" : "secondary"}
                     onClick={() => onDifficultyChange(level)}
+                    className="text-xs sm:text-sm"
                   >
                     {ENGINE_PRESETS[level].label}
                   </Button>
