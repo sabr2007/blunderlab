@@ -10,7 +10,7 @@
 
 > AI-шахматный коуч, который превращает blunder'ы в персональный план тренировки.
 
-[Живая демо-версия](https://blunderlab.vercel.app) · [Слот под демо-видео](https://blunderlab.vercel.app/en#demo) · [Краткое описание](docs/submission.md) · [Сценарий демо](docs/demo-script.md) · [PRD](docs/PRD.md) · [CJM](docs/CJM.md) · [Журнал решений](docs/decisions.md) · [Финальный scope](docs/plans/submission-final-scope.md)
+[Живая демо-версия](https://blunderlab.vercel.app) · [Слот под демо-видео](https://blunderlab.vercel.app/en#demo) · [Краткое описание](docs/submission.md) · [PRD](docs/PRD.md) · [CJM](docs/CJM.md) · [Журнал решений](docs/decisions.md) · [Финальный scope](docs/plans/submission-final-scope.md)
 
 ## Коротко
 
