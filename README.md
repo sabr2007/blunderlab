@@ -1,47 +1,92 @@
 # BlunderLab
 
-> AI chess coach that turns your blunders into a personalized training plan.
+> AI-шахматный коуч, который превращает blunder'ы в персональный план тренировки.
 
-[Live demo](https://blunderlab.vercel.app) · [Demo slot](https://blunderlab.vercel.app/en#demo) · [Submission one-pager](docs/submission.md) · [Demo script](docs/demo-script.md) · [Decisions log](docs/decisions.md)
+[Живая демо-версия](https://blunderlab.vercel.app) · [Слот под демо-видео](https://blunderlab.vercel.app/en#demo) · [Краткое описание](docs/submission.md) · [Сценарий демо](docs/demo-script.md) · [PRD](docs/PRD.md) · [CJM](docs/CJM.md) · [Журнал решений](docs/decisions.md) · [Финальный scope](docs/plans/submission-final-scope.md)
 
-Built for the **nFactorial Incubator 2026** application stage.
+## Коротко
 
-## The Problem
+BlunderLab — это AI-шахматный коуч для начинающих и intermediate-игроков. Он не ограничивается фразой “best move” и не превращает анализ в сухую таблицу движка. Продукт показывает, почему ошибка произошла, какой паттерн за ней стоит и что именно стоит тренировать дальше.
 
-Most chess platforms tell you *what move was wrong*. They rarely help beginners understand *why the same mistake keeps repeating* or what to train next.
+Главная петля продукта проста и понятна комиссии:
 
-BlunderLab focuses on that gap after the game: review the critical moments, classify the thinking pattern, and leave the player with one concrete goal for the next match.
+**Play → Review → Pattern → Train → Improve → Return**
 
-## What BlunderLab Does
+## Бейджи стека
 
-1. Lets a player play against Stockfish in the browser.
-2. Detects the critical moments where the evaluation changed.
-3. Classifies each mistake into one of 8 blunder patterns.
-4. Explains the mistake through BlunderLab Coach in EN or RU.
-5. Turns old mistakes into Daily Blunder puzzles and progress tracking.
+![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs&logoColor=white)
+![TypeScript strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?style=flat&logo=tailwindcss&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2F%20Postgres%20%2F%20RLS-3ECF8E?style=flat&logo=supabase&logoColor=white)
+![next-intl](https://img.shields.io/badge/next--intl-EN%20%2F%20RU-111827?style=flat)
+![Stockfish WASM](https://img.shields.io/badge/Stockfish-WASM-0F766E?style=flat)
+![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat&logo=openai&logoColor=white)
 
-## Why This Is Different
+## Дэшборд
 
-BlunderLab is intentionally not a Chess.com or Lichess clone. The product value is the learning loop after a game: *Play → Review → Pattern → Train*.
+> Плейсхолдер под финальный скриншот дэшборда.
+> Да, изображение можно вставить прямо в README через Markdown. Когда финальный кадр будет готов, замените этот блок на `![Дэшборд](./path/to/dashboard-screenshot.png)`.
 
-The current landing includes a reserved empty slot for the future Remotion demo video. The video production itself is deferred and will be added later.
+## Почему это важно
 
-## Key Features
+Большинство шахматных платформ хорошо отвечают на вопрос “какой ход был неправильным?”. BlunderLab отвечает на более полезный вопрос: “какую привычку мышления нужно изменить, чтобы эта ошибка не повторялась?”.
 
-- Play vs Stockfish with legal move validation through `chess.js`.
-- Post-game Review with Stockfish analysis and AI Coach explanations.
-- 8-pattern blunder taxonomy: Hanging Piece, Missed Tactic, King Safety, Tunnel Vision, Greedy Move, Time Panic, Opening Drift, Endgame Technique.
-- EN/RU locale routing through `next-intl`.
-- Daily Blunder generated from the player’s own reviewed mistakes.
-- Dashboard with top weakness, streak, recent reviews, and city rank.
-- City leaderboard ranked by improvement, not rating.
-- Pro waitlist and pricing teaser for the submission narrative.
+Это особенно важно для новичков и тех, кто хочет улучшаться без живого тренера. Вместо абстрактного engine analysis пользователь получает понятный разбор, обучение от своих ошибок и один конкретный следующий шаг.
 
-## Tech Stack
+## Что делает BlunderLab
 
-Next.js 16 · TypeScript strict · Tailwind CSS v4 · Supabase Auth/Postgres/RLS · `chess.js` · `react-chessboard` · Stockfish WASM · OpenAI `gpt-4o-mini` with deterministic fallback templates · `next-intl` · Framer Motion · Vercel Analytics · Playwright · Vitest · Biome.
+1. Позволяет играть против Stockfish прямо в браузере.
+2. Находит критические моменты, где оценка партии изменилась сильнее всего.
+3. Классифицирует ошибку в одну из 8 blunder-паттернов.
+4. Объясняет ошибку через BlunderLab Coach на EN или RU.
+5. Превращает прошлые ошибки в Daily Blunder, dashboard-метрики и повторяемые тренировки.
 
-## Run Locally
+## Чем BlunderLab отличается
+
+BlunderLab сознательно не пытается быть ещё одним Chess.com или Lichess. Это не клон большой шахматной платформы, а узкий learning loop после партии.
+
+- Chess.com и Lichess сильны в игре, рейтинге и широкой экосистеме.
+- BlunderLab сильнее там, где игроку нужно понять собственный паттерн ошибки.
+- Вместо “вот движок” продукт говорит: “вот почему ты снова попал в ту же ловушку”.
+
+## Что входит в текущий submission
+
+Документация и final scope зафиксированы отдельно, а README собирает их в одну понятную историю.
+
+- Training Goal Continuity: цель из Review показывается в следующей партии на Play.
+- Weekly Weakness + identity label: дэшборд показывает, над чем пользователь реально улучшился на этой неделе.
+- Training Modes как Pro value: Pro продаёт глубину тренировок, а не косметические скины.
+- Chess for Builders: отдельный landing-угол для студентов, разработчиков и builder-аудитории nFactorial.
+- Pro page alignment: честная бизнес-страница без live Stripe checkout, но с понятной ценностью.
+
+## Как работает продукт
+
+1. Пользователь начинает партию против AI.
+2. После партии система запускает review pipeline.
+3. Stockfish остаётся источником истины для ходов и оценки позиции.
+4. OpenAI `gpt-4o-mini` используется только для объяснения и формулировки training hint.
+5. Если модель недоступна, включается детерминированный fallback template.
+6. Результат попадает в dashboard, Daily Blunder и следующий training goal.
+
+## Технический стек
+
+- Next.js 16 App Router
+- TypeScript strict
+- Tailwind CSS v4
+- shadcn/ui + Radix UI
+- Supabase Auth / Postgres / RLS
+- `chess.js`
+- `react-chessboard`
+- Stockfish WASM
+- `next-intl` для EN/RU роутинга
+- OpenAI `gpt-4o-mini` с fallback-шаблонами
+- Framer Motion для акцентных анимаций
+- Vercel Analytics
+- Vitest и Playwright
+- Biome для lint/format
+
+## Локальный запуск
 
 ```bash
 pnpm install
@@ -49,36 +94,40 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Open `http://localhost:3000/en`.
+Откройте `http://localhost:3000/en`.
 
-## Scripts
+## Скрипты
 
-| Command | What it does |
+| Команда | Что делает |
 | --- | --- |
-| `pnpm dev` | Next dev server |
-| `pnpm build` | Production build |
-| `pnpm typecheck` | TypeScript without emit |
-| `pnpm lint` | Biome check |
-| `pnpm format` | Biome format write |
-| `pnpm test` | Vitest unit tests |
-| `pnpm test:e2e` | Playwright E2E tests |
-| `pnpm db:types` | Regenerate Supabase TypeScript types |
+| `pnpm dev` | Запускает Next.js в режиме разработки |
+| `pnpm build` | Собирает production build |
+| `pnpm start` | Запускает production-сервер |
+| `pnpm typecheck` | Проверяет TypeScript без emit |
+| `pnpm lint` | Запускает Biome check |
+| `pnpm format` | Форматирует проект Biome |
+| `pnpm test` | Запускает Vitest |
+| `pnpm test:e2e` | Запускает Playwright E2E |
+| `pnpm db:types` | Перегенерирует Supabase TypeScript types |
 
-## Project Status
-
-- Phase 1: playable foundation.
-- Phase 2: review core.
-- Phase 3: service layer.
-- Phase 4: i18n, final landing, submission docs, SEO/social preview, analytics, error pages. Demo video is intentionally left as a landing placeholder for later Remotion production.
-
-## For nFactorial Committee
+## Материалы для комиссии
 
 - [Submission one-pager](docs/submission.md)
 - [Demo script](docs/demo-script.md)
 - [PRD](docs/PRD.md)
+- [Customer Journey Map](docs/CJM.md)
 - [Design document](docs/design-document.md)
 - [Decisions log](docs/decisions.md)
+- [Final submission scope](docs/plans/submission-final-scope.md)
+
+## Статус проекта
+
+- Фаза 1: рабочая основа для игры.
+- Фаза 2: ядро review.
+- Фаза 3: сервисный слой.
+- Фаза 4: i18n, финальный лендинг, submission-документы, SEO/social preview, analytics и error pages.
+- Фаза 5: фиксированный final scope для submission sprint.
 
 ## Roadmap
 
-KZ locale, Remotion demo video, multiplayer-by-link, weekly report email, shareable review cards, fully generated pattern drills, real Stripe checkout, and school/team coach dashboard.
+KZ locale, Remotion demo video, multiplayer-by-link, еженедельные отчёты на почту, shareable review cards, fully generated pattern drills, real checkout и dashboard для школы или команды.
