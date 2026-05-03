@@ -1,19 +1,4 @@
 # BlunderLab
-
-> AI-шахматный коуч, который превращает blunder'ы в персональный план тренировки.
-
-[Живая демо-версия](https://blunderlab.vercel.app) · [Слот под демо-видео](https://blunderlab.vercel.app/en#demo) · [Краткое описание](docs/submission.md) · [Сценарий демо](docs/demo-script.md) · [PRD](docs/PRD.md) · [CJM](docs/CJM.md) · [Журнал решений](docs/decisions.md) · [Финальный scope](docs/plans/submission-final-scope.md)
-
-## Коротко
-
-BlunderLab — это AI-шахматный коуч для начинающих и intermediate-игроков. Он не ограничивается фразой “best move” и не превращает анализ в сухую таблицу движка. Продукт показывает, почему ошибка произошла, какой паттерн за ней стоит и что именно стоит тренировать дальше.
-
-Главная петля продукта проста и понятна комиссии:
-
-**Play → Review → Pattern → Train → Improve → Return**
-
-## Бейджи стека
-
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=flat&logo=nextdotjs&logoColor=white)
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38BDF8?style=flat&logo=tailwindcss&logoColor=white)
@@ -23,10 +8,19 @@ BlunderLab — это AI-шахматный коуч для начинающих
 ![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-6E9F18?style=flat&logo=vitest&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-412991?style=flat&logo=openai&logoColor=white)
 
-## Дэшборд
+> AI-шахматный коуч, который превращает blunder'ы в персональный план тренировки.
 
-> Плейсхолдер под финальный скриншот дэшборда.
-> Да, изображение можно вставить прямо в README через Markdown. Когда финальный кадр будет готов, замените этот блок на `![Дэшборд](./path/to/dashboard-screenshot.png)`.
+[Живая демо-версия](https://blunderlab.vercel.app) · [Слот под демо-видео](https://blunderlab.vercel.app/en#demo) · [Краткое описание](docs/submission.md) · [PRD](docs/PRD.md) · [CJM](docs/CJM.md) · [Журнал решений](docs/decisions.md) · [Финальный scope](docs/plans/submission-final-scope.md)
+
+## Коротко
+
+BlunderLab — это AI-шахматный коуч для начинающих и intermediate-игроков. Он не ограничивается фразой “best move” и не превращает анализ в сухую таблицу движка. Продукт показывает, почему ошибка произошла, какой паттерн за ней стоит и что именно стоит тренировать дальше.
+
+Главная петля продукта проста и понятна комиссии:
+
+**Play → Review → Pattern → Train → Improve → Return**
+
+<img width="1439" height="781" alt="image" src="https://github.com/user-attachments/assets/f60b153c-a4d5-4510-bf1d-211007f09f42" />
 
 ## Почему это важно
 
@@ -113,12 +107,9 @@ pnpm dev
 ## Материалы для комиссии
 
 - [Submission one-pager](docs/submission.md)
-- [Demo script](docs/demo-script.md)
 - [PRD](docs/PRD.md)
 - [Customer Journey Map](docs/CJM.md)
 - [Design document](docs/design-document.md)
-- [Decisions log](docs/decisions.md)
-- [Final submission scope](docs/plans/submission-final-scope.md)
 
 ## Статус проекта
 
@@ -129,5 +120,4 @@ pnpm dev
 - Фаза 5: фиксированный final scope для submission sprint.
 
 ## Roadmap
-
-KZ locale, Remotion demo video, multiplayer-by-link, еженедельные отчёты на почту, shareable review cards, fully generated pattern drills, real checkout и dashboard для школы или команды.
+Еженедельные отчёты на почту, shareable review cards, fully generated pattern drills, real checkout и dashboard для школы или команды.
