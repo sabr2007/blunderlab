@@ -599,7 +599,7 @@ function PreviewStat({
   accent?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 px-0 sm:px-5 sm:first:pl-0 sm:last:pr-0">
+    <div className="min-w-0 flex flex-col gap-2 px-0 sm:px-5 sm:first:pl-0 sm:last:pr-0">
       <span
         className={`inline-flex size-8 items-center justify-center ${
           accent ? "text-accent" : "text-fg-muted"
@@ -610,11 +610,11 @@ function PreviewStat({
       <dd
         className={`text-balance font-mono text-2xl tracking-tight ${
           accent ? "text-accent" : ""
-        }`}
+        } max-w-full break-words leading-tight`}
       >
         {value}
       </dd>
-      <dt className="text-xs uppercase tracking-[0.16em] text-fg-subtle">
+      <dt className="break-words text-xs uppercase tracking-[0.16em] text-fg-subtle leading-tight">
         {label}
       </dt>
     </div>
