@@ -17,6 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { coachWidgetLauncherContainerClassName } from "./coach-widget-layout";
 
 type ChatMessage = {
   id: string;
@@ -155,7 +156,7 @@ export function CoachWidget() {
   }
 
   return (
-    <div className="pointer-events-none fixed bottom-4 right-4 z-40 sm:bottom-6 sm:right-6">
+    <div className={coachWidgetLauncherContainerClassName}>
       {open ? (
         <section
           aria-label={t("widgetLabel")}
